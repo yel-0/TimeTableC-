@@ -1,0 +1,169 @@
+﻿@model TimeTable.ViewModels.MajorIndexViewModel
+
+@{
+    ViewData["Title"] = "Majors";
+}
+
+<!-- Add Bootstrap container class for better layout -->
+<div class="container mt-4">
+    <h1 class="mb-4">Majors</h1>
+
+    <!-- Button to trigger modal -->
+    <button class="btn btn-success mb-4" data-bs-toggle="modal" data-bs-target="#createMajorModal">Add New Major</button>
+
+    <!-- Search Form -->
+    <form method="get" class="d-flex mb-4">
+        <input type="text" name="name" value="@Model.NameSearch" class="form-control" placeholder="Search by name" />
+        <button type="submit" class="btn btn-primary ms-2">Search</button>
+    </form>
+
+    <!-- Table displaying majors -->
+    <table class="table table-striped">
+        <thead class="thead-dark">
+            <tr>
+                <th scope="col">Id</th>
+                <th scope="col">Name</th>
+                <th scope="col">Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var major in Model.Majors)
+            {
+                <tr>
+                    <td>@major.Id</td>
+                    <td>@major.Name</td>
+                    <td>
+                        <a href="javascript:void(0)" class="btn btn-info btn-sm" data-bs-toggle="modal" data-bs-target="#editMajorModal" data-id="@major.Id" data-name="@major.Name">Edit</a>
+                        <a href="javascript:void(0)" class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#deleteMajorModal" data-id="@major.Id" data-name="@major.Name">Delete</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    <!-- Pagination Controls -->
+    <div class="d-flex justify-content-between align-items-center">
+        <div>
+            <p>Page @Model.Page of @((Model.TotalCount + Model.Limit - 1) / Model.Limit)</p>
+        </div>
+        <div>
+            <nav aria-label="Page navigation">
+                <ul class="pagination">
+                    <li class="page-item @(Model.Page == 1 ? "disabled" : "")">
+                        <a class="page-link" href="@Url.Action("Index", new { page = 1, name = Model.NameSearch })">First</a>
+                    </li>
+                    <li class="page-item @(Model.Page == 1 ? "disabled" : "")">
+                        <a class="page-link" href="@Url.Action("Index", new { page = Model.Page - 1, name = Model.NameSearch })">Previous</a>
+                    </li>
+                    <li class="page-item @(Model.Page == (Model.TotalCount + Model.Limit - 1) / Model.Limit ? "disabled" : "")">
+                        <a class="page-link" href="@Url.Action("Index", new { page = Model.Page + 1, name = Model.NameSearch })">Next</a>
+                    </li>
+                    <li class="page-item @(Model.Page == (Model.TotalCount + Model.Limit - 1) / Model.Limit ? "disabled" : "")">
+                        <a class="page-link" href="@Url.Action("Index", new { page = (Model.TotalCount + Model.Limit - 1) / Model.Limit, name = Model.NameSearch })">Last</a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+<!-- Modal for Creating a New Major -->
+<div class="modal fade" id="createMajorModal" tabindex="-1" aria-labelledby="createMajorModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="createMajorModalLabel">Create New Major</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form method="post" asp-action="Create">
+                    <div class="mb-3">
+                        <label for="Name" class="form-label">Major Name</label>
+                        <input type="text" class="form-control" id="Name" name="Name" required />
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary">Save Major</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal for Editing a Major -->
+<div class="modal fade" id="editMajorModal" tabindex="-1" aria-labelledby="editMajorModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="editMajorModalLabel">Edit Major</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form method="post" asp-action="Edit">
+                    <input type="hidden" id="EditMajorId" name="Id" />
+                    <div class="mb-3">
+                        <label for="EditName" class="form-label">Major Name</label>
+                        <input type="text" class="form-control" id="EditName" name="Name" required />
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary">Save Changes</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal for Deleting a Major -->
+<div class="modal fade" id="deleteMajorModal" tabindex="-1" aria-labelledby="deleteMajorModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="deleteMajorModalLabel">Delete Major</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p>Are you sure you want to delete the major "<span id="deleteMajorName"></span>"?</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <form method="post" asp-action="Delete">
+                    <input type="hidden" id="DeleteMajorId" name="Id" />
+                    <button type="submit" class="btn btn-danger">Delete Major</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Edit Modal: Populate fields with the selected major's data
+    var editModal = document.getElementById('editMajorModal')
+    editModal.addEventListener('show.bs.modal', function (event) {
+        var button = event.relatedTarget;
+        var majorId = button.getAttribute('data-id');
+        var majorName = button.getAttribute('data-name');
+
+        var modalId = editModal.querySelector('#EditMajorId');
+        var modalName = editModal.querySelector('#EditName');
+
+        modalId.value = majorId;
+        modalName.value = majorName;
+    });
+
+    // Delete Modal: Populate the major name and id for confirmation
+    var deleteModal = document.getElementById('deleteMajorModal')
+    deleteModal.addEventListener('show.bs.modal', function (event) {
+        var button = event.relatedTarget;
+        var majorId = button.getAttribute('data-id');
+        var majorName = button.getAttribute('data-name');
+
+        var modalId = deleteModal.querySelector('#DeleteMajorId');
+        var modalName = deleteModal.querySelector('#deleteMajorName');
+
+        modalId.value = majorId;
+        modalName.textContent = majorName;
+    });
+</script>
