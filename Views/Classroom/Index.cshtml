@@ -1,0 +1,195 @@
+﻿@model TimeTable.ViewModels.ClassroomIndexViewModel
+
+@{
+    ViewData["Title"] = "Classroom List";
+}
+
+<div class="container mt-4">
+    <h1 class="mb-4">Classroom List</h1>
+
+    <!-- Create Classroom Button -->
+    <button class="btn btn-success mb-4" data-bs-toggle="modal" data-bs-target="#createClassroomModal">
+        Create Classroom
+    </button>
+
+    <!-- Classroom Search Form -->
+    <form method="get" class="d-flex mb-4">
+        <input type="text" name="name" value="@Model.SearchTerm" class="form-control" placeholder="Search by name" />
+        <button type="submit" class="btn btn-primary ms-2">Search</button>
+    </form>
+
+    <!-- Classroom List Table -->
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Location</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var classroom in Model.Classrooms)
+            {
+                <tr>
+                    <td>@classroom.Name</td>
+                    <td>@classroom.Location</td>
+                    <td>
+                      
+
+                        <!-- Edit Classroom Button -->
+                        <a href="javascript:void(0)" class="btn btn-warning btn-sm" data-bs-toggle="modal" data-bs-target="#editClassroomModal" data-id="@classroom.Id" data-name="@classroom.Name" data-location="@classroom.Location">Edit</a>
+
+                        <!-- Delete Classroom Button -->
+                        <a href="javascript:void(0)" class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#deleteClassroomModal" data-id="@classroom.Id" data-name="@classroom.Name">Delete</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    <!-- Pagination Controls -->
+    <div class="d-flex justify-content-between align-items-center">
+        <div>
+            <p>Page @Model.Page of @((Model.TotalCount + Model.Limit - 1) / Model.Limit)</p>
+        </div>
+        <div>
+            <nav aria-label="Page navigation">
+                <ul class="pagination">
+                    <li class="page-item @(Model.Page == 1 ? "disabled" : "")">
+                        <a class="page-link" href="@Url.Action("Index", "Classroom", new { page = 1, name = Model.SearchTerm })">First</a>
+                    </li>
+                    <li class="page-item @(Model.Page == 1 ? "disabled" : "")">
+                        <a class="page-link" href="@Url.Action("Index", "Classroom", new { page = Model.Page - 1, name = Model.SearchTerm })">Previous</a>
+                    </li>
+                    <li class="page-item @(Model.Page == (Model.TotalCount + Model.Limit - 1) / Model.Limit ? "disabled" : "")">
+                        <a class="page-link" href="@Url.Action("Index", "Classroom", new { page = Model.Page + 1, name = Model.SearchTerm })">Next</a>
+                    </li>
+                    <li class="page-item @(Model.Page == (Model.TotalCount + Model.Limit - 1) / Model.Limit ? "disabled" : "")">
+                        <a class="page-link" href="@Url.Action("Index", "Classroom", new { page = (Model.TotalCount + Model.Limit - 1) / Model.Limit, name = Model.SearchTerm })">Last</a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+<!-- Create Classroom Modal -->
+<div class="modal fade" id="createClassroomModal" tabindex="-1" aria-labelledby="createClassroomModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="createClassroomModalLabel">Create New Classroom</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form method="post" asp-action="Create">
+                    <div class="mb-3">
+                        <label for="Name" class="form-label">Classroom Name</label>
+                        <input type="text" class="form-control" id="Name" name="Name" required />
+                    </div>
+                    <div class="mb-3">
+                        <label for="Location" class="form-label">Location</label>
+                        <input type="text" class="form-control" id="Location" name="Location" required />
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary">Save Classroom</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Edit Classroom Modal -->
+<div class="modal fade" id="editClassroomModal" tabindex="-1" aria-labelledby="editClassroomModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="editClassroomModalLabel">Edit Classroom</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form method="post" asp-action="Edit">
+                    <div class="mb-3">
+                        <label for="Name" class="form-label">Classroom Name</label>
+                        <input type="text" class="form-control" id="Name" name="Name" required />
+                    </div>
+                    <div class="mb-3">
+                        <label for="Location" class="form-label">Location</label>
+                        <input type="text" class="form-control" id="Location" name="Location" required />
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary">Save changes</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Delete Classroom Modal -->
+<div class="modal fade" id="deleteClassroomModal" tabindex="-1" aria-labelledby="deleteClassroomModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="deleteClassroomModalLabel">Delete Classroom</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p>Are you sure you want to delete this classroom?</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <form method="post" asp-action="Delete">
+                    <input type="hidden" id="deleteClassroomId" name="id" />
+                    <button type="submit" class="btn btn-danger">Delete</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // JavaScript to populate the Edit Classroom Modal with data
+    const editClassroomModal = document.getElementById('editClassroomModal');
+    if (editClassroomModal) {
+        editClassroomModal.addEventListener('show.bs.modal', function (event) {
+            const button = event.relatedTarget; // Button that triggered the modal
+            const classroomId = button.getAttribute('data-id');
+            const classroomName = button.getAttribute('data-name');
+            const classroomLocation = button.getAttribute('data-location');
+
+            // Populate the form fields with the existing data
+            const modalNameInput = editClassroomModal.querySelector('#Name');
+            const modalLocationInput = editClassroomModal.querySelector('#Location');
+
+            modalNameInput.value = classroomName;
+            modalLocationInput.value = classroomLocation;
+
+            // If needed, you can store the classroom ID in a hidden field or data attribute for later use.
+            const form = editClassroomModal.querySelector('form');
+            form.action = '/Classroom/Edit/' + classroomId; // Update the form action to point to the correct route
+        });
+    }
+
+    // JavaScript to handle Delete Classroom Modal
+    const deleteClassroomModal = document.getElementById('deleteClassroomModal');
+    if (deleteClassroomModal) {
+        deleteClassroomModal.addEventListener('show.bs.modal', function (event) {
+            const button = event.relatedTarget; // Button that triggered the modal
+            const classroomId = button.getAttribute('data-id');
+            const classroomName = button.getAttribute('data-name');
+
+            // Set the hidden field for the classroom ID
+            const deleteClassroomIdInput = deleteClassroomModal.querySelector('#deleteClassroomId');
+            deleteClassroomIdInput.value = classroomId;
+
+            // Optionally, you can display the classroom name in the confirmation message
+            const modalBody = deleteClassroomModal.querySelector('.modal-body');
+            modalBody.innerHTML = `<p>Are you sure you want to delete the classroom <strong>${classroomName}</strong>?</p>`;
+        });
+    }
+</script>
+
