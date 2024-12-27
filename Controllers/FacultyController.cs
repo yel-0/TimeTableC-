@@ -6,110 +6,100 @@ using TimeTable.ViewModels;
 using System.Linq;
 using System.Threading.Tasks;
 
-
 namespace TimeTable.Controllers
 {
-    public class MajorController : Controller
+    public class FacultyController : Controller
     {
         private readonly ApplicationDbContext _context;
 
-        public MajorController(ApplicationDbContext context)
+        public FacultyController(ApplicationDbContext context)
         {
             _context = context;
         }
 
-        // GET: Major
+        // GET: Faculty
         public async Task<IActionResult> Index(string name, int page = 1, int limit = 10)
         {
             // Default page and limit values
             if (page < 1) page = 1;
             if (limit < 1) limit = 10;
 
-            // Query the majors table, applying filtering and pagination
-            var query = _context.Majors.AsQueryable();
+            // Query the Faculty table, applying filtering and pagination
+            var query = _context.Faculties.AsQueryable();
 
             // Filter by name if provided
             if (!string.IsNullOrWhiteSpace(name))
             {
-                query = query.Where(m => m.Name.Contains(name));
+                query = query.Where(f => f.Name.Contains(name));
             }
 
             // Get the total count of records (for pagination purposes)
             var totalCount = await query.CountAsync();
 
             // Apply pagination (skip and take)
-            var majors = await query.Skip((page - 1) * limit).Take(limit).ToListAsync();
+            var faculties = await query.Skip((page - 1) * limit).Take(limit).ToListAsync();
 
             // Create a ViewModel to send data to the view
-         var viewModel = new MajorIndexViewModel
+            var viewModel = new FacultyIndexViewModel
             {
-                Majors = majors,
+                Faculties = faculties,
                 TotalCount = totalCount,
                 Page = page,
                 Limit = limit,
-                NameSearch = name
+                SearchTerm = name
             };
 
             return View(viewModel);
         }
 
-        // GET: Major/Details/5
+        // GET: Faculty/Details/5
         public async Task<IActionResult> Details(int id)
         {
-            var major = await _context.Majors.FindAsync(id);
-
-            if (major == null)
+            var faculty = await _context.Faculties.FindAsync(id);
+            if (faculty == null)
             {
                 return NotFound();
             }
-
-            return View(major);
+            return View(faculty);
         }
 
-        // GET: Major/Create
+        // GET: Faculty/Create
         public IActionResult Create()
         {
             return View();
         }
 
-        // POST: Major/Create
+        // POST: Faculty/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(Major major)
+        public async Task<IActionResult> Create(Faculty faculty)
         {
             if (ModelState.IsValid)
             {
-                // Add the new major to the context
-                _context.Add(major);
+                _context.Add(faculty);
                 await _context.SaveChangesAsync();
-
-                // Redirect back to the Index page to display the updated list of majors
                 return RedirectToAction(nameof(Index));
             }
-
-            // If the model is not valid, return the view with the error
-            return View(major);
+            return View(faculty);
         }
 
-        // GET: Major/Edit/5
+        // GET: Faculty/Edit/5
         public async Task<IActionResult> Edit(int id)
         {
-            var major = await _context.Majors.FindAsync(id);
-
-            if (major == null)
+            var faculty = await _context.Faculties.FindAsync(id);
+            if (faculty == null)
             {
                 return NotFound();
             }
-
-            return View(major);
+            return View(faculty);
         }
 
-        // POST: Major/Edit/5
+        // POST: Faculty/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, Major major)
+        public async Task<IActionResult> Edit(int id, Faculty faculty)
         {
-            if (id != major.Id)
+            if (id != faculty.Id)
             {
                 return NotFound();
             }
@@ -118,12 +108,12 @@ namespace TimeTable.Controllers
             {
                 try
                 {
-                    _context.Update(major);
+                    _context.Update(faculty);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!MajorExists(major.Id))
+                    if (!_context.Faculties.Any(e => e.Id == faculty.Id))
                     {
                         return NotFound();
                     }
@@ -132,39 +122,32 @@ namespace TimeTable.Controllers
                         throw;
                     }
                 }
-
                 return RedirectToAction(nameof(Index));
             }
 
-            return View(major);
+            return View(faculty);
         }
 
-        // GET: Major/Delete/5
+        // GET: Faculty/Delete/5
         public async Task<IActionResult> Delete(int id)
         {
-            var major = await _context.Majors.FindAsync(id);
-            if (major == null)
+            var faculty = await _context.Faculties.FindAsync(id);
+            if (faculty == null)
             {
                 return NotFound();
             }
-
-            return View(major);
+            return View(faculty);
         }
 
-        // POST: Major/Delete/5
+        // POST: Faculty/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var major = await _context.Majors.FindAsync(id);
-            _context.Majors.Remove(major);
+            var faculty = await _context.Faculties.FindAsync(id);
+            _context.Faculties.Remove(faculty);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
-        }
-
-        private bool MajorExists(int id)
-        {
-            return _context.Majors.Any(e => e.Id == id);
         }
     }
 }

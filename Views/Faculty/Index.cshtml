@@ -1,0 +1,187 @@
+﻿@model TimeTable.ViewModels.FacultyIndexViewModel
+
+@{
+    ViewData["Title"] = "Faculty List";
+}
+
+<div class="container mt-4">
+    <h1 class="mb-4">Faculty List</h1>
+
+    <!-- Create Faculty Button -->
+    <button class="btn btn-success mb-4" data-bs-toggle="modal" data-bs-target="#createFacultyModal">
+        Create Faculty
+    </button>
+
+    <!-- Faculty Search Form -->
+    <form method="get" class="d-flex mb-4">
+        <input type="text" name="name" value="@Model.SearchTerm" class="form-control" placeholder="Search by name" />
+        <button type="submit" class="btn btn-primary ms-2">Search</button>
+    </form>
+
+    <!-- Faculty List Table -->
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var faculty in Model.Faculties)
+            {
+                <tr>
+                    <td>@faculty.Name</td>
+                    <td>@faculty.Email</td>
+                    <td>
+                        <!-- View Faculty Details Button -->
+                        <a href="@Url.Action("Details", "Faculty", new { id = faculty.Id })" class="btn btn-info btn-sm">Details</a>
+
+                        <!-- Edit Faculty Button -->
+                        <a href="javascript:void(0)" class="btn btn-warning btn-sm" data-bs-toggle="modal" data-bs-target="#editFacultyModal" data-id="@faculty.Id" data-name="@faculty.Name" data-email="@faculty.Email">Edit</a>
+
+                        <!-- Delete Faculty Button -->
+                        <a href="javascript:void(0)" class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#deleteFacultyModal" data-id="@faculty.Id" data-name="@faculty.Name">Delete</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    <!-- Pagination Controls -->
+    <div class="d-flex justify-content-between align-items-center">
+        <div>
+            <p>Page @Model.Page of @((Model.TotalCount + Model.Limit - 1) / Model.Limit)</p>
+        </div>
+        <div>
+            <nav aria-label="Page navigation">
+                <ul class="pagination">
+                    <li class="page-item @(Model.Page == 1 ? "disabled" : "")">
+                        <a class="page-link" href="@Url.Action("Index", "Faculty", new { page = 1, name = Model.SearchTerm })">First</a>
+                    </li>
+                    <li class="page-item @(Model.Page == 1 ? "disabled" : "")">
+                        <a class="page-link" href="@Url.Action("Index", "Faculty", new { page = Model.Page - 1, name = Model.SearchTerm })">Previous</a>
+                    </li>
+                    <li class="page-item @(Model.Page == (Model.TotalCount + Model.Limit - 1) / Model.Limit ? "disabled" : "")">
+                        <a class="page-link" href="@Url.Action("Index", "Faculty", new { page = Model.Page + 1, name = Model.SearchTerm })">Next</a>
+                    </li>
+                    <li class="page-item @(Model.Page == (Model.TotalCount + Model.Limit - 1) / Model.Limit ? "disabled" : "")">
+                        <a class="page-link" href="@Url.Action("Index", "Faculty", new { page = (Model.TotalCount + Model.Limit - 1) / Model.Limit, name = Model.SearchTerm })">Last</a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+<!-- Create Faculty Modal -->
+<div class="modal fade" id="createFacultyModal" tabindex="-1" aria-labelledby="createFacultyModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="createFacultyModalLabel">Create New Faculty</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form method="post" asp-action="Create">
+                    <div class="mb-3">
+                        <label for="Name" class="form-label">Faculty Name</label>
+                        <input type="text" class="form-control" id="Name" name="Name" required />
+                    </div>
+                    <div class="mb-3">
+                        <label for="Email" class="form-label">Email</label>
+                        <input type="email" class="form-control" id="Email" name="Email" required />
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary">Save Faculty</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Edit Faculty Modal -->
+<div class="modal fade" id="editFacultyModal" tabindex="-1" aria-labelledby="editFacultyModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="editFacultyModalLabel">Edit Faculty</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form method="post" asp-action="Edit">
+                    <input type="hidden" id="EditFacultyId" name="Id" />
+                    <div class="mb-3">
+                        <label for="EditName" class="form-label">Faculty Name</label>
+                        <input type="text" class="form-control" id="EditName" name="Name" required />
+                    </div>
+                    <div class="mb-3">
+                        <label for="EditEmail" class="form-label">Email</label>
+                        <input type="email" class="form-control" id="EditEmail" name="Email" required />
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary">Save Changes</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Delete Faculty Modal -->
+<div class="modal fade" id="deleteFacultyModal" tabindex="-1" aria-labelledby="deleteFacultyModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="deleteFacultyModalLabel">Delete Faculty</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p>Are you sure you want to delete the faculty "<span id="deleteFacultyName"></span>"?</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <form method="post" asp-action="Delete">
+                    <input type="hidden" id="DeleteFacultyId" name="Id" />
+                    <button type="submit" class="btn btn-danger">Delete Faculty</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Edit Modal: Populate fields with the selected faculty's data
+    var editModal = document.getElementById('editFacultyModal')
+    editModal.addEventListener('show.bs.modal', function (event) {
+        var button = event.relatedTarget;
+        var facultyId = button.getAttribute('data-id');
+        var facultyName = button.getAttribute('data-name');
+        var facultyEmail = button.getAttribute('data-email');
+
+        var modalId = editModal.querySelector('#EditFacultyId');
+        var modalName = editModal.querySelector('#EditName');
+        var modalEmail = editModal.querySelector('#EditEmail');
+
+        modalId.value = facultyId;
+        modalName.value = facultyName;
+        modalEmail.value = facultyEmail;
+    });
+
+    // Delete Modal: Populate the faculty name and id for confirmation
+    var deleteModal = document.getElementById('deleteFacultyModal')
+    deleteModal.addEventListener('show.bs.modal', function (event) {
+        var button = event.relatedTarget;
+        var facultyId = button.getAttribute('data-id');
+        var facultyName = button.getAttribute('data-name');
+
+        var modalId = deleteModal.querySelector('#DeleteFacultyId');
+        var modalName = deleteModal.querySelector('#deleteFacultyName');
+
+        modalId.value = facultyId;
+        modalName.textContent = facultyName;
+    });
+</script>
