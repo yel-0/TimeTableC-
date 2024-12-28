@@ -1,198 +1,4 @@
-﻿<h1>Create Course</h1>
-
-<form id="createCourseForm" method="get" asp-action="Create" class="mb-4">
-    <div class="form-row">
-        <!-- Course Code -->
-        <div class="col-md-12 mb-3">
-            <input type="text" name="courseCode" placeholder="Course Code" class="form-control w-100" required />
-        </div>
-
-        <!-- Course Name -->
-        <div class="col-md-12 mb-3">
-            <input type="text" name="name" placeholder="Course Name" class="form-control w-100" required />
-        </div>
-
-        <!-- Custom Major Select -->
-        <div class="col-md-12 mb-3">
-            <div class="custom-select-container">
-                <input type="text" id="majorSearch" class="form-control w-100" placeholder="Search Major" autocomplete="off" />
-                <div id="majorDropdown" class="custom-dropdown">
-                    <ul id="majorList"></ul>
-                </div>
-            </div>
-        </div>
-
-        <!-- Custom Faculty Select -->
-        <div class="col-md-12 mb-3">
-            <div class="custom-select-container">
-                <input type="text" id="facultySearch" class="form-control w-100" placeholder="Search Faculty" autocomplete="off" />
-                <div id="facultyDropdown" class="custom-dropdown">
-                    <ul id="facultyList"></ul>
-                </div>
-            </div>
-        </div>
-
-        <!-- Semester Dropdown -->
-        <div class="col-md-12 mb-3">
-            <select name="semester" class="form-control w-100" required>
-                <option value="">Select Semester</option>
-                <option value="1">Semester 1</option>
-                <option value="2">Semester 2</option>
-            </select>
-        </div>
-
-        <!-- Submit Button -->
-        <div class="col-md-12">
-            <button type="submit" class="btn btn-success w-100">Add</button>
-        </div>
-    </div>
-</form>
-
-<!-- Include jQuery (for the Ajax calls) -->
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-
-<script>
-    $(document).ready(function() {
-        const limit = 5;
-        let majorPage = 1;
-        let facultyPage = 1;
-        let currentMajorIndex = -1;
-        let currentFacultyIndex = -1;
-
-        // Live search for Majors
-        $("#majorSearch").on("input", function() {
-            var searchTerm = $(this).val();
-            if (searchTerm.length >= 2) {
-                searchMajors(searchTerm, majorPage);
-            } else {
-                $("#majorDropdown").hide();
-            }
-        });
-
-        // Live search for Faculties
-        $("#facultySearch").on("input", function() {
-            var searchTerm = $(this).val();
-            if (searchTerm.length >= 2) {
-                searchFaculties(searchTerm, facultyPage);
-            } else {
-                $("#facultyDropdown").hide();
-            }
-        });
-
-        // Function to search for Majors dynamically using AJAX
-        function searchMajors(searchTerm, page) {
-            $.ajax({
-                url: '/Course/Create',
-                type: 'GET',
-                data: { majorName: searchTerm, majorPage: page, limit: limit },
-                success: function(response) {
-                    updateDropdown("#majorDropdown", "#majorList", response.majors, 'major');
-                },
-                error: function(xhr, status, error) {
-                    console.error("Error fetching majors:", error);
-                }
-            });
-        }
-
-        // Function to search for Faculties dynamically using AJAX
-        function searchFaculties(searchTerm, page) {
-            $.ajax({
-                url: '/Course/Create',
-                type: 'GET',
-                data: { facultyName: searchTerm, facultyPage: page, limit: limit },
-                success: function(response) {
-                    updateDropdown("#facultyDropdown", "#facultyList", response.faculties, 'faculty');
-                },
-                error: function(xhr, status, error) {
-                    console.error("Error fetching faculties:", error);
-                }
-            });
-        }
-
-        // Function to update the dropdown with search results
-        function updateDropdown(dropdownSelector, listSelector, data, type) {
-            const list = $(listSelector);
-            list.empty(); // Clear previous list items
-
-            if (data && data.length > 0) {
-                data.forEach((item, index) => {
-                    list.append(`<li class="list-group-item custom-dropdown-item" data-index="${index}">${item.name}</li>`);
-                });
-                $(dropdownSelector).show();
-            } else {
-                list.append('<li class="list-group-item">No items found</li>');
-                $(dropdownSelector).show();
-            }
-
-            // Reset the index when a new search happens
-            if (type === 'major') {
-                currentMajorIndex = -1;
-            } else {
-                currentFacultyIndex = -1;
-            }
-        }
-
-        // Handle selecting an item from the dropdown
-        $(document).on('click', '.custom-dropdown-item', function() {
-            const selectedText = $(this).text();
-            $(this).closest('.custom-select-container').find('input').val(selectedText);
-            $(this).closest('.custom-dropdown').hide();
-        });
-
-        // Keyboard navigation for dropdowns
-        $(document).on('keydown', '#majorSearch', function(e) {
-            handleArrowNavigation(e, '#majorList', 'major');
-        });
-
-        $(document).on('keydown', '#facultySearch', function(e) {
-            handleArrowNavigation(e, '#facultyList', 'faculty');
-        });
-
-        // Function to handle arrow key navigation
-        function handleArrowNavigation(e, listSelector, type) {
-            const listItems = $(listSelector).children();
-            if (listItems.length === 0) return;
-
-            if (e.key === 'ArrowDown') {
-                // Move to the next item
-                if (type === 'major') {
-                    currentMajorIndex = Math.min(currentMajorIndex + 1, listItems.length - 1);
-                } else {
-                    currentFacultyIndex = Math.min(currentFacultyIndex + 1, listItems.length - 1);
-                }
-            } else if (e.key === 'ArrowUp') {
-                // Move to the previous item
-                if (type === 'major') {
-                    currentMajorIndex = Math.max(currentMajorIndex - 1, 0);
-                } else {
-                    currentFacultyIndex = Math.max(currentFacultyIndex - 1, 0);
-                }
-            } else if (e.key === 'Enter') {
-                // Select the currently focused item
-                const focusedItem = $(listItems).eq(type === 'major' ? currentMajorIndex : currentFacultyIndex);
-                if (focusedItem.length) {
-                    const selectedText = focusedItem.text();
-                    $(focusedItem).closest('.custom-select-container').find('input').val(selectedText);
-                    $(focusedItem).closest('.custom-dropdown').hide();
-                }
-            }
-
-            // Highlight the selected item
-            listItems.removeClass('highlight');
-            const selectedItem = $(listItems).eq(type === 'major' ? currentMajorIndex : currentFacultyIndex);
-            selectedItem.addClass('highlight');
-        }
-
-        // Close dropdown if clicking outside
-        $(document).click(function(event) {
-            if (!$(event.target).closest('.custom-select-container').length) {
-                $(".custom-dropdown").hide();
-            }
-        });
-    });
-</script>
-
-<style>
+﻿<style>
     .custom-select-container {
         position: relative;
     }
@@ -228,3 +34,228 @@
         margin: 0;
     }
 </style>
+
+<div class="container mt-5">
+    <h1>Create Course</h1>
+
+    <form id="createCourseForm" method="post" asp-action="CreateCourse" class="mb-4">
+        <div class="form-row">
+            <!-- Course Code -->
+            <div class="col-md-12 mb-3">
+                <input type="text" name="CourseCode" id="courseCode" placeholder="Course Code" class="form-control w-100" required />
+            </div>
+
+            <!-- Course Name -->
+            <div class="col-md-12 mb-3">
+                <input type="text" name="Name" id="courseName" placeholder="Course Name" class="form-control w-100" required />
+            </div>
+
+            <!-- Major Search Input -->
+            <div class="col-md-12 mb-3">
+                <div class="custom-select-container">
+                    <input type="text" id="majorSearch" name="MajorName" class="form-control w-100" placeholder="Search Major" autocomplete="off" required />
+                    <input type="hidden" id="majorId" name="MajorId">
+                    <div id="majorDropdown" class="custom-dropdown">
+                        <ul id="majorList"></ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Faculty Search Input -->
+            <div class="col-md-12 mb-3">
+                <div class="custom-select-container">
+                    <input type="text" id="facultySearch" name="FacultyName" class="form-control w-100" placeholder="Search Faculty" autocomplete="off" required />
+                    <input type="hidden" id="facultyId" name="FacultyId">
+                    <div id="facultyDropdown" class="custom-dropdown">
+                        <ul id="facultyList"></ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Semester Dropdown -->
+            <div class="col-md-12 mb-3">
+                <select name="Semester" id="semester" class="form-control w-100" required>
+                    <option value="">Select Semester</option>
+                    <option value="1">Semester 1</option>
+                    <option value="2">Semester 2</option>
+                </select>
+            </div>
+
+            <!-- Submit Button -->
+            <div class="col-md-12">
+                <button type="submit" class="btn btn-success w-100">Add</button>
+            </div>
+        </div>
+    </form>
+
+</div>
+
+<!-- Include jQuery (for the Ajax calls) -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<script>
+    $(document).ready(function () {
+        const limit = 5;
+        let majorPage = 1;
+        let facultyPage = 1;
+        let currentMajorIndex = -1;
+        let currentFacultyIndex = -1;
+
+        // Live search for Majors
+        $("#majorSearch").on("input", function () {
+            var searchTerm = $(this).val();
+            if (searchTerm.length >= 2) {
+                searchMajors(searchTerm, majorPage);
+            } else {
+                $("#majorDropdown").hide();
+            }
+        });
+
+        // Live search for Faculties
+        $("#facultySearch").on("input", function () {
+            var searchTerm = $(this).val();
+            if (searchTerm.length >= 2) {
+                searchFaculties(searchTerm, facultyPage);
+            } else {
+                $("#facultyDropdown").hide();
+            }
+        });
+
+        // Function to search for Majors dynamically using AJAX
+        function searchMajors(searchTerm, page) {
+            $.ajax({
+                url: '/Course/Create',  // Adjust to your actual backend endpoint
+                type: 'GET',
+                data: { majorName: searchTerm, majorPage: page, limit: limit },
+                success: function (response) {
+                    updateDropdown("#majorDropdown", "#majorList", response.majors, 'major');
+                },
+                error: function (xhr, status, error) {
+                    console.error("Error fetching majors:", error);
+                }
+            });
+        }
+
+        // Function to search for Faculties dynamically using AJAX
+        function searchFaculties(searchTerm, page) {
+            $.ajax({
+                url: '/Course/Create',  // Adjust to your actual backend endpoint
+                type: 'GET',
+                data: { facultyName: searchTerm, facultyPage: page, limit: limit },
+                success: function (response) {
+                    updateDropdown("#facultyDropdown", "#facultyList", response.faculties, 'faculty');
+                },
+                error: function (xhr, status, error) {
+                    console.error("Error fetching faculties:", error);
+                }
+            });
+        }
+
+        // Function to update the dropdown with search results
+        function updateDropdown(dropdownSelector, listSelector, data, type) {
+            const list = $(listSelector);
+            list.empty(); // Clear previous list items
+
+            if (data && data.length > 0) {
+                data.forEach((item, index) => {
+                    list.append(`<li class="list-group-item custom-dropdown-item" data-id="${item.id}" data-index="${index}">${item.name}</li>`);
+                });
+                $(dropdownSelector).show();
+            } else {
+                list.append('<li class="list-group-item">No items found</li>');
+                $(dropdownSelector).show();
+            }
+
+            // Reset the index when a new search happens
+            if (type === 'major') {
+                currentMajorIndex = -1;
+            } else {
+                currentFacultyIndex = -1;
+            }
+        }
+
+        // Handle selecting an item from the dropdown
+        $(document).on('click', '.custom-dropdown-item', function () {
+            const selectedText = $(this).text();
+            const selectedId = $(this).data('id');  // Get the Id of the selected item
+
+            // Set the value of the input field with the name, but set the hidden input with the Id
+            $(this).closest('.custom-select-container').find('input').val(selectedText);
+            $(this).closest('.custom-select-container').find('input[type="hidden"]').val(selectedId); // Store the Id in hidden input
+
+            $(this).closest('.custom-dropdown').hide();
+        });
+
+        // Keyboard navigation for dropdowns
+        $(document).on('keydown', '#majorSearch', function (e) {
+            handleArrowNavigation(e, '#majorList', 'major');
+        });
+
+        $(document).on('keydown', '#facultySearch', function (e) {
+            handleArrowNavigation(e, '#facultyList', 'faculty');
+        });
+
+        // Function to handle arrow key navigation
+        function handleArrowNavigation(e, listSelector, type) {
+            const listItems = $(listSelector).children();
+            if (listItems.length === 0) return;
+
+            if (e.key === 'ArrowDown') {
+                // Move to the next item
+                if (type === 'major') {
+                    currentMajorIndex = Math.min(currentMajorIndex + 1, listItems.length - 1);
+                } else {
+                    currentFacultyIndex = Math.min(currentFacultyIndex + 1, listItems.length - 1);
+                }
+            } else if (e.key === 'ArrowUp') {
+                // Move to the previous item
+                if (type === 'major') {
+                    currentMajorIndex = Math.max(currentMajorIndex - 1, 0);
+                } else {
+                    currentFacultyIndex = Math.max(currentFacultyIndex - 1, 0);
+                }
+            } else if (e.key === 'Enter') {
+                // Select the currently focused item
+                const focusedItem = $(listItems).eq(type === 'major' ? currentMajorIndex : currentFacultyIndex);
+                if (focusedItem.length) {
+                    const selectedText = focusedItem.text();
+                    const selectedId = focusedItem.data('id'); // Get the Id of the selected item
+                    $(focusedItem).closest('.custom-select-container').find('input').val(selectedText);
+                    $(focusedItem).closest('.custom-select-container').find('input[type="hidden"]').val(selectedId); // Store the Id in hidden input
+                    $(focusedItem).closest('.custom-dropdown').hide();
+                }
+            }
+
+            // Highlight the selected item
+            listItems.removeClass('highlight');
+            const selectedItem = $(listItems).eq(type === 'major' ? currentMajorIndex : currentFacultyIndex);
+            selectedItem.addClass('highlight');
+        }
+
+        // Close dropdown if clicking outside
+        $(document).on('click', function (e) {
+            if (!$(e.target).closest('.custom-select-container').length) {
+                $('.custom-dropdown').hide();
+            }
+        });
+
+        // Form submission handling
+        // $("#createCourseForm").submit(function (e) {
+        //     e.preventDefault();
+
+        //     var formData = $(this).serialize(); 
+
+        //     $.ajax({
+        //         url: '/Course/Create',  
+        //         method: 'POST',
+        //         data: formData,
+        //         success: function (response) {
+        //             console.log('Course created successfully', response);
+        //         },
+        //         error: function (xhr, status, error) {
+        //             console.error('Error:', error);
+        //         }
+        //     });
+        // });
+    });
+</script>

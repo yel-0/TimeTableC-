@@ -75,7 +75,6 @@ namespace TimeTable.Controllers
                     .OrderBy(m => m.Name)
                     .Skip((majorPage - 1) * limit)
                     .Take(limit)
-                    .Select(m => new { m.Name }) // Ensure it only returns Name
                     .ToListAsync();
 
                 // Searching Faculties
@@ -90,7 +89,6 @@ namespace TimeTable.Controllers
                     .OrderBy(f => f.Name)
                     .Skip((facultyPage - 1) * limit)
                     .Take(limit)
-                    .Select(f => new { f.Name }) // Ensure it only returns Name
                     .ToListAsync();
 
                 return Json(new { majors = majors, faculties = faculties });
@@ -108,6 +106,48 @@ namespace TimeTable.Controllers
 
             return View(viewModel);
         }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> CreateCourse(Course course)
+        {
+            try
+            {
+                var newCourse = new Course
+                {
+                    CourseCode = course.CourseCode,
+                    Name = course.Name,
+                    MajorId = course.MajorId,         // Only set the MajorId
+                    FacultyId = course.FacultyId,     // Only set the FacultyId
+                    Semester = course.Semester
+                };
+
+                // Add the new course to the database
+                _context.Courses.Add(newCourse);
+                await _context.SaveChangesAsync();
+
+                // Return a success message
+                return RedirectToAction(nameof(Index));
+            }
+            catch (Exception ex)
+            {
+                // Log the error (you can use a logger or any other method)
+                // Example: _logger.LogError(ex, "Error while creating course");
+
+                // Return an error message to the view or API
+                ModelState.AddModelError("", "An error occurred while creating the course. Please try again later.");
+
+                // Optionally, return the view with the current model data and errors
+                return View(course);
+            }
+        }
+
+
+
+
+
+
+
 
 
 
