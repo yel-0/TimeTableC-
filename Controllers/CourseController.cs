@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using TimeTable.Data;
 using TimeTable.Models;
+using TimeTable.ViewModels;
 
 namespace TimeTable.Controllers
 {
@@ -55,6 +56,61 @@ namespace TimeTable.Controllers
 
             return View(viewModel);
         }
+
+
+        [HttpGet]
+        public async Task<IActionResult> Create(string majorName = null, string facultyName = null, int majorPage = 1, int facultyPage = 1, int limit = 5)
+        {
+            if (Request.Headers["X-Requested-With"] == "XMLHttpRequest") // Check if it's an AJAX request
+            {
+                // Searching Majors
+                var majorsQuery = _context.Majors.AsQueryable();
+                if (!string.IsNullOrEmpty(majorName))
+                {
+                    majorsQuery = majorsQuery.Where(m => m.Name.Contains(majorName));
+                }
+
+                // Ensure that Majors query is working correctly:
+                var majors = await majorsQuery
+                    .OrderBy(m => m.Name)
+                    .Skip((majorPage - 1) * limit)
+                    .Take(limit)
+                    .Select(m => new { m.Name }) // Ensure it only returns Name
+                    .ToListAsync();
+
+                // Searching Faculties
+                var facultiesQuery = _context.Faculties.AsQueryable();
+                if (!string.IsNullOrEmpty(facultyName))
+                {
+                    facultiesQuery = facultiesQuery.Where(f => f.Name.Contains(facultyName));
+                }
+
+                // Ensure that Faculties query is working correctly:
+                var faculties = await facultiesQuery
+                    .OrderBy(f => f.Name)
+                    .Skip((facultyPage - 1) * limit)
+                    .Take(limit)
+                    .Select(f => new { f.Name }) // Ensure it only returns Name
+                    .ToListAsync();
+
+                return Json(new { majors = majors, faculties = faculties });
+            }
+
+            // For regular page load (non-AJAX), return the view as usual
+            var majorsList = await _context.Majors.Take(limit).ToListAsync();
+            var facultiesList = await _context.Faculties.Take(limit).ToListAsync();
+
+            var viewModel = new CourseCreateViewModel
+            {
+                Majors = majorsList,
+                Faculties = facultiesList
+            };
+
+            return View(viewModel);
+        }
+
+
+
 
     }
 }
