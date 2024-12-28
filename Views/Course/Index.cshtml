@@ -1,32 +1,38 @@
-﻿@model TimeTable.Models.CourseViewModel
+﻿@model TimeTable.Models.CourseIndexViewModel
 
-@{
-    ViewData["Title"] = "Courses";
-}
+<h2>Courses</h2>
 
-<h1 class="text-center">@ViewData["Title"]</h1>
-
-<form method="get" class="mb-4">
-    <div class="form-group">
-        <label for="semester">Filter by Semester:</label>
-        <select asp-for="Semester" class="form-control">
-            @foreach (var semester in Enum.GetValues(typeof(TimeTable.Models.Semester)))
-            {
-                <option value="@semester">@semester</option>
-            }
-        </select>
+<!-- Search and Filter Form -->
+<form method="get">
+    <div class="form-row mb-3">
+        <div class="col-md-4 mb-2">
+            <input type="text" name="name" placeholder="Search by Name" value="@Model.NameFilter" class="form-control" />
+        </div>
+        <div class="col-md-4 mb-2">
+            <select name="semester" class="form-control">
+                <option value="">Select Semester</option>
+                <option value="1" >Semester 1</option>
+                <option value="2" >Semester 2</option>
+                <!-- Add more semester options if needed -->
+            </select>
+        </div>
+        <div class="col-md-4 mb-2">
+            <button type="submit" class="btn btn-primary w-100">Filter</button>
+        </div>
     </div>
-
-    <button type="submit" class="btn btn-primary">Apply Filter</button>
 </form>
 
-<table class="table table-striped">
-    <thead>
+
+
+<!-- Course List Table -->
+<table class="table table-bordered mt-4">
+    <thead class="thead-dark">
         <tr>
             <th>Course Code</th>
             <th>Name</th>
+            <th>Major</th>
+            <th>Faculty</th>
             <th>Semester</th>
-            <th>Actions</th>
         </tr>
     </thead>
     <tbody>
@@ -35,28 +41,44 @@
             <tr>
                 <td>@course.CourseCode</td>
                 <td>@course.Name</td>
+                <td>@course.Major.Name</td>
+                <td>@course.Faculty.Name</td>
                 <td>@course.Semester</td>
-                <td>
-                    <a href="@Url.Action("Details", new { id = course.Id })" class="btn btn-info btn-sm">Details</a>
-                    <a href="@Url.Action("Edit", new { id = course.Id })" class="btn btn-warning btn-sm">Edit</a>
-                    <a href="@Url.Action("Delete", new { id = course.Id })" class="btn btn-danger btn-sm">Delete</a>
-                </td>
             </tr>
         }
     </tbody>
 </table>
 
-<div class="d-flex justify-content-between align-items-center">
-    <p>Page @Model.Page of @((int)Math.Ceiling((double)Model.TotalCourses / Model.Limit))</p>
+<!-- Pagination Controls -->
+<div class="d-flex justify-content-between align-items-center mt-4">
+    <div>
+        <p>Page @Model.CurrentPage of @Model.TotalPages</p>
+    </div>
 
     <div>
-        <a href="@Url.Action("Index", new { page = Model.Page - 1, limit = Model.Limit, semester = Model.Semester })"
-           class="btn btn-secondary btn-sm @if (Model.Page == 1) {
-        <text>disabled</text>
- }">Previous</a>
-        <a href="@Url.Action("Index", new { page = Model.Page + 1, limit = Model.Limit, semester = Model.Semester })"
-           class="btn btn-secondary btn-sm @if (Model.Page == Math.Ceiling((double)Model.TotalCourses / Model.Limit)) {
-        <text>disabled</text>
- }">Next</a>
+        <nav aria-label="Page navigation">
+            <ul class="pagination">
+                <!-- First Page Button -->
+                <li class="page-item @(Model.CurrentPage == 1 ? "disabled" : "")">
+                    <a class="page-link" href="@Url.Action("Index", new { page = 1, limit = Model.PageSize, name = Model.NameFilter, semester = Model.SemesterFilter })">First</a>
+                </li>
+
+                <!-- Previous Page Button -->
+                <li class="page-item @(Model.CurrentPage == 1 ? "disabled" : "")">
+                    <a class="page-link" href="@Url.Action("Index", new { page = Model.CurrentPage - 1, limit = Model.PageSize, name = Model.NameFilter, semester = Model.SemesterFilter })">Previous</a>
+                </li>
+
+                <!-- Next Page Button -->
+                <li class="page-item @(Model.CurrentPage == Model.TotalPages ? "disabled" : "")">
+                    <a class="page-link" href="@Url.Action("Index", new { page = Model.CurrentPage + 1, limit = Model.PageSize, name = Model.NameFilter, semester = Model.SemesterFilter })">Next</a>
+                </li>
+
+                <!-- Last Page Button -->
+                <li class="page-item @(Model.CurrentPage == Model.TotalPages ? "disabled" : "")">
+                    <a class="page-link" href="@Url.Action("Index", new { page = Model.TotalPages, limit = Model.PageSize, name = Model.NameFilter, semester = Model.SemesterFilter })">Last</a>
+                </li>
+            </ul>
+        </nav>
     </div>
 </div>
+

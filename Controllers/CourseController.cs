@@ -16,145 +16,45 @@ namespace TimeTable.Controllers
             _context = context;
         }
 
-        // GET: Course (with pagination and optional semester filtering)
-        public async Task<IActionResult> Index(int page = 1, int limit = 10, Semester? semester = null)
+        public async Task<IActionResult> Index(string name, int? semester, int page = 1, int limit = 5)
         {
-            var query = _context.Courses.Include(c => c.Major).Include(c => c.Faculty).AsQueryable();
+            var courses = _context.Courses.Include(c => c.Major).Include(c => c.Faculty).AsQueryable();
 
-            // Filter by semester if provided
+            // Apply filter by name if provided
+            if (!string.IsNullOrEmpty(name))
+            {
+                courses = courses.Where(c => c.Name.Contains(name));
+            }
+
+            // Apply filter by semester if provided
             if (semester.HasValue)
             {
-                query = query.Where(c => c.Semester == semester.Value);
+                courses = courses.Where(c => c.Semester == semester.Value);
             }
 
-            // Pagination logic
-            var totalCourses = await query.CountAsync();
-            var courses = await query
-                .Skip((page - 1) * limit)
-                .Take(limit)
+            var totalCourses = await courses.CountAsync();
+
+            // Paginate the courses based on the current page and limit
+            var coursesList = await courses
+                .OrderBy(c => c.Name) // Sorting by name, you can change this to any other sorting criteria
+                .Skip((page - 1) * limit) // Skip results for the current page
+                .Take(limit) // Take only the number of results specified by the limit
                 .ToListAsync();
 
-            var model = new CourseViewModel
+            // Prepare the ViewModel with the courses and pagination data
+            var viewModel = new CourseIndexViewModel
             {
-                Courses = courses,
+                Courses = coursesList,
                 TotalCourses = totalCourses,
-                Page = page,
-                Limit = limit,
-                Semester = semester
+                PageSize = limit,
+                CurrentPage = page,
+                TotalPages = (int)Math.Ceiling((double)totalCourses / limit),
+                NameFilter = name,
+                SemesterFilter = semester
             };
 
-            return View(model);
+            return View(viewModel);
         }
 
-        // GET: Course/Details/5
-        public async Task<IActionResult> Details(int id)
-        {
-            var course = await _context.Courses.Include(c => c.Major).Include(c => c.Faculty)
-                .FirstOrDefaultAsync(c => c.Id == id);
-
-            if (course == null)
-            {
-                return NotFound();
-            }
-
-            return View(course);
-        }
-
-        // GET: Course/Create
-        public IActionResult Create()
-        {
-            return View();
-        }
-
-        // POST: Course/Create
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("CourseCode,Name,MajorId,FacultyId,Semester")] Course course)
-        {
-            if (ModelState.IsValid)
-            {
-                _context.Add(course);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
-            }
-
-            return View(course);
-        }
-
-        // GET: Course/Edit/5
-        public async Task<IActionResult> Edit(int id)
-        {
-            var course = await _context.Courses.FindAsync(id);
-
-            if (course == null)
-            {
-                return NotFound();
-            }
-
-            return View(course);
-        }
-
-        // POST: Course/Edit/5
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,CourseCode,Name,MajorId,FacultyId,Semester")] Course course)
-        {
-            if (id != course.Id)
-            {
-                return NotFound();
-            }
-
-            if (ModelState.IsValid)
-            {
-                try
-                {
-                    _context.Update(course);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!CourseExists(course.Id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction(nameof(Index));
-            }
-            return View(course);
-        }
-
-        // GET: Course/Delete/5
-        public async Task<IActionResult> Delete(int id)
-        {
-            var course = await _context.Courses.Include(c => c.Major).Include(c => c.Faculty)
-                .FirstOrDefaultAsync(c => c.Id == id);
-
-            if (course == null)
-            {
-                return NotFound();
-            }
-
-            return View(course);
-        }
-
-        // POST: Course/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
-        {
-            var course = await _context.Courses.FindAsync(id);
-            _context.Courses.Remove(course);
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
-        }
-
-        private bool CourseExists(int id)
-        {
-            return _context.Courses.Any(e => e.Id == id);
-        }
     }
 }

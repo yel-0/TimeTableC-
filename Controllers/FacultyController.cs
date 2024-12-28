@@ -139,6 +139,36 @@ namespace TimeTable.Controllers
             return View(faculty);
         }
 
+        // GET: Faculty/Search
+        public async Task<IActionResult> Search(string name, int limit = 10)
+        {
+            // Validate limit parameter
+            if (limit < 1) limit = 10;
+
+            // Query the Faculty table, applying filtering
+            var query = _context.Faculties.AsQueryable();
+
+            // Filter by name if provided
+            if (!string.IsNullOrWhiteSpace(name))
+            {
+                query = query.Where(f => f.Name.Contains(name));
+            }
+
+            // Limit the number of results
+            var faculties = await query.Take(limit).ToListAsync();
+
+            // Create a ViewModel to send data to the view
+            var viewModel = new FacultySearchViewModel
+            {
+                Faculties = faculties,
+                SearchTerm = name,
+                Limit = limit
+            };
+
+            return View(viewModel);
+        }
+
+
         // POST: Faculty/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]

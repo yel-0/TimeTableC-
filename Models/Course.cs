@@ -3,23 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace TimeTable.Models
 {
-    public enum Semester
-    {
-        FirstSemester = 1,
-        SecondSemester,
-        ThirdSemester,
-        FourthSemester,
-        FifthSemester,
-        SixthSemester,
-        SeventhSemester,
-        EighthSemester,
-        NinthSemester,
-        TenthSemester,
-        EleventhSemester,
-        TwelfthSemester,
-        ThirteenthSemester,
-        FourteenthSemester
-    }
+ 
 
     public class Course
     {
@@ -41,8 +25,8 @@ namespace TimeTable.Models
 
         public Faculty Faculty { get; set; }
 
-        // Adding Semester column with Enum type
+        // Use Enum for Semester
         [Required]
-        public Semester Semester { get; set; }
+        public int Semester { get; set; }
     }
 }
