@@ -131,8 +131,7 @@ namespace TimeTable.Controllers
             }
             catch (Exception ex)
             {
-                // Log the error (you can use a logger or any other method)
-                // Example: _logger.LogError(ex, "Error while creating course");
+                
 
                 // Return an error message to the view or API
                 ModelState.AddModelError("", "An error occurred while creating the course. Please try again later.");
@@ -141,6 +140,80 @@ namespace TimeTable.Controllers
                 return View(course);
             }
         }
+
+        [HttpGet]
+        public async Task<IActionResult> Edit(int id)
+        {
+            var course = await _context.Courses
+                .Include(c => c.Major)
+                .Include(c => c.Faculty)
+                .FirstOrDefaultAsync(c => c.Id == id);
+
+            if (course == null)
+            {
+                return NotFound();
+            }
+
+            // Prepare the ViewModel with course details and dropdown options
+            var viewModel = new CourseEditViewModel
+            {
+                Id = course.Id,
+                Name = course.Name,
+                CourseCode = course.CourseCode,
+                Semester = course.Semester,
+                MajorId = course.MajorId,
+                FacultyId = course.FacultyId,
+                MajorName = course.Major.Name,  
+                FacultyName = course.Faculty.Name  
+
+            };
+
+            return View(viewModel);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Edit(int id, CourseEditViewModel viewModel)
+        {
+           
+
+            var course = await _context.Courses.FindAsync(id);
+
+            if (course == null)
+            {
+                return NotFound();
+            }
+
+            try
+            {
+                // Update course properties
+                course.Name = viewModel.Name;
+                course.CourseCode = viewModel.CourseCode;
+                course.Semester = viewModel.Semester;
+                course.MajorId = viewModel.MajorId;
+                course.FacultyId = viewModel.FacultyId;
+
+                // Save changes to the database
+                _context.Courses.Update(course);
+                await _context.SaveChangesAsync();
+
+                return RedirectToAction(nameof(Index));
+            }
+            catch (Exception ex)
+            {
+                ModelState.AddModelError("", "An error occurred while updating the course. Please try again later.");
+                return View(viewModel);
+            }
+        }
+
+        
+
+
+
+
+
+
+
 
 
 

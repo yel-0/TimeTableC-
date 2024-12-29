@@ -5,14 +5,17 @@
 
 
 
+<div class="mb-3">
+    <a href="@Url.Action("Create", "Course")" class="btn btn-success">Create New Course</a>
+</div>
 
 <!-- Search and Filter Form -->
 <form method="get">
     <div class="form-row mb-3">
-        <div class="col-md-4 mb-2">
+        <div class=" mb-2">
             <input type="text" name="name" placeholder="Search by Name" value="@Model.NameFilter" class="form-control" />
         </div>
-        <div class="col-md-4 mb-2">
+        <div class=" mb-2">
             <select name="semester" class="form-control">
                 <option value="">Select Semester</option>
                 <option value="1" >Semester 1</option>
@@ -20,7 +23,7 @@
                 <!-- Add more semester options if needed -->
             </select>
         </div>
-        <div class="col-md-4 mb-2">
+        <div class=" mb-2">
             <button type="submit" class="btn btn-primary w-100">Filter</button>
         </div>
     </div>
@@ -37,6 +40,7 @@
             <th>Major</th>
             <th>Faculty</th>
             <th>Semester</th>
+            <th>Action</th>
         </tr>
     </thead>
     <tbody>
@@ -48,6 +52,10 @@
                 <td>@course.Major.Name</td>
                 <td>@course.Faculty.Name</td>
                 <td>@course.Semester</td>
+                <td>
+                    <!-- Edit Button -->
+                    <a href="@Url.Action("Edit", "Course", new { id = course.Id })" class="btn btn-warning btn-sm">Edit</a>
+                </td>
             </tr>
         }
     </tbody>
