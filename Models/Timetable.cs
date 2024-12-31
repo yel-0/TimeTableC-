@@ -10,15 +10,20 @@ namespace TimeTable.Models
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
 
+        [Required]
         public int CourseId { get; set; }
 
+        // Navigation property for the Course entity
         public Course Course { get; set; }
 
+        [Required]
         public int ClassroomId { get; set; }
 
-        public Classroom Classroom { get; set; } 
+        // Navigation property for the Classroom entity
+        public Classroom Classroom { get; set; }
 
         [Required]
+        [StringLength(15)] // Optional, to limit the length of DayOfWeek values
         public string DayOfWeek { get; set; }
 
         [Required]
@@ -26,9 +31,6 @@ namespace TimeTable.Models
 
         [Required]
         public TimeSpan EndTime { get; set; }
-
-        [Required]
-        public string Semester { get; set; }  // e.g., "First Semester", "Second Semester"
 
         [Required]
         public int Year { get; set; }

@@ -1,0 +1,95 @@
+﻿@model TimeTable.Models.Timetable
+
+@{
+    ViewData["Title"] = "Create TimeTable";
+}
+
+<div class="container mt-5">
+    <h1 class="text-center mb-4">Create TimeTable</h1>
+
+    <form asp-action="Create" method="post">
+        <div class="card">
+            <div class="card-body">
+                <h4 class="card-title text-center mb-4">Fill in the details</h4>
+
+                <div class="row">
+                    <!-- Course Dropdown -->
+                    <div class="col-md-6 mb-3">
+                        <label asp-for="CourseId" class="form-label">Course</label>
+                        <select asp-for="CourseId" class="form-select" asp-items="@(new SelectList(ViewData["Courses"] as IEnumerable<TimeTable.Models.Course>, "Id", "Name"))">
+                            <option value="">Select a Course</option>
+                        </select>
+                        <span asp-validation-for="CourseId" class="text-danger"></span>
+                    </div>
+
+                    <!-- Classroom Dropdown -->
+                    <div class="col-md-6 mb-3">
+                        <label asp-for="ClassroomId" class="form-label">Classroom</label>
+                        <select asp-for="ClassroomId" class="form-select" asp-items="@(new SelectList(ViewData["Classrooms"] as IEnumerable<TimeTable.Models.Classroom>, "Id", "Name"))">
+                            <option value="">Select a Classroom</option>
+                        </select>
+                        <span asp-validation-for="ClassroomId" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <!-- Day of Week Dropdown -->
+                    <div class="col-md-6 mb-3">
+                        <label asp-for="DayOfWeek" class="form-label">Day of the Week</label>
+                        <select asp-for="DayOfWeek" class="form-select">
+                            <option value="">Select a Day</option>
+                            <option value="Monday">Monday</option>
+                            <option value="Tuesday">Tuesday</option>
+                            <option value="Wednesday">Wednesday</option>
+                            <option value="Thursday">Thursday</option>
+                            <option value="Friday">Friday</option>
+                            <option value="Saturday">Saturday</option>
+                            <option value="Sunday">Sunday</option>
+                        </select>
+                        <span asp-validation-for="DayOfWeek" class="text-danger"></span>
+                    </div>
+
+                    <!-- Start Time Input -->
+                    <div class="col-md-6 mb-3">
+                        <label asp-for="StartTime" class="form-label">Start Time</label>
+                        <input asp-for="StartTime" type="time" class="form-control" />
+                        <span asp-validation-for="StartTime" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <!-- End Time Input -->
+                    <div class="col-md-6 mb-3">
+                        <label asp-for="EndTime" class="form-label">End Time</label>
+                        <input asp-for="EndTime" type="time" class="form-control" />
+                        <span asp-validation-for="EndTime" class="text-danger"></span>
+                    </div>
+
+                    <!-- Year Input -->
+                    <div class="col-md-6 mb-3">
+                        <label asp-for="Year" class="form-label">Year</label>
+                        <input asp-for="Year" class="form-control" />
+                        <span asp-validation-for="Year" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <!-- Submit Button -->
+                <div class="text-center mt-4">
+                    <button type="submit" class="btn btn-primary btn-lg">Create TimeTable</button>
+                </div>
+
+            </div>
+        </div>
+    </form>
+
+    <div class="mt-3">
+        <a href="@Url.Action("Index")" class="btn btn-secondary">Back to List</a>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}
+

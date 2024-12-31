@@ -1,0 +1,52 @@
+﻿@{
+    ViewData["Title"] = "Time Table";
+}
+
+<h1>@ViewData["Title"]</h1>
+
+<form method="get" asp-controller="TimeTable" asp-action="Index">
+    <div>
+        <label for="year">Year:</label>
+        <input type="number" id="year" name="year" class="form-control" />
+    </div>
+    <div>
+        <label for="dayOfWeek">Day of Week:</label>
+        <input type="text" id="dayOfWeek" name="dayOfWeek" class="form-control" />
+    </div>
+    <div>
+        <label for="semester">Semester:</label>
+        <input type="number" id="semester" name="semester" class="form-control" />
+    </div>
+    <button type="submit" class="btn btn-primary">Apply Filters</button>
+</form>
+
+<h2>Timetable Entries</h2>
+<table class="table">
+    <thead>
+        <tr>
+            <th>Course Code</th>
+            <th>Course Name</th>
+            <th>Classroom</th>
+            <th>Day of Week</th>
+            <th>Start Time</th>
+            <th>End Time</th>
+            <th>Year</th>
+            <th>Semester</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var timetable in Model)
+        {
+            <tr>
+                <td>@timetable.Course.CourseCode</td>
+                <td>@timetable.Course.Name</td>
+                <td>@timetable.Classroom.Name</td>
+                <td>@timetable.DayOfWeek</td>
+                <td>@timetable.StartTime.ToString(@"hh\:mm")</td>
+                <td>@timetable.EndTime.ToString(@"hh\:mm")</td>
+                <td>@timetable.Year</td>
+                <td>@timetable.Course.Semester</td>
+            </tr>
+        }
+    </tbody>
+</table>
