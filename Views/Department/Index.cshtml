@@ -1,0 +1,213 @@
+﻿@model TimeTable.Models.DepartmentIndexViewModel
+
+@{
+    ViewData["Title"] = "Departments";
+}
+
+<div class="container mt-4">
+    <h1 class="mb-4">@ViewData["Title"]</h1>
+
+    <!-- Create Department Button -->
+    <button class="btn btn-success mb-4" data-bs-toggle="modal" data-bs-target="#createDepartmentModal">
+        Create Department
+    </button>
+
+    <!-- Department Search Form -->
+    <form method="get" class="d-flex mb-4">
+        <input type="text" name="code" value="@Model.CodeFilter" class="form-control me-2" placeholder="Search by code" />
+        <input type="text" name="name" value="@Model.NameFilter" class="form-control me-2" placeholder="Search by name" />
+        <button type="submit" class="btn btn-primary">Search</button>
+    </form>
+
+    <!-- Department List Table -->
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Department Name</th>
+                <th>Department Code</th>
+                <th>Description</th>
+                <th>Location</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var department in Model.Departments)
+            {
+                <tr>
+                    <td>@department.Name</td>
+                    <td>@department.Code</td>
+                    <td>@department.Description</td>
+                    <td>@department.Location</td>
+                    <td>
+                        <!-- Edit Department Button -->
+                        <button class="btn btn-warning btn-sm" data-bs-toggle="modal" data-bs-target="#editDepartmentModal"
+                                data-id="@department.Id" data-name="@department.Name" data-code="@department.Code"
+                                data-description="@department.Description" data-location="@department.Location">
+                            Edit
+                        </button>
+
+                        <!-- Delete Department Button -->
+                        <button class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#deleteDepartmentModal"
+                                data-id="@department.Id" data-name="@department.Name">
+                            Delete
+                        </button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    <!-- Pagination Controls -->
+    <div class="d-flex justify-content-between align-items-center">
+        <div>
+            <p>Page @Model.Page of @((Model.TotalCount + Model.Limit - 1) / Model.Limit)</p>
+        </div>
+        <div>
+            <nav aria-label="Page navigation">
+                <ul class="pagination">
+                    <!-- First Page Link -->
+                    <li class="page-item @(Model.Page == 1 ? "disabled" : "")">
+                        <a class="page-link" href="@Url.Action("Index", "Department", new { page = 1, code = Model.CodeFilter, name = Model.NameFilter })">First</a>
+                    </li>
+
+                    <!-- Previous Page Link -->
+                    <li class="page-item @(Model.Page == 1 ? "disabled" : "")">
+                        <a class="page-link" href="@Url.Action("Index", "Department", new { page = Model.Page - 1, code = Model.CodeFilter, name = Model.NameFilter })">Previous</a>
+                    </li>
+
+                    <!-- Next Page Link -->
+                    <li class="page-item @(Model.Page == (Model.TotalCount + Model.Limit - 1) / Model.Limit ? "disabled" : "")">
+                        <a class="page-link" href="@Url.Action("Index", "Department", new { page = Model.Page + 1, code = Model.CodeFilter, name = Model.NameFilter })">Next</a>
+                    </li>
+
+                    <!-- Last Page Link -->
+                    <li class="page-item @(Model.Page == (Model.TotalCount + Model.Limit - 1) / Model.Limit ? "disabled" : "")">
+                        <a class="page-link" href="@Url.Action("Index", "Department", new { page = (Model.TotalCount + Model.Limit - 1) / Model.Limit, code = Model.CodeFilter, name = Model.NameFilter })">Last</a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+    </div>
+
+</div>
+
+<!-- Create Department Modal -->
+<div class="modal fade" id="createDepartmentModal" tabindex="-1" aria-labelledby="createDepartmentModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="createDepartmentModalLabel">Create New Department</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form method="post" asp-action="Create">
+                    <div class="mb-3">
+                        <label for="Name" class="form-label">Department Name</label>
+                        <input type="text" class="form-control" id="Name" name="Name" required />
+                    </div>
+                    <div class="mb-3">
+                        <label for="Code" class="form-label">Department Code</label>
+                        <input type="text" class="form-control" id="Code" name="Code" required />
+                    </div>
+                    <div class="mb-3">
+                        <label for="Description" class="form-label">Description</label>
+                        <textarea class="form-control" id="Description" name="Description"></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label for="Location" class="form-label">Location</label>
+                        <input type="text" class="form-control" id="Location" name="Location" required />
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary">Save Department</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Edit Department Modal -->
+<div class="modal fade" id="editDepartmentModal" tabindex="-1" aria-labelledby="editDepartmentModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="editDepartmentModalLabel">Edit Department</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form method="post" asp-action="Edit">
+                    <input type="hidden" id="edit-DepartmentId" name="Id" />
+                    <div class="mb-3">
+                        <label for="edit-Name" class="form-label">Department Name</label>
+                        <input type="text" class="form-control" id="edit-Name" name="Name" required />
+                    </div>
+                    <div class="mb-3">
+                        <label for="edit-Code" class="form-label">Department Code</label>
+                        <input type="text" class="form-control" id="edit-Code" name="Code" required />
+                    </div>
+                    <div class="mb-3">
+                        <label for="edit-Description" class="form-label">Description</label>
+                        <textarea class="form-control" id="edit-Description" name="Description"></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label for="edit-Location" class="form-label">Location</label>
+                        <input type="text" class="form-control" id="edit-Location" name="Location" required />
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary">Save Changes</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Delete Department Modal -->
+<div class="modal fade" id="deleteDepartmentModal" tabindex="-1" aria-labelledby="deleteDepartmentModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="deleteDepartmentModalLabel">Delete Department</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p>Are you sure you want to delete this department?</p>
+                <strong id="deleteDepartmentName"></strong>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <form method="post" asp-action="Delete">
+                    <input type="hidden" id="deleteDepartmentId" name="Id" />
+                    <button type="submit" class="btn btn-danger">Delete</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Populate Edit Modal
+    const editDepartmentModal = document.getElementById('editDepartmentModal');
+    if (editDepartmentModal) {
+        editDepartmentModal.addEventListener('show.bs.modal', function (event) {
+            const button = event.relatedTarget;
+            document.getElementById('edit-DepartmentId').value = button.getAttribute('data-id');
+            document.getElementById('edit-Name').value = button.getAttribute('data-name');
+            document.getElementById('edit-Code').value = button.getAttribute('data-code');
+            document.getElementById('edit-Description').value = button.getAttribute('data-description');
+            document.getElementById('edit-Location').value = button.getAttribute('data-location');
+        });
+    }
+
+    // Populate Delete Modal
+    const deleteDepartmentModal = document.getElementById('deleteDepartmentModal');
+    if (deleteDepartmentModal) {
+        deleteDepartmentModal.addEventListener('show.bs.modal', function (event) {
+            const button = event.relatedTarget;
+            document.getElementById('deleteDepartmentId').value = button.getAttribute('data-id');
+            document.getElementById('deleteDepartmentName').innerText = button.getAttribute('data-name');
+        });
+    }
+</script>
