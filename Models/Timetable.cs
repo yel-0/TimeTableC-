@@ -34,5 +34,12 @@ namespace TimeTable.Models
 
         [Required]
         public int Year { get; set; }
+
+        [Required]
+        public int Semester { get; set; }
+
+        [Required]
+        [StringLength(1)] 
+        public string Section { get; set; }
     }
 }
