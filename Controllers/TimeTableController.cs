@@ -98,11 +98,7 @@ namespace TimeTable.Controllers
         // GET: TimeTable/Create
         public IActionResult Create()
         {
-            // Populate the dropdowns for Courses, Classrooms, Majors, and Faculties
-            ViewData["Courses"] = _context.Courses.ToList();
-            ViewData["Classrooms"] = _context.Classrooms.ToList();
-            ViewData["Majors"] = _context.Majors.ToList(); // Assuming you have a Majors entity
-            ViewData["Faculties"] = _context.Faculties.ToList(); // Assuming you have a Faculties entity
+         
             return View();
         }
 
