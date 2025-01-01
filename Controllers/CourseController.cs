@@ -171,6 +171,20 @@ namespace TimeTable.Controllers
             }
         }
 
+        [HttpPost]
+        public IActionResult Delete(int id)
+        {
+            var course = _context.Courses.Find(id);
+            if (course != null)
+            {
+                _context.Courses.Remove(course);
+                _context.SaveChanges();
+                return RedirectToAction("Index"); // Redirect to the course list page
+            }
+
+            return NotFound(); // Handle case where course is not found
+        }
+
 
     }
 }

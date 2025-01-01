@@ -35,7 +35,6 @@
                     <td>@faculty.Email</td>
                     <td>
                         <!-- View Faculty Details Button -->
-                        <a href="@Url.Action("Details", "Faculty", new { id = faculty.Id })" class="btn btn-info btn-sm">Details</a>
 
                         <!-- Edit Faculty Button -->
                         <a href="javascript:void(0)" class="btn btn-warning btn-sm" data-bs-toggle="modal" data-bs-target="#editFacultyModal" data-id="@faculty.Id" data-name="@faculty.Name" data-email="@faculty.Email">Edit</a>
