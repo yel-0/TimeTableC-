@@ -4,7 +4,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using TimeTable.Data;
 using TimeTable.Models;
-using TimeTable.ViewModels;
 
 namespace TimeTable.Controllers
 {
@@ -17,226 +16,50 @@ namespace TimeTable.Controllers
             _context = context;
         }
 
-        public async Task<IActionResult> Index(string name, int? semester, int page = 1, int limit = 5)
+        public async Task<IActionResult> Index(string courseCode, string name, int? departmentId, int page = 1, int limit = 10)
         {
-            var courses = _context.Courses.Include(c => c.Major).Include(c => c.Faculty).AsQueryable();
+            // Apply filters and pagination
+            var coursesQuery = _context.Courses.Include(c => c.Department).AsQueryable();
 
-            // Apply filter by name if provided
+            // Filter by Course Code if provided
+            if (!string.IsNullOrEmpty(courseCode))
+            {
+                coursesQuery = coursesQuery.Where(c => c.CourseCode.Contains(courseCode));
+            }
+
+            // Filter by Name if provided
             if (!string.IsNullOrEmpty(name))
             {
-                courses = courses.Where(c => c.Name.Contains(name));
+                coursesQuery = coursesQuery.Where(c => c.Name.Contains(name));
             }
 
-            // Apply filter by semester if provided
-            if (semester.HasValue)
+            // Filter by Department if provided
+            if (departmentId.HasValue)
             {
-                courses = courses.Where(c => c.Semester == semester.Value);
+                coursesQuery = coursesQuery.Where(c => c.DepartmentId == departmentId.Value);
             }
 
-            var totalCourses = await courses.CountAsync();
-
-            // Paginate the courses based on the current page and limit
-            var coursesList = await courses
-                .OrderBy(c => c.Name) // Sorting by name, you can change this to any other sorting criteria
-                .Skip((page - 1) * limit) // Skip results for the current page
-                .Take(limit) // Take only the number of results specified by the limit
+            // Pagination logic
+            var totalCourses = await coursesQuery.CountAsync();
+            var courses = await coursesQuery
+                .Skip((page - 1) * limit)
+                .Take(limit)
                 .ToListAsync();
 
-            // Prepare the ViewModel with the courses and pagination data
+            // Create a ViewModel to pass data to the view
             var viewModel = new CourseIndexViewModel
             {
-                Courses = coursesList,
-                TotalCourses = totalCourses,
-                PageSize = limit,
-                CurrentPage = page,
-                TotalPages = (int)Math.Ceiling((double)totalCourses / limit),
+                Courses = courses,
+                Page = page,
+                Limit = limit,
+                TotalCount = totalCourses,
+                CourseCodeFilter = courseCode,
                 NameFilter = name,
-                SemesterFilter = semester
+                DepartmentIdFilter = departmentId
             };
 
             return View(viewModel);
         }
-
-
-        [HttpGet]
-        public async Task<IActionResult> Create(string majorName = null, string facultyName = null, int majorPage = 1, int facultyPage = 1, int limit = 5)
-        {
-            if (Request.Headers["X-Requested-With"] == "XMLHttpRequest") // Check if it's an AJAX request
-            {
-                // Searching Majors
-                var majorsQuery = _context.Majors.AsQueryable();
-                if (!string.IsNullOrEmpty(majorName))
-                {
-                    majorsQuery = majorsQuery.Where(m => m.Name.Contains(majorName));
-                }
-
-                // Ensure that Majors query is working correctly:
-                var majors = await majorsQuery
-                    .OrderBy(m => m.Name)
-                    .Skip((majorPage - 1) * limit)
-                    .Take(limit)
-                    .ToListAsync();
-
-                // Searching Faculties
-                var facultiesQuery = _context.Faculties.AsQueryable();
-                if (!string.IsNullOrEmpty(facultyName))
-                {
-                    facultiesQuery = facultiesQuery.Where(f => f.Name.Contains(facultyName));
-                }
-
-                // Ensure that Faculties query is working correctly:
-                var faculties = await facultiesQuery
-                    .OrderBy(f => f.Name)
-                    .Skip((facultyPage - 1) * limit)
-                    .Take(limit)
-                    .ToListAsync();
-
-                return Json(new { majors = majors, faculties = faculties });
-            }
-
-            // For regular page load (non-AJAX), return the view as usual
-            var majorsList = await _context.Majors.Take(limit).ToListAsync();
-            var facultiesList = await _context.Faculties.Take(limit).ToListAsync();
-
-            var viewModel = new CourseCreateViewModel
-            {
-                Majors = majorsList,
-                Faculties = facultiesList
-            };
-
-            return View(viewModel);
-        }
-
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> CreateCourse(Course course)
-        {
-            try
-            {
-                var newCourse = new Course
-                {
-                    CourseCode = course.CourseCode,
-                    Name = course.Name,
-                    MajorId = course.MajorId,         // Only set the MajorId
-                    FacultyId = course.FacultyId,     // Only set the FacultyId
-                    Semester = course.Semester
-                };
-
-                // Add the new course to the database
-                _context.Courses.Add(newCourse);
-                await _context.SaveChangesAsync();
-
-                // Return a success message
-                return RedirectToAction(nameof(Index));
-            }
-            catch (Exception ex)
-            {
-                
-
-                // Return an error message to the view or API
-                ModelState.AddModelError("", "An error occurred while creating the course. Please try again later.");
-
-                // Optionally, return the view with the current model data and errors
-                return View(course);
-            }
-        }
-
-        [HttpGet]
-        public async Task<IActionResult> Edit(int id)
-        {
-            var course = await _context.Courses
-                .Include(c => c.Major)
-                .Include(c => c.Faculty)
-                .FirstOrDefaultAsync(c => c.Id == id);
-
-            if (course == null)
-            {
-                return NotFound();
-            }
-
-            // Prepare the ViewModel with course details and dropdown options
-            var viewModel = new CourseEditViewModel
-            {
-                Id = course.Id,
-                Name = course.Name,
-                CourseCode = course.CourseCode,
-                Semester = course.Semester,
-                MajorId = course.MajorId,
-                FacultyId = course.FacultyId,
-                MajorName = course.Major.Name,  
-                FacultyName = course.Faculty.Name  
-
-            };
-
-            return View(viewModel);
-        }
-
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, CourseEditViewModel viewModel)
-        {
-           
-
-            var course = await _context.Courses.FindAsync(id);
-
-            if (course == null)
-            {
-                return NotFound();
-            }
-
-            try
-            {
-                // Update course properties
-                course.Name = viewModel.Name;
-                course.CourseCode = viewModel.CourseCode;
-                course.Semester = viewModel.Semester;
-                course.MajorId = viewModel.MajorId;
-                course.FacultyId = viewModel.FacultyId;
-
-                // Save changes to the database
-                _context.Courses.Update(course);
-                await _context.SaveChangesAsync();
-
-                return RedirectToAction(nameof(Index));
-            }
-            catch (Exception ex)
-            {
-                ModelState.AddModelError("", "An error occurred while updating the course. Please try again later.");
-                return View(viewModel);
-            }
-        }
-
-
-
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Delete(int courseId)
-        {
-            var course = await _context.Courses.FindAsync(courseId);
-            if (course == null)
-            {
-                return BadRequest(courseId);
-            }
-
-            _context.Courses.Remove(course);
-            await _context.SaveChangesAsync();
-
-            return RedirectToAction(nameof(Index));
-        }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
     }

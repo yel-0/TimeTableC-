@@ -10,24 +10,18 @@ namespace TimeTable.Models
         public int Id { get; set; }
 
         [Required]
-        [StringLength(100)]  // Optional: Enforcing length limit
+        [StringLength(100)]
         public string CourseCode { get; set; }
 
         [Required]
-        [StringLength(100)]  // Optional: Enforcing length limit
+        [StringLength(100)]
         public string Name { get; set; }
 
-        public int MajorId { get; set; }
-
-        [ForeignKey("MajorId")]
-        public Major Major { get; set; }
-
-        public int FacultyId { get; set; }
-
-        [ForeignKey("FacultyId")]
-        public Faculty Faculty { get; set; }
-
         [Required]
-        public int Semester { get; set; } // Keeping this as an int
+        public int DepartmentId { get; set; }
+
+        [ForeignKey("DepartmentId")]
+        public Department Department { get; set; }
     }
+
 }

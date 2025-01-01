@@ -17,34 +17,34 @@ namespace TimeTable.Controllers
         }
 
         // GET: TimeTable
-        public async Task<IActionResult> Index(int? year, string dayOfWeek, int? semester)
-        {
-            var query = _context.Timetables
-                .Include(t => t.Course)
-                .Include(t => t.Classroom)
-                .AsQueryable();
+        //public async Task<IActionResult> Index(int? year, string dayOfWeek, int? semester)
+        //{
+        //    var query = _context.Timetables
+        //        .Include(t => t.Course)
+        //        .Include(t => t.Classroom)
+        //        .AsQueryable();
 
-            // Apply year filter
-            if (year.HasValue)
-            {
-                query = query.Where(t => t.Year == year.Value);
-            }
+        //    // Apply year filter
+        //    if (year.HasValue)
+        //    {
+        //        query = query.Where(t => t.Year == year.Value);
+        //    }
 
-            // Apply day of the week filter
-            if (!string.IsNullOrEmpty(dayOfWeek))
-            {
-                query = query.Where(t => t.DayOfWeek == dayOfWeek);
-            }
+        //    // Apply day of the week filter
+        //    if (!string.IsNullOrEmpty(dayOfWeek))
+        //    {
+        //        query = query.Where(t => t.DayOfWeek == dayOfWeek);
+        //    }
 
-            // Apply semester filter through Course
-            if (semester.HasValue)
-            {
-                query = query.Where(t => t.Course.Semester == semester.Value);
-            }
+        //    // Apply semester filter through Course
+        //    if (semester.HasValue)
+        //    {
+        //        query = query.Where(t => t.Course.Semester == semester.Value);
+        //    }
 
-            var timetables = await query.ToListAsync();
-            return View(timetables);
-        }
+        //    var timetables = await query.ToListAsync();
+        //    return View(timetables);
+        //}
 
         // GET: TimeTable/Create
         public IActionResult Create()
