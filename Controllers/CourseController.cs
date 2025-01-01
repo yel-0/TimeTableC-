@@ -17,7 +17,7 @@ namespace TimeTable.Controllers
             _context = context;
         }
 
-        public async Task<IActionResult> Index(string courseCode, string name, int? departmentId, int page = 1, int limit = 10)
+        public async Task<IActionResult> Index(string courseCode, string name, int? departmentId, int page = 1, int limit = 1)
         {
             // Apply filters and pagination
             var coursesQuery = _context.Courses.Include(c => c.Department).AsQueryable();
