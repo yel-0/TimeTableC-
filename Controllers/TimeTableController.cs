@@ -104,37 +104,42 @@ namespace TimeTable.Controllers
 
 
         // GET: TimeTable/Edit/5
-        public async Task<IActionResult> Edit(int? id)
+        [HttpGet]
+        public async Task<IActionResult> Edit(int id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
+            var timetable = await _context.Timetables
+                .Include(t => t.Course)
+                .Include(t => t.Classroom)
+                .Include(t => t.Faculty)
+                .Include(t => t.Major)
+                .FirstOrDefaultAsync(t => t.Id == id);
 
-            var timetable = await _context.Timetables.FindAsync(id);
             if (timetable == null)
             {
                 return NotFound();
             }
 
-            // Populate the dropdowns for Courses and Classrooms
-            ViewData["Courses"] = _context.Courses.ToList();
-            ViewData["Classrooms"] = _context.Classrooms.ToList();
+            // Populate dropdown lists
+            ViewData["Courses"] = await _context.Courses.ToListAsync();
+            ViewData["Classrooms"] = await _context.Classrooms.ToListAsync();
+            ViewData["Faculties"] = await _context.Faculties.ToListAsync();
+            ViewData["Majors"] = await _context.Majors.ToListAsync();
+
             return View(timetable);
         }
+
 
         // POST: TimeTable/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,CourseId,ClassroomId,DayOfWeek,StartTime,EndTime,Year,Semester,Section")] Timetable timetable)
+        public async Task<IActionResult> Edit(int id, Timetable timetable)
         {
             if (id != timetable.Id)
             {
                 return NotFound();
             }
 
-            if (ModelState.IsValid)
-            {
+           
                 try
                 {
                     _context.Update(timetable);
@@ -151,14 +156,10 @@ namespace TimeTable.Controllers
                         throw;
                     }
                 }
-                return RedirectToAction(nameof(Index));
-            }
-
-            // Repopulate dropdowns if the model is invalid
-            ViewData["Courses"] = _context.Courses.ToList();
-            ViewData["Classrooms"] = _context.Classrooms.ToList();
-            return View(timetable);
+                return RedirectToAction(nameof(Index));  // Redirect to index page after successful update
+           // If validation fails, return the model back to the view
         }
+
 
 
 

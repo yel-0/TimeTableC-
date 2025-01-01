@@ -1,6 +1,67 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
-@{
-}
-<div>edit</div>
+﻿@model TimeTable.Models.Timetable
+
+
+
+<h2>@ViewData["Title"]</h2>
+
+<form method="post" asp-action="Edit">
+    <div class="form-group">
+        <label for="CourseId">Course</label>
+        <select asp-for="CourseId" class="form-control" asp-items="@(new SelectList(ViewData["Courses"] as List<Course>, "Id", "Name"))" required>
+            <option value="">Select Course</option>
+        </select>
+    </div>
+
+    <div class="form-group">
+        <label for="ClassroomId">Classroom</label>
+        <select asp-for="ClassroomId" class="form-control" asp-items="@(new SelectList(ViewData["Classrooms"] as List<Classroom>, "Id", "Name"))" required>
+            <option value="">Select Classroom</option>
+        </select>
+    </div>
+
+    <div class="form-group">
+        <label for="DayOfWeek">Day of Week</label>
+        <input type="text" asp-for="DayOfWeek" class="form-control" required />
+    </div>
+
+    <div class="form-group">
+        <label for="StartTime">Start Time</label>
+        <input type="time" asp-for="StartTime" class="form-control" required />
+    </div>
+
+    <div class="form-group">
+        <label for="EndTime">End Time</label>
+        <input type="time" asp-for="EndTime" class="form-control" required />
+    </div>
+
+    <div class="form-group">
+        <label for="Year">Year</label>
+        <input type="number" asp-for="Year" class="form-control" required />
+    </div>
+
+    <div class="form-group">
+        <label for="Semester">Semester</label>
+        <input type="number" asp-for="Semester" class="form-control" required />
+    </div>
+
+    <div class="form-group">
+        <label for="Section">Section</label>
+        <input type="text" asp-for="Section" class="form-control" required />
+    </div>
+
+    <div class="form-group">
+        <label for="FacultyId">Faculty</label>
+        <select asp-for="FacultyId" class="form-control" asp-items="@(new SelectList(ViewData["Faculties"] as List<Faculty>, "Id", "Name"))" required>
+            <option value="">Select Faculty</option>
+        </select>
+    </div>
+
+    <div class="form-group">
+        <label for="MajorId">Major</label>
+        <select asp-for="MajorId" class="form-control" asp-items="@(new SelectList(ViewData["Majors"] as List<Major>, "Id", "Name"))" required>
+            <option value="">Select Major</option>
+        </select>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Save</button>
+</form>
