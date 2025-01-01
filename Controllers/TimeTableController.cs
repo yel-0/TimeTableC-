@@ -16,35 +16,50 @@ namespace TimeTable.Controllers
             _context = context;
         }
 
-        // GET: TimeTable
-        //public async Task<IActionResult> Index(int? year, string dayOfWeek, int? semester)
-        //{
-        //    var query = _context.Timetables
-        //        .Include(t => t.Course)
-        //        .Include(t => t.Classroom)
-        //        .AsQueryable();
+        public IActionResult Index(string section, int? semester, int? year, string dayOfWeek, int page = 1, int limit = 10)
+        {
+            // Validate pagination parameters
+            page = page < 1 ? 1 : page;
+            limit = limit < 1 ? 10 : limit;
 
-        //    // Apply year filter
-        //    if (year.HasValue)
-        //    {
-        //        query = query.Where(t => t.Year == year.Value);
-        //    }
+            // Filter Timetable entries based on provided criteria
+            var query = _context.Timetables.AsQueryable();
 
-        //    // Apply day of the week filter
-        //    if (!string.IsNullOrEmpty(dayOfWeek))
-        //    {
-        //        query = query.Where(t => t.DayOfWeek == dayOfWeek);
-        //    }
+            if (!string.IsNullOrEmpty(section))
+            {
+                query = query.Where(t => t.Section == section);
+            }
 
-        //    // Apply semester filter through Course
-        //    if (semester.HasValue)
-        //    {
-        //        query = query.Where(t => t.Course.Semester == semester.Value);
-        //    }
+            if (semester.HasValue)
+            {
+                query = query.Where(t => t.Semester == semester.Value);
+            }
 
-        //    var timetables = await query.ToListAsync();
-        //    return View(timetables);
-        //}
+            if (year.HasValue)
+            {
+                query = query.Where(t => t.Year == year.Value);
+            }
+
+            if (!string.IsNullOrEmpty(dayOfWeek))
+            {
+                query = query.Where(t => t.DayOfWeek == dayOfWeek);
+            }
+
+            // Pagination
+            var totalItems = query.Count();
+            var totalPages = (int)Math.Ceiling(totalItems / (double)limit);
+            var timetables = query
+                .Skip((page - 1) * limit)
+                .Take(limit)
+                .ToList();
+
+            // Pass data to the view
+            ViewBag.CurrentPage = page;
+            ViewBag.TotalPages = totalPages;
+            ViewBag.TotalItems = totalItems;
+
+            return View(timetables);
+        }
 
         // GET: TimeTable/Create
         public IActionResult Create()

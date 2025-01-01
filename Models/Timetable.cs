@@ -39,7 +39,19 @@ namespace TimeTable.Models
         public int Semester { get; set; }
 
         [Required]
-        [StringLength(1)] 
+        [StringLength(1)]
         public string Section { get; set; }
+
+        [Required]
+        public int FacultyId { get; set; }
+
+        // Navigation property for the Faculty entity
+        public Faculty Faculty { get; set; }
+
+        [Required]
+        public int MajorId { get; set; }
+
+        // Navigation property for the Major entity
+        public Major Major { get; set; }
     }
 }
