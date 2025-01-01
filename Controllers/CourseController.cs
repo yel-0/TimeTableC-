@@ -115,5 +115,62 @@ namespace TimeTable.Controllers
         }
 
 
+        [HttpGet]
+        public async Task<IActionResult> Edit(int id)
+        {
+            var course = await _context.Courses
+                .Include(c => c.Department) // Ensure the department is included
+                .FirstOrDefaultAsync(c => c.Id == id);
+
+            if (course == null)
+            {
+                return NotFound();
+            }
+
+            // Prepare the ViewModel with course details and department options
+            var viewModel = new CourseEditViewModel
+            {
+                Id = course.Id,
+                Name = course.Name,
+                CourseCode = course.CourseCode,
+                DepartmentId = course.DepartmentId,
+                DepartmentName = course.Department.Name // Get department name
+            };
+
+            return View(viewModel);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Edit(int id, CourseEditViewModel viewModel)
+        {
+            var course = await _context.Courses.FindAsync(id);
+
+            if (course == null)
+            {
+                return NotFound();
+            }
+
+            try
+            {
+                // Update course properties
+                course.Name = viewModel.Name;
+                course.CourseCode = viewModel.CourseCode;
+                course.DepartmentId = viewModel.DepartmentId;
+
+                // Save changes to the database
+                _context.Courses.Update(course);
+                await _context.SaveChangesAsync();
+
+                return RedirectToAction(nameof(Index));
+            }
+            catch (Exception ex)
+            {
+                ModelState.AddModelError("", "An error occurred while updating the course. Please try again later.");
+                return View(viewModel);
+            }
+        }
+
+
     }
 }
