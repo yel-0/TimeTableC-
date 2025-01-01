@@ -30,5 +30,18 @@ namespace TimeTable.ViewModels
 
         [Required(ErrorMessage = "Day of the week is required.")]
         public string DayOfWeek { get; set; } = string.Empty;
+
+        [Required(ErrorMessage = "Year is required.")]
+        public int Year { get; set; }
+
+        [Required(ErrorMessage = "Semester is required.")]
+        public int Semester { get; set; }
+
+        [Required(ErrorMessage = "Section is required.")]
+        public string Section { get; set; }
+
+        // For Major
+        public int MajorId { get; set; }
+        public string? MajorName { get; set; }
     }
 }

@@ -138,7 +138,12 @@ namespace TimeTable.Controllers
                 FacultyName = timetable.Faculty.Name,
                 StartTime = timetable.StartTime.ToString(@"hh\:mm"),  // Convert TimeSpan to HH:mm format
                 EndTime = timetable.EndTime.ToString(@"hh\:mm"),      // Convert TimeSpan to HH:mm format
-                DayOfWeek = timetable.DayOfWeek
+                DayOfWeek = timetable.DayOfWeek,
+                Year = timetable.Year,
+                Semester = timetable.Semester,
+                Section = timetable.Section,
+                MajorId = timetable.MajorId,
+                MajorName = timetable.Major.Name
             };
 
             return View(viewModel);
