@@ -4,6 +4,101 @@
     ViewData["Title"] = "Create TimeTable";
 }
 
+<style>
+    /* General Styling for Container */
+    .container {
+        max-width: 1200px;
+        margin: 0 auto;
+    }
+
+    /* Custom Select Container */
+    .custom-select-container {
+        position: relative;
+    }
+
+    /* Custom Dropdown Styling */
+    .custom-dropdown {
+        display: none;
+        position: absolute;
+        top: 100%;
+        left: 0;
+        right: 0;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        max-height: 200px;
+        overflow-y: auto;
+        background-color: white;
+        z-index: 1000;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        width: 100%;
+    }
+
+    /* Dropdown Items */
+    .custom-dropdown-item {
+        padding: 8px;
+        cursor: pointer;
+        font-size: 14px;
+    }
+
+        /* Hover Effect on Dropdown Items */
+        .custom-dropdown-item:hover {
+            background-color: #f1f1f1;
+            color: #007bff;
+        }
+
+    /* Highlighted Item */
+    .highlight {
+        background-color: #dcdcdc;
+    }
+
+    /* Dropdown Lists Styling */
+    #courseList, #classroomList, #majorList, #facultyList {
+        padding: 0;
+        margin: 0;
+        list-style-type: none;
+    }
+
+    /* Search Input Styling */
+    input[type="text"], input[type="time"], select {
+        padding: 10px;
+        font-size: 14px;
+        border-radius: 4px;
+        border: 1px solid #ccc;
+        width: 100%;
+        box-sizing: border-box;
+    }
+
+        /* Adjustments for Input Field Hover */
+        input[type="text"]:hover, input[type="time"]:hover, select:hover {
+            border-color: #007bff;
+        }
+
+        /* Adjustments for Input Focus */
+        input[type="text"]:focus, input[type="time"]:focus, select:focus {
+            border-color: #007bff;
+            outline: none;
+        }
+
+    /* Row Spacing Between Fields */
+    .row {
+        margin-bottom: 1rem;
+    }
+
+    /* Text Input Field */
+    .form-control {
+        border-radius: 5px;
+        padding: 10px;
+    }
+
+ 
+
+  
+
+    }
+</style>
+
+
+
 <div class="container mt-5">
     <h1 class="text-center mb-4">Create TimeTable</h1>
 
@@ -13,41 +108,53 @@
                 <h4 class="card-title text-center mb-4">Fill in the details</h4>
 
                 <div class="row">
-                    <!-- Course Dropdown -->
+                    <!-- Course Search Input -->
                     <div class="col-md-6 mb-3">
-                        <label asp-for="CourseId" class="form-label">Course</label>
-                        <select asp-for="CourseId" class="form-select" asp-items="@(new SelectList(ViewData["Courses"] as IEnumerable<TimeTable.Models.Course>, "Id", "Name"))">
-                            <option value="">Select a Course</option>
-                        </select>
+                        <div class="custom-select-container">
+                            <input type="text" id="courseSearch" name="CourseName" class="form-control w-100" placeholder="Search Course" autocomplete="off" />
+                            <input type="hidden" id="courseId" name="CourseId">
+                            <div id="courseDropdown" class="custom-dropdown">
+                                <ul id="courseList"></ul>
+                            </div>
+                        </div>
                         <span asp-validation-for="CourseId" class="text-danger"></span>
                     </div>
 
-                    <!-- Classroom Dropdown -->
+                    <!-- Classroom Search Input -->
                     <div class="col-md-6 mb-3">
-                        <label asp-for="ClassroomId" class="form-label">Classroom</label>
-                        <select asp-for="ClassroomId" class="form-select" asp-items="@(new SelectList(ViewData["Classrooms"] as IEnumerable<TimeTable.Models.Classroom>, "Id", "Name"))">
-                            <option value="">Select a Classroom</option>
-                        </select>
+                        <div class="custom-select-container">
+                            <input type="text" id="classroomSearch" name="ClassroomName" class="form-control w-100" placeholder="Search Classroom" autocomplete="off" />
+                            <input type="hidden" id="classroomId" name="ClassroomId">
+                            <div id="classroomDropdown" class="custom-dropdown">
+                                <ul id="classroomList"></ul>
+                            </div>
+                        </div>
                         <span asp-validation-for="ClassroomId" class="text-danger"></span>
                     </div>
                 </div>
 
                 <div class="row">
-                    <!-- Major Dropdown -->
+                    <!-- Major Search Input -->
                     <div class="col-md-6 mb-3">
-                        <label asp-for="MajorId" class="form-label">Major</label>
-                        <select asp-for="MajorId" class="form-select" asp-items="@(new SelectList(ViewData["Majors"] as IEnumerable<TimeTable.Models.Major>, "Id", "Name"))">
-                            <option value="">Select a Major</option>
-                        </select>
+                        <div class="custom-select-container">
+                            <input type="text" id="majorSearch" name="MajorName" class="form-control w-100" placeholder="Search Major" autocomplete="off" />
+                            <input type="hidden" id="majorId" name="MajorId">
+                            <div id="majorDropdown" class="custom-dropdown">
+                                <ul id="majorList"></ul>
+                            </div>
+                        </div>
                         <span asp-validation-for="MajorId" class="text-danger"></span>
                     </div>
 
-                    <!-- Faculty Dropdown -->
+                    <!-- Faculty Search Input -->
                     <div class="col-md-6 mb-3">
-                        <label asp-for="FacultyId" class="form-label">Faculty</label>
-                        <select asp-for="FacultyId" class="form-select" asp-items="@(new SelectList(ViewData["Faculties"] as IEnumerable<TimeTable.Models.Faculty>, "Id", "Name"))">
-                            <option value="">Select a Faculty</option>
-                        </select>
+                        <div class="custom-select-container">
+                            <input type="text" id="facultySearch" name="FacultyName" class="form-control w-100" placeholder="Search Faculty" autocomplete="off" />
+                            <input type="hidden" id="facultyId" name="FacultyId">
+                            <div id="facultyDropdown" class="custom-dropdown">
+                                <ul id="facultyList"></ul>
+                            </div>
+                        </div>
                         <span asp-validation-for="FacultyId" class="text-danger"></span>
                     </div>
                 </div>
@@ -129,8 +236,111 @@
     </div>
 </div>
 
+
 @section Scripts {
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
 }
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+        $(document).ready(function () {
+        const limit = 5;
+
+        // Live search for Course
+        $("#courseSearch").on("input", function () {
+            var searchTerm = $(this).val();
+            if (searchTerm.length >= 2) {
+                searchItems('course', searchTerm, 1);
+            } else {
+                $("#courseDropdown").hide();
+            }
+        });
+
+        // Live search for Classroom
+        $("#classroomSearch").on("input", function () {
+            var searchTerm = $(this).val();
+            if (searchTerm.length >= 2) {
+                searchItems('classroom', searchTerm, 1);
+            } else {
+                $("#classroomDropdown").hide();
+            }
+        });
+
+        // Live search for Majors
+        $("#majorSearch").on("input", function () {
+            var searchTerm = $(this).val();
+            if (searchTerm.length >= 2) {
+                searchItems('major', searchTerm, 1);
+            } else {
+                $("#majorDropdown").hide();
+            }
+        });
+
+        // Live search for Faculties
+        $("#facultySearch").on("input", function () {
+            var searchTerm = $(this).val();
+			console.log(searchTerm);
+            if (searchTerm.length >= 2) {
+                searchItems('faculty', searchTerm, 1);
+            } else {
+                $("#facultyDropdown").hide();
+            }
+        });
+
+          function searchItems(type, term, page) {
+        $.ajax({
+            url: '/TimeTable/GetDropDownData',
+            type: 'GET',
+            data: { [`${type}Name`]: term, [`${type}Page`]: page, limit: limit },
+            success: function (response) {
+                let listId = `#${type}List`;
+                let dropdownId = `#${type}Dropdown`;
+
+                console.log('Response:', response);
+                console.log('Type:', type);
+
+                $(listId).empty();
+
+                // Check if the type corresponds to a valid property in the response
+                let items = response[type + 's'] || response.faculties;  // Fallback to faculties if type is not found
+
+                console.log('Items:', items);
+
+                if (Array.isArray(items) && items.length > 0) {
+                    items.forEach(item => {
+                        $(listId).append(`<li class="custom-dropdown-item" data-id="${item.id}">${item.name}</li>`);
+                    });
+                } else {
+                    $(listId).append('<li class="custom-dropdown-item">No results found</li>');
+                }
+
+                $(dropdownId).show();
+            },
+            error: function (xhr, status, error) {
+                console.error("Error fetching data:", error);
+            }
+        });
+    }
+
+
+
+
+
+        // Handle selecting an item from the dropdown
+        $(document).on('click', '.custom-dropdown-item', function () {
+            var itemId = $(this).data('id');
+            var itemName = $(this).text();
+            var inputId = $(this).closest('.custom-select-container').find('input').first();
+            var hiddenInputId = $(this).closest('.custom-select-container').find('input[type="hidden"]');
+
+            inputId.val(itemName);
+            hiddenInputId.val(itemId);
+
+            $(this).closest('.custom-dropdown').hide();
+        });
+    });
+
+
+</script>
