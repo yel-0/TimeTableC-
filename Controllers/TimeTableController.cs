@@ -110,7 +110,7 @@ namespace TimeTable.Controllers
         }
 
 
-        // GET: TimeTable/Edit/5
+
         [HttpGet]
         public async Task<IActionResult> Edit(int id)
         {
@@ -126,14 +126,24 @@ namespace TimeTable.Controllers
                 return NotFound();
             }
 
-            // Populate dropdown lists
-            ViewData["Courses"] = await _context.Courses.ToListAsync();
-            ViewData["Classrooms"] = await _context.Classrooms.ToListAsync();
-            ViewData["Faculties"] = await _context.Faculties.ToListAsync();
-            ViewData["Majors"] = await _context.Majors.ToListAsync();
+            // Prepare the ViewModel for the edit view
+            var viewModel = new TimeTableEditViewModel
+            {
+                Id = timetable.Id,
+                CourseId = timetable.CourseId,
+                CourseName = timetable.Course.Name,
+                ClassroomId = timetable.ClassroomId,
+                ClassroomName = timetable.Classroom.Name,
+                FacultyId = timetable.FacultyId,
+                FacultyName = timetable.Faculty.Name,
+                StartTime = timetable.StartTime.ToString(@"hh\:mm"),  // Convert TimeSpan to HH:mm format
+                EndTime = timetable.EndTime.ToString(@"hh\:mm"),      // Convert TimeSpan to HH:mm format
+                DayOfWeek = timetable.DayOfWeek
+            };
 
-            return View(timetable);
+            return View(viewModel);
         }
+
 
 
         // POST: TimeTable/Edit/5

@@ -298,15 +298,12 @@
                 let listId = `#${type}List`;
                 let dropdownId = `#${type}Dropdown`;
 
-                console.log('Response:', response);
-                console.log('Type:', type);
 
                 $(listId).empty();
 
                 // Check if the type corresponds to a valid property in the response
                 let items = response[type + 's'] || response.faculties;  // Fallback to faculties if type is not found
 
-                console.log('Items:', items);
 
                 if (Array.isArray(items) && items.length > 0) {
                     items.forEach(item => {
