@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using TimeTable.Data;
 using TimeTable.Models;
+using TimeTable.ViewModels;
 
 namespace TimeTable.Controllers
 {
@@ -59,6 +60,58 @@ namespace TimeTable.Controllers
             };
 
             return View(viewModel);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> Create(string departmentName = null, int departmentPage = 1, int limit = 5)
+        {
+            if (Request.Headers["X-Requested-With"] == "XMLHttpRequest") // Check if it's an AJAX request
+            {
+                // Searching Departments
+                var departmentsQuery = _context.Departments.AsQueryable();
+                if (!string.IsNullOrEmpty(departmentName))
+                {
+                    departmentsQuery = departmentsQuery.Where(d => d.Name.Contains(departmentName));
+                }
+
+                var departments = await departmentsQuery
+                    .OrderBy(d => d.Name)
+                    .Skip((departmentPage - 1) * limit)
+                    .Take(limit)
+                    .ToListAsync();
+
+                return Json(new { departments = departments });
+            }
+
+            // For regular page load (non-AJAX), return the view as usual
+            var departmentsList = await _context.Departments.Take(limit).ToListAsync();
+
+            var viewModel = new CourseCreateViewModel
+            {
+                Departments = departmentsList
+            };
+
+            return View(viewModel);
+        }
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Create(Course model)
+        {
+        
+                var course = new Course
+                {
+                    CourseCode = model.CourseCode,
+                    Name = model.Name,
+                    DepartmentId = model.DepartmentId
+                };
+
+                // Save course to the database
+                _context.Courses.Add(course);
+                await _context.SaveChangesAsync();
+
+                // Redirect to Index page after successful course creation
+                return RedirectToAction("Index");
+        
         }
 
 
