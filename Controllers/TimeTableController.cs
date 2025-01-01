@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using TimeTable.Data;
 using TimeTable.Models;
+using TimeTable.ViewModels;
 
 namespace TimeTable.Controllers
 {
@@ -16,18 +17,23 @@ namespace TimeTable.Controllers
             _context = context;
         }
 
-        public IActionResult Index(string section, int? semester, int? year, string dayOfWeek, int page = 1, int limit = 10)
+        public async Task<IActionResult> Index(string section, int? semester, int? year, string dayOfWeek, int page = 1, int limit = 10)
         {
-            // Validate pagination parameters
-            page = page < 1 ? 1 : page;
-            limit = limit < 1 ? 10 : limit;
+            // Default page and limit validation
+            if (page < 1) page = 1;
+            if (limit < 1) limit = 10;
 
-            // Filter Timetable entries based on provided criteria
-            var query = _context.Timetables.AsQueryable();
+            // Query the Timetables table, applying filtering and eager loading
+            var query = _context.Timetables
+                .Include(t => t.Course)
+                .Include(t => t.Classroom)
+                .Include(t => t.Faculty)
+                .Include(t => t.Major)
+                .AsQueryable();
 
-            if (!string.IsNullOrEmpty(section))
+            if (!string.IsNullOrWhiteSpace(section))
             {
-                query = query.Where(t => t.Section == section);
+                query = query.Where(t => t.Section.Contains(section));
             }
 
             if (semester.HasValue)
@@ -40,47 +46,62 @@ namespace TimeTable.Controllers
                 query = query.Where(t => t.Year == year.Value);
             }
 
-            if (!string.IsNullOrEmpty(dayOfWeek))
+            if (!string.IsNullOrWhiteSpace(dayOfWeek))
             {
-                query = query.Where(t => t.DayOfWeek == dayOfWeek);
+                query = query.Where(t => t.DayOfWeek.Equals(dayOfWeek, StringComparison.OrdinalIgnoreCase));
             }
 
-            // Pagination
-            var totalItems = query.Count();
-            var totalPages = (int)Math.Ceiling(totalItems / (double)limit);
-            var timetables = query
+            // Get the total count of records for pagination
+            var totalCount = await query.CountAsync();
+
+            // Apply pagination
+            var timetables = await query
                 .Skip((page - 1) * limit)
                 .Take(limit)
-                .ToList();
+                .ToListAsync();
 
-            // Pass data to the view
-            ViewBag.CurrentPage = page;
-            ViewBag.TotalPages = totalPages;
-            ViewBag.TotalItems = totalItems;
+            // Create a ViewModel to send data to the view
+            var viewModel = new TimetableIndexViewModel
+            {
+                Timetables = timetables,
+                TotalCount = totalCount,
+                Page = page,
+                Limit = limit,
+                Section = section,
+                Semester = semester,
+                Year = year,
+                DayOfWeek = dayOfWeek
+            };
 
-            return View(timetables);
+            return View(viewModel);
         }
+
+
+
 
         // GET: TimeTable/Create
         public IActionResult Create()
         {
-            // Populate the dropdowns for Courses and Classrooms, and add Semester
+            // Populate the dropdowns for Courses, Classrooms, Majors, and Faculties
             ViewData["Courses"] = _context.Courses.ToList();
             ViewData["Classrooms"] = _context.Classrooms.ToList();
+            ViewData["Majors"] = _context.Majors.ToList(); // Assuming you have a Majors entity
+            ViewData["Faculties"] = _context.Faculties.ToList(); // Assuming you have a Faculties entity
             return View();
         }
+
 
         // POST: TimeTable/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("CourseId,ClassroomId,DayOfWeek,StartTime,EndTime,Year,Semester,Section")] Timetable timetable)
+        public async Task<IActionResult> Create([Bind("CourseId,ClassroomId,DayOfWeek,StartTime,EndTime,Year,Semester,Section,MajorId,FacultyId")] Timetable timetable)
         {
-          
                 _context.Add(timetable);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index)); // Redirect to the index page after saving
            
         }
+
 
         // GET: TimeTable/Edit/5
         public async Task<IActionResult> Edit(int? id)

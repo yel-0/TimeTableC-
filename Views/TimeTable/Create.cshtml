@@ -33,6 +33,26 @@
                 </div>
 
                 <div class="row">
+                    <!-- Major Dropdown -->
+                    <div class="col-md-6 mb-3">
+                        <label asp-for="MajorId" class="form-label">Major</label>
+                        <select asp-for="MajorId" class="form-select" asp-items="@(new SelectList(ViewData["Majors"] as IEnumerable<TimeTable.Models.Major>, "Id", "Name"))">
+                            <option value="">Select a Major</option>
+                        </select>
+                        <span asp-validation-for="MajorId" class="text-danger"></span>
+                    </div>
+
+                    <!-- Faculty Dropdown -->
+                    <div class="col-md-6 mb-3">
+                        <label asp-for="FacultyId" class="form-label">Faculty</label>
+                        <select asp-for="FacultyId" class="form-select" asp-items="@(new SelectList(ViewData["Faculties"] as IEnumerable<TimeTable.Models.Faculty>, "Id", "Name"))">
+                            <option value="">Select a Faculty</option>
+                        </select>
+                        <span asp-validation-for="FacultyId" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <div class="row">
                     <!-- Day of Week Dropdown -->
                     <div class="col-md-6 mb-3">
                         <label asp-for="DayOfWeek" class="form-label">Day of the Week</label>
