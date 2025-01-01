@@ -95,20 +95,20 @@
     @Html.HiddenFor(model => model.Id)
 
     <div class="form-group">
-        @Html.LabelFor(model => model.Name)
+        @Html.LabelFor(model => model.Name, new { @class = "form-label" })
         @Html.TextBoxFor(model => model.Name, new { @class = "form-control" })
-        @Html.ValidationMessageFor(model => model.Name)
+        @Html.ValidationMessageFor(model => model.Name, "", new { @class = "text-danger" })
     </div>
 
     <div class="form-group">
-        @Html.LabelFor(model => model.CourseCode)
+        @Html.LabelFor(model => model.CourseCode, new { @class = "form-label" })
         @Html.TextBoxFor(model => model.CourseCode, new { @class = "form-control" })
-        @Html.ValidationMessageFor(model => model.CourseCode)
+        @Html.ValidationMessageFor(model => model.CourseCode, "", new { @class = "text-danger" })
     </div>
 
-  
     <!-- Department Search Input -->
-    <div class="col-md-12 mb-3">
+    <div class="form-group">
+        <label class="font-weight-bold">Department</label>
         <div class="custom-select-container">
             <input type="text" id="departmentSearch" name="DepartmentName" class="form-control" placeholder="Search Department" autocomplete="off" required value="@Model.DepartmentName" />
             <input type="hidden" id="departmentId" name="DepartmentId" value="@Model.DepartmentId" />
@@ -116,9 +116,13 @@
                 <ul id="departmentList"></ul>
             </div>
         </div>
+        @Html.ValidationMessageFor(model => model.DepartmentName, "", new { @class = "text-danger" })
     </div>
 
-    <button type="submit" class="btn btn-primary">Save Changes</button>
+    <button type="submit" class="btn mt-3 btn-primary">Save Changes</button>
+
+
+
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>

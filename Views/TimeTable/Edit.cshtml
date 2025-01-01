@@ -96,107 +96,129 @@
 <h2>Edit Timetable</h2>
 
 <form method="post" asp-action="Edit">
-    <div class="form-group">
-        <label for="StartTime">Start Time</label>
-        <input type="time" id="StartTime" class="form-control" name="StartTime" value="@Model.StartTime" required />
-        <span asp-validation-for="StartTime" class="text-danger"></span>
-    </div>
-
-    <div class="form-group">
-        <label for="EndTime">End Time</label>
-        <input type="time" id="EndTime" class="form-control" name="EndTime" value="@Model.EndTime" required />
-        <span asp-validation-for="EndTime" class="text-danger"></span>
-    </div>
-
-    <div class="form-group">
-        <label for="Year">Year</label>
-        <input type="number" id="Year" class="form-control" name="Year" value="@Model.Year" required />
-        <span asp-validation-for="Year" class="text-danger"></span>
-    </div>
-
-    <div class="form-group">
-        <label for="Semester">Semester</label>
-        <input type="number" id="Semester" class="form-control" name="Semester" value="@Model.Semester" required />
-        <span asp-validation-for="Semester" class="text-danger"></span>
-    </div>
-
-    <div class="form-group">
-        <label for="Section">Section</label>
-        <input type="text" id="Section" class="form-control" name="Section" value="@Model.Section" required />
-        <span asp-validation-for="Section" class="text-danger"></span>
-    </div>
-
-    <div class="form-group">
-        <label for="DayOfWeek">Day of the Week</label>
-        <select id="DayOfWeek" class="form-control" name="DayOfWeek" required>
-            <option value="Monday">Monday</option>
-            <option value="Tuesday">Tuesday</option>
-            <option value="Wednesday">Wednesday</option>
-            <option value="Thursday">Thursday</option>
-            <option value="Friday">Friday</option>
-            <option value="Saturday">Saturday</option>
-            <option value="Sunday">Sunday</option>
-        </select>
-        <span asp-validation-for="DayOfWeek" class="text-danger"></span>
-    </div>
-
-    <div class="row">
-        <div class="col-md-6 mb-3">
-            <div class="custom-select-container">
-                <input type="text" id="courseSearch" name="CourseName" class="form-control w-100" placeholder="Search Course" autocomplete="off" value="@Model.CourseName" />
-                <input type="hidden" id="courseId" name="CourseId" value="@Model.CourseId">
-                <div id="courseDropdown" class="custom-dropdown">
-                    <ul id="courseList"></ul>
-                </div>
+    <div class="container mt-4">
+        <div class="row">
+            <!-- Start Time -->
+            <div class="col-md-6 mb-3">
+                <label for="StartTime">Start Time</label>
+                <input type="time" id="StartTime" class="form-control" name="StartTime" value="@Model.StartTime" required />
+                <span asp-validation-for="StartTime" class="text-danger"></span>
             </div>
-            <span asp-validation-for="CourseId" class="text-danger"></span>
+
+            <!-- End Time -->
+            <div class="col-md-6 mb-3">
+                <label for="EndTime">End Time</label>
+                <input type="time" id="EndTime" class="form-control" name="EndTime" value="@Model.EndTime" required />
+                <span asp-validation-for="EndTime" class="text-danger"></span>
+            </div>
         </div>
 
-        <!-- Classroom Search Input -->
-        <div class="col-md-6 mb-3">
-            <div class="custom-select-container">
-                <input type="text" id="classroomSearch" name="ClassroomName" class="form-control w-100" placeholder="Search Classroom" autocomplete="off" value="@Model.ClassroomName" />
-                <input type="hidden" id="classroomId" name="ClassroomId" value="@Model.ClassroomId">
-                <div id="classroomDropdown" class="custom-dropdown">
-                    <ul id="classroomList"></ul>
-                </div>
+        <div class="row">
+            <!-- Year -->
+            <div class="col-md-6 mb-3">
+                <label for="Year">Year</label>
+                <input type="number" id="Year" class="form-control" name="Year" value="@Model.Year" required />
+                <span asp-validation-for="Year" class="text-danger"></span>
             </div>
-            <span asp-validation-for="ClassroomId" class="text-danger"></span>
+
+            <!-- Semester -->
+            <div class="col-md-6 mb-3">
+                <label for="Semester">Semester</label>
+                <input type="number" id="Semester" class="form-control" name="Semester" value="@Model.Semester" required />
+                <span asp-validation-for="Semester" class="text-danger"></span>
+            </div>
+        </div>
+
+        <div class="row">
+            <!-- Section -->
+            <div class="col-md-6 mb-3">
+                <label for="Section">Section</label>
+                <input type="text" id="Section" class="form-control" name="Section" value="@Model.Section" required />
+                <span asp-validation-for="Section" class="text-danger"></span>
+            </div>
+
+            <!-- Day of the Week -->
+            <div class="col-md-6 mb-3">
+                <label for="DayOfWeek">Day of the Week</label>
+                <select id="DayOfWeek" class="form-control" name="DayOfWeek" required>
+                    <option value="Monday">Monday</option>
+                    <option value="Tuesday">Tuesday</option>
+                    <option value="Wednesday">Wednesday</option>
+                    <option value="Thursday">Thursday</option>
+                    <option value="Friday">Friday</option>
+                    <option value="Saturday">Saturday</option>
+                    <option value="Sunday">Sunday</option>
+                </select>
+                <span asp-validation-for="DayOfWeek" class="text-danger"></span>
+            </div>
+        </div>
+
+        <div class="row">
+            <!-- Course Search -->
+            <div class="col-md-6 mb-3">
+                <label for="courseSearch">Course</label>
+                <div class="custom-select-container">
+                    <input type="text" id="courseSearch" name="CourseName" class="form-control w-100" placeholder="Search Course" autocomplete="off" value="@Model.CourseName" />
+                    <input type="hidden" id="courseId" name="CourseId" value="@Model.CourseId" />
+                    <div id="courseDropdown" class="custom-dropdown">
+                        <ul id="courseList"></ul>
+                    </div>
+                </div>
+                <span asp-validation-for="CourseId" class="text-danger"></span>
+            </div>
+
+            <!-- Classroom Search -->
+            <div class="col-md-6 mb-3">
+                <label for="classroomSearch">Classroom</label>
+                <div class="custom-select-container">
+                    <input type="text" id="classroomSearch" name="ClassroomName" class="form-control w-100" placeholder="Search Classroom" autocomplete="off" value="@Model.ClassroomName" />
+                    <input type="hidden" id="classroomId" name="ClassroomId" value="@Model.ClassroomId" />
+                    <div id="classroomDropdown" class="custom-dropdown">
+                        <ul id="classroomList"></ul>
+                    </div>
+                </div>
+                <span asp-validation-for="ClassroomId" class="text-danger"></span>
+            </div>
+        </div>
+
+        <div class="row">
+            <!-- Major Search -->
+            <div class="col-md-6 mb-3">
+                <label for="majorSearch">Major</label>
+                <div class="custom-select-container">
+                    <input type="text" id="majorSearch" name="MajorName" class="form-control w-100" placeholder="Search Major" autocomplete="off" value="@Model.MajorName" />
+                    <input type="hidden" id="majorId" name="MajorId" value="@Model.MajorId" />
+                    <div id="majorDropdown" class="custom-dropdown">
+                        <ul id="majorList"></ul>
+                    </div>
+                </div>
+                <span asp-validation-for="MajorId" class="text-danger"></span>
+            </div>
+
+            <!-- Faculty Search -->
+            <div class="col-md-6 mb-3">
+                <label for="facultySearch">Faculty</label>
+                <div class="custom-select-container">
+                    <input type="text" id="facultySearch" name="FacultyName" class="form-control w-100" placeholder="Search Faculty" autocomplete="off" value="@Model.FacultyName" />
+                    <input type="hidden" id="facultyId" name="FacultyId" value="@Model.FacultyId" />
+                    <div id="facultyDropdown" class="custom-dropdown">
+                        <ul id="facultyList"></ul>
+                    </div>
+                </div>
+                <span asp-validation-for="FacultyId" class="text-danger"></span>
+            </div>
+        </div>
+
+        <!-- Hidden ID Field -->
+        <input type="hidden" name="Id" value="@Model.Id" />
+
+        <!-- Submit Button -->
+        <div class="text-center mt-4">
+            <button type="submit" class="btn btn-primary">Save</button>
         </div>
     </div>
-  
-
-    <div class="row">
-        <!-- Major Search Input -->
-        <div class="col-md-6 mb-3">
-            <div class="custom-select-container">
-                <input type="text" id="majorSearch" name="MajorName" class="form-control w-100" placeholder="Search Major" autocomplete="off" value="@Model.MajorName" />
-                <input type="hidden" id="majorId" name="MajorId" value="@Model.MajorId">
-                <div id="majorDropdown" class="custom-dropdown">
-                    <ul id="majorList"></ul>
-                </div>
-            </div>
-            <span asp-validation-for="MajorId" class="text-danger"></span>
-        </div>
-
-        <!-- Faculty Search Input -->
-        <div class="col-md-6 mb-3">
-            <div class="custom-select-container">
-                <input type="text" id="facultySearch" name="FacultyName" class="form-control w-100" placeholder="Search Faculty" autocomplete="off" value="@Model.FacultyName" />
-                <input type="hidden" id="facultyId" name="FacultyId" value="@Model.FacultyId">
-                <div id="facultyDropdown" class="custom-dropdown">
-                    <ul id="facultyList"></ul>
-                </div>
-            </div>
-            <span asp-validation-for="FacultyId" class="text-danger"></span>
-        </div>
-    </div>
-
-
-    <input type="hidden" name="Id" value="@Model.Id" />
-
-    <button type="submit" class="btn btn-primary">Save</button>
 </form>
+
 
 @section Scripts {
     @{

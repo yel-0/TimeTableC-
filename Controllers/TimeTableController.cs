@@ -17,7 +17,7 @@ namespace TimeTable.Controllers
             _context = context;
         }
 
-        public async Task<IActionResult> Index(string section, int? semester, int? year, string dayOfWeek, int? majorId, int page = 1, int limit = 10)
+        public async Task<IActionResult> Index(string section, int? semester, int? year, string dayOfWeek, int? majorId, int? facultyId, int page = 1, int limit = 10)
         {
             // Default page and limit validation
             if (page < 1) page = 1;
@@ -31,6 +31,7 @@ namespace TimeTable.Controllers
                 .Include(t => t.Major)
                 .AsQueryable();
 
+            // Apply filters based on provided parameters
             if (!string.IsNullOrWhiteSpace(section))
             {
                 query = query.Where(t => t.Section.Contains(section));
@@ -51,10 +52,16 @@ namespace TimeTable.Controllers
                 query = query.Where(t => t.DayOfWeek.Equals(dayOfWeek, StringComparison.OrdinalIgnoreCase));
             }
 
-            // Add filter for MajorId if provided
+            // Filter by MajorId if provided
             if (majorId.HasValue)
             {
                 query = query.Where(t => t.MajorId == majorId.Value);
+            }
+
+            // Filter by FacultyId if provided
+            if (facultyId.HasValue)
+            {
+                query = query.Where(t => t.FacultyId == facultyId.Value);
             }
 
             // Get the total count of records for pagination
@@ -77,11 +84,13 @@ namespace TimeTable.Controllers
                 Semester = semester,
                 Year = year,
                 DayOfWeek = dayOfWeek,
-                MajorId = majorId // Pass MajorId to the view
+                MajorId = majorId,
+                FacultyId = facultyId // Pass FacultyId to the view
             };
 
             return View(viewModel);
         }
+
 
 
 

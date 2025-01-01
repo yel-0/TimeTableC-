@@ -11,6 +11,9 @@ namespace TimeTable.ViewModels
 
         public int? MajorId { get; set; }  // Changed to nullable
 
+        public int? FacultyId { get; set; }  // Changed to nullable
+
+
         public string Section { get; set; }
         public int? Semester { get; set; }
         public int? Year { get; set; }
