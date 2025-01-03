@@ -1,9 +1,12 @@
 ﻿@using Microsoft.AspNetCore.Http
 
-@if (Context.Session.GetString("UserEmail") != null)
+@if (Context.Session.GetString("UserEmail") != null && Context.Session.GetInt32("UserRole") != null)
 {
+    var role = (Role)Context.Session.GetInt32("UserRole"); // Convert the stored role to enum
+
     <span class="navbar-text">
         Logged in as: @Context.Session.GetString("UserEmail")
+        with role: @role
     </span>
 }
 else

@@ -27,17 +27,18 @@ public class LoginController : Controller
     {
         if (ModelState.IsValid)
         {
-            // Fetch user from database based on email
+            // Fetch user from the database based on email
             var user = await _context.Users
                 .FirstOrDefaultAsync(u => u.Email == model.Email);
 
             // Check if the user exists and if the password matches
             if (user != null && user.Password == model.Password)
             {
-                // For successful login, store the user's email in session
+                // Store the user's email and role (as integer) in the session
                 HttpContext.Session.SetString("UserEmail", user.Email);
+                HttpContext.Session.SetInt32("UserRole", (int)user.Role); // store role as int
 
-                // Redirect to the home page
+                // Redirect to the home page or the page that the user should be taken to after login
                 return RedirectToAction("Index", "Home");
             }
 
