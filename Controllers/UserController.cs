@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using System.Linq;
 using System.Threading.Tasks;
 using TimeTable.Data;
+using TimeTable.Filters;
 using TimeTable.Models;
 using TimeTable.ViewModels;
 
@@ -17,6 +18,7 @@ namespace TimeTable.Controllers
             _context = context;
         }
 
+        [AuthorizeRole(0)]
         public async Task<IActionResult> Index(string name, Role? role, int page = 1, int limit = 2)
         {
             // Apply filters and pagination
