@@ -62,5 +62,6 @@ app.UseAuthorization();   // Add this to handle authorization
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
+app.MapFallbackToController("NotFound", "Home");  // If no route is matched, it redirects to the NotFound controller
 
 app.Run();  // Run the app

@@ -5,6 +5,7 @@ using TimeTable.ViewModels;
 using System.Threading.Tasks;
 using TimeTable.Data;
 using System;
+using TimeTable.Filters;
 
 namespace TimeTable.Controllers
 {
@@ -19,6 +20,8 @@ namespace TimeTable.Controllers
         }
 
         // GET: Register
+        [AuthorizeRole(0)]
+
         public IActionResult Index()
         {
             return View(new RegisterViewModel()); // Initialize an empty model to display the registration form

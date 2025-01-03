@@ -5,6 +5,7 @@ using TimeTable.Models;
 using TimeTable.ViewModels;
 using System.Linq;
 using System.Threading.Tasks;
+using TimeTable.Filters;
 
 namespace TimeTable.Controllers
 {
@@ -18,6 +19,8 @@ namespace TimeTable.Controllers
         }
 
         // GET: Faculty
+        [AuthorizeRole(0)]
+
         public async Task<IActionResult> Index(string name, int page = 1, int limit = 10)
         {
             // Default page and limit values

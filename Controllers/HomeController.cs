@@ -2,6 +2,7 @@ using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using TimeTable.Data;
+using TimeTable.Filters;
 using TimeTable.Models;
 using TimeTable.ViewModels;
 
@@ -15,6 +16,14 @@ namespace TimeTable.Controllers
         {
             _context = context;
         }
+
+
+        [Route("NotFound")]
+        public IActionResult NotFound()
+        {
+            return View(); // You can return a custom NotFound view
+        }
+
 
         public async Task<IActionResult> Index(string section, int? semester, int? year, string dayOfWeek, int? majorId, int? facultyId, int page = 1, int limit = 10)
         {

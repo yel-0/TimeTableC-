@@ -4,6 +4,7 @@ using System;
 using System.Linq;
 using System.Threading.Tasks;
 using TimeTable.Data;
+using TimeTable.Filters;
 using TimeTable.Models;
 
 namespace TimeTable.Controllers
@@ -18,6 +19,8 @@ namespace TimeTable.Controllers
         }
 
         // GET: Department
+        [AuthorizeRole(0)]
+
         public async Task<IActionResult> Index(string code, string name, int page = 1, int limit = 10)
         {
             // Apply filters and pagination

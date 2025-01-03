@@ -57,6 +57,8 @@ namespace TimeTable.Controllers
 
 
         //// GET: User/Edit/5
+        [AuthorizeRole(0)]
+
         public async Task<IActionResult> Edit(int id)
         {
             var user = await _context.Users.FindAsync(id);
@@ -70,6 +72,8 @@ namespace TimeTable.Controllers
         }
 
         // POST: User/Edit/5
+        [AuthorizeRole(0)]
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Role,Email,Password")] User user)
@@ -103,6 +107,8 @@ namespace TimeTable.Controllers
         }
 
         // GET: User/Delete/5
+        [AuthorizeRole(0)]
+
         public async Task<IActionResult> Delete(int id)
         {
             var user = await _context.Users

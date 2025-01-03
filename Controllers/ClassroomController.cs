@@ -5,6 +5,7 @@ using TimeTable.Models;
 using TimeTable.ViewModels;
 using System.Linq;
 using System.Threading.Tasks;
+using TimeTable.Filters;
 
 namespace TimeTable.Controllers
 {
@@ -18,6 +19,8 @@ namespace TimeTable.Controllers
         }
 
         // GET: Classroom
+        [AuthorizeRole(0)]
+
         public async Task<IActionResult> Index(string name, int page = 1, int limit = 10)
         {
             // Default page and limit values
@@ -53,6 +56,7 @@ namespace TimeTable.Controllers
         }
 
         // GET: Classroom/Details/5
+
         public async Task<IActionResult> Details(int id)
         {
             var classroom = await _context.Classrooms.FindAsync(id);
@@ -70,6 +74,7 @@ namespace TimeTable.Controllers
         }
 
         // POST: Classroom/Create
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(Classroom classroom)
@@ -84,6 +89,8 @@ namespace TimeTable.Controllers
         }
 
         // GET: Classroom/Edit/5
+     
+
         public async Task<IActionResult> Edit(int id)
         {
             var classroom = await _context.Classrooms.FindAsync(id);

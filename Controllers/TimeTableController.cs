@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using System.Linq;
 using System.Threading.Tasks;
 using TimeTable.Data;
+using TimeTable.Filters;
 using TimeTable.Models;
 using TimeTable.ViewModels;
 
@@ -17,6 +18,7 @@ namespace TimeTable.Controllers
             _context = context;
         }
 
+        [AuthorizeRole(0)]
         public async Task<IActionResult> Index(string section, int? semester, int? year, string dayOfWeek, int? majorId, int? facultyId, int page = 1, int limit = 10)
         {
             // Default page and limit validation
@@ -96,6 +98,8 @@ namespace TimeTable.Controllers
 
 
         // GET: TimeTable/Create
+        [AuthorizeRole(0)]
+
         public IActionResult Create()
         {
          
@@ -104,6 +108,8 @@ namespace TimeTable.Controllers
 
 
         // POST: TimeTable/Create
+
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("CourseId,ClassroomId,DayOfWeek,StartTime,EndTime,Year,Semester,Section,MajorId,FacultyId")] Timetable timetable)

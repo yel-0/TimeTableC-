@@ -19,52 +19,39 @@
                 </button>
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
                     <ul class="navbar-nav flex-grow-1">
+                        <!-- Always show Home link -->
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="department" asp-action="Index">Department</a>
-                        </li>
-                        <!-- Major Link -->
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Major" asp-action="Index">Major</a>
-                        </li>
-                        <!-- Faculty Link -->
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Faculty" asp-action="Index">Faculty</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="classroom" asp-action="Index">Class</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="course" asp-action="Index">Course</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="timetable" asp-action="Index">Time Table</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="User" asp-action="Index">User</a>
-                        </li>
+
+                        <!-- Check if the user is an Admin (role == 0) and show admin links -->
+                        @if (Context.Session.GetInt32("UserRole") == 0)
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Department" asp-action="Index">Department</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Major" asp-action="Index">Major</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Faculty" asp-action="Index">Faculty</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Classroom" asp-action="Index">Class</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Course" asp-action="Index">Course</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Timetable" asp-action="Index">Time Table</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="User" asp-action="Index">User</a>
+                            </li>
+                        }
                     </ul>
                 </div>
-                @* <div class="d-flex"> *@
-                @*     @if (ViewData["UserEmail"] != null) *@
-                @*     { *@
-                @*         <span class="navbar-text"> *@
-                @*             Logged in as: @ViewData["UserEmail"] *@
-                @*         </span> *@
-                @*     } *@
-                @*     else *@
-                @*     { *@
-                @*         <span class="navbar-text"> *@
-                @*             Not logged in. *@
-                @*         </span> *@
-                @*     } *@
-
-                @* </div> *@
-
-              <partial name="_LoginPartial" />
-
+                <partial name="_LoginPartial" />
             </div>
         </nav>
     </header>
