@@ -12,8 +12,8 @@
             <div class="col-md-3">
                 <select name="role" class="form-select">
                     <option value="">All Roles</option>
-                    <option value="Admin">Admin</option>
-                    <option value="User">User</option>
+                    <option value="Admin" >Admin</option>
+                    <option value="User" >User</option>
                 </select>
             </div>
             <div class="col-md-3">
@@ -43,7 +43,7 @@
                         <!-- Edit User Button -->
                         <button class="btn btn-warning btn-sm" data-bs-toggle="modal" data-bs-target="#editUserModal"
                                 data-id="@user.Id" data-name="@user.Name" data-email="@user.Email"
-                                data-role="@user.Role">
+                                data-role="@user.Role" data-password="@user.Password">
                             Edit
                         </button>
 
@@ -86,7 +86,7 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <form method="post" asp-action="UpdateUser">
+                <form method="post" asp-action="Edit">
                     <input type="hidden" id="edit-UserId" name="Id" />
                     <div class="mb-3">
                         <label for="edit-Name" class="form-label">User Name</label>
@@ -102,6 +102,13 @@
                             <option value="Admin">Admin</option>
                             <option value="User">User</option>
                         </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="edit-Password" class="form-label">Password</label>
+                        <input type="password" class="form-control" id="edit-Password" name="Password" />
+                        <small class="form-text text-muted">
+                            Leave blank to keep the current password.
+                        </small>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
@@ -146,6 +153,8 @@
             document.getElementById('edit-Name').value = button.getAttribute('data-name');
             document.getElementById('edit-Email').value = button.getAttribute('data-email');
             document.getElementById('edit-Role').value = button.getAttribute('data-role');
+            document.getElementById('edit-Password').value = button.getAttribute('data-password');
+
         });
     }
 

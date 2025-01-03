@@ -17,7 +17,7 @@ namespace TimeTable.Controllers
             _context = context;
         }
 
-        public async Task<IActionResult> Index(string name, Role? role, int page = 1, int limit = 1)
+        public async Task<IActionResult> Index(string name, Role? role, int page = 1, int limit = 10)
         {
             // Apply filters and pagination
             var usersQuery = _context.Users.AsQueryable();
@@ -56,8 +56,8 @@ namespace TimeTable.Controllers
         }
 
 
-        // GET: User/Edit/5
-        public async Task<IActionResult> UpdateUser(int id)
+        //// GET: User/Edit/5
+        public async Task<IActionResult> Edit(int id)
         {
             var user = await _context.Users.FindAsync(id);
 
@@ -72,7 +72,7 @@ namespace TimeTable.Controllers
         // POST: User/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> UpdateUser(int id, [Bind("Id,Name,Role,Email")] User user)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Role,Email,Password")] User user)
         {
             if (id != user.Id)
             {
@@ -99,7 +99,7 @@ namespace TimeTable.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            return View(user);
+            return BadRequest(user);
         }
 
         // GET: User/Delete/5
