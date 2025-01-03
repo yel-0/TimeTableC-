@@ -17,7 +17,7 @@ namespace TimeTable.Controllers
             _context = context;
         }
 
-        public async Task<IActionResult> Index(string name, Role? role, int page = 1, int limit = 10)
+        public async Task<IActionResult> Index(string name, Role? role, int page = 1, int limit = 2)
         {
             // Apply filters and pagination
             var usersQuery = _context.Users.AsQueryable();
@@ -37,9 +37,7 @@ namespace TimeTable.Controllers
             // Pagination logic
             var totalUsers = await usersQuery.CountAsync();
             var users = await usersQuery
-                .Skip((page - 1) * limit)
-                .Take(limit)
-                .ToListAsync();
+                .Skip((page - 1) * limit).Take(limit).ToListAsync();
 
             // Create a ViewModel to pass data to the view
             var viewModel = new UserIndexViewModel
