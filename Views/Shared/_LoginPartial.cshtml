@@ -1,0 +1,14 @@
+﻿@using Microsoft.AspNetCore.Http
+
+@if (Context.Session.GetString("UserEmail") != null)
+{
+    <span class="navbar-text">
+        Logged in as: @Context.Session.GetString("UserEmail")
+    </span>
+}
+else
+{
+    <span class="navbar-text">
+        Not logged in
+    </span>
+}

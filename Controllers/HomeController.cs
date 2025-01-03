@@ -87,6 +87,11 @@ namespace TimeTable.Controllers
                 FacultyId = facultyId // Pass FacultyId to the view
             };
 
+            var userEmail = HttpContext.Session.GetString("UserEmail");
+
+            // Pass it to the view via ViewData
+            ViewData["UserEmail"] = userEmail;
+
             return View(viewModel);
         }
 

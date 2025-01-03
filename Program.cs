@@ -18,7 +18,9 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 builder.Services.AddDistributedMemoryCache();
 builder.Services.AddSession(options =>
 {
-    options.IdleTimeout = TimeSpan.FromMinutes(30);  // Set session timeout duration
+    options.IdleTimeout = TimeSpan.FromMinutes(30); // Set session timeout
+    options.Cookie.HttpOnly = true;  // Helps prevent XSS attacks
+    options.Cookie.IsEssential = true; // Makes session cookie essential for app operation
 });
 
 // Add authentication services (if you're using cookies or other auth methods in the future)
@@ -26,6 +28,7 @@ builder.Services.AddAuthentication("Cookies")
     .AddCookie(options =>
     {
         options.LoginPath = "/User/Login";  // Specify the path for login page
+        options.AccessDeniedPath = "/User/AccessDenied"; // Add an access denied path
     });
 
 var app = builder.Build();
@@ -37,6 +40,10 @@ if (!app.Environment.IsDevelopment())  // Only in production
     app.UseExceptionHandler("/Home/Error");  // Custom error page
     app.UseHsts();  // HTTP Strict Transport Security (HSTS)
 }
+else
+{
+    app.UseDeveloperExceptionPage(); // Developer exception page for easier debugging in dev mode
+}
 
 app.UseHttpsRedirection();  // Redirect HTTP requests to HTTPS
 app.UseStaticFiles();  // Serve static files like images, CSS, JavaScript, etc.
@@ -47,8 +54,9 @@ app.UseSession();
 // Enable routing for controllers and views
 app.UseRouting();
 
-// Enable authorization middleware (for securing resources)
-app.UseAuthorization();
+// Enable authentication and authorization middleware (for securing resources)
+app.UseAuthentication();  // Add this to handle authentication
+app.UseAuthorization();   // Add this to handle authorization
 
 // Map the default controller route (for Home and other controllers)
 app.MapControllerRoute(
