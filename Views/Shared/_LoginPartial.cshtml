@@ -8,10 +8,12 @@
         Logged in as: @Context.Session.GetString("UserEmail")
         with role: @role
     </span>
+    <a href="@Url.Action("Logout", "Login")">Logout</a>
 }
 else
 {
     <span class="navbar-text">
         Not logged in
     </span>
+    <a href="@Url.Action("Index", "Login")">Go to Login</a>
 }

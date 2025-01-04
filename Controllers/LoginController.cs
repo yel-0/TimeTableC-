@@ -48,4 +48,15 @@ public class LoginController : Controller
 
         return View(model);
     }
+
+    public IActionResult Logout()
+    {
+        // Clear the user's session
+        HttpContext.Session.Clear();
+
+        // Optionally, show a toast message or log this action
+
+        // Redirect to the Login page
+        return RedirectToAction("Index", "Login");
+    }
 }
