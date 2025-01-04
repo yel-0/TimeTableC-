@@ -87,39 +87,54 @@
         }
 </style>
 
-<h2>Edit Course</h2>
 
 @using (Html.BeginForm("Edit", "Course", FormMethod.Post))
 {
     @Html.AntiForgeryToken()
     @Html.HiddenFor(model => model.Id)
 
-    <div class="form-group">
-        @Html.LabelFor(model => model.Name, new { @class = "form-label" })
-        @Html.TextBoxFor(model => model.Name, new { @class = "form-control" })
-        @Html.ValidationMessageFor(model => model.Name, "", new { @class = "text-danger" })
-    </div>
+    <div class="p-4 border rounded shadow bg-light">
+        <h2 class="text-primary text-center mb-4">Edit Course</h2>
 
-    <div class="form-group">
-        @Html.LabelFor(model => model.CourseCode, new { @class = "form-label" })
-        @Html.TextBoxFor(model => model.CourseCode, new { @class = "form-control" })
-        @Html.ValidationMessageFor(model => model.CourseCode, "", new { @class = "text-danger" })
-    </div>
-
-    <!-- Department Search Input -->
-    <div class="form-group">
-        <label class="font-weight-bold">Department</label>
-        <div class="custom-select-container">
-            <input type="text" id="departmentSearch" name="DepartmentName" class="form-control" placeholder="Search Department" autocomplete="off" required value="@Model.DepartmentName" />
-            <input type="hidden" id="departmentId" name="DepartmentId" value="@Model.DepartmentId" />
-            <div id="departmentDropdown" class="custom-dropdown">
-                <ul id="departmentList"></ul>
-            </div>
+        <!-- Course Name -->
+        <div class="form-group mb-3">
+            @Html.LabelFor(model => model.Name, "Course Name", new { @class = "form-label" })
+            @Html.TextBoxFor(model => model.Name, new { @class = "form-control border-primary" })
+            @Html.ValidationMessageFor(model => model.Name, "", new { @class = "text-danger" })
         </div>
-        @Html.ValidationMessageFor(model => model.DepartmentName, "", new { @class = "text-danger" })
+
+        <!-- Course Code -->
+        <div class="form-group mb-3">
+            @Html.LabelFor(model => model.CourseCode, "Course Code", new { @class = "form-label " })
+            @Html.TextBoxFor(model => model.CourseCode, new { @class = "form-control border-primary" })
+            @Html.ValidationMessageFor(model => model.CourseCode, "", new { @class = "text-danger" })
+        </div>
+
+        <!-- Department Search Input -->
+        <div class="form-group mb-3">
+            <label class="form-label ">Department</label>
+            <div class="custom-select-container">
+                <input type="text" id="departmentSearch" name="DepartmentName"
+                       class="form-control border-primary"
+                       placeholder="Search Department"
+                       autocomplete="off"
+                       required
+                       value="@Model.DepartmentName" />
+                <input type="hidden" id="departmentId" name="DepartmentId" value="@Model.DepartmentId" />
+                <div id="departmentDropdown" class="custom-dropdown">
+                    <ul id="departmentList"></ul>
+                </div>
+            </div>
+            @Html.ValidationMessageFor(model => model.DepartmentName, "", new { @class = "text-danger" })
+        </div>
+
+        <!-- Submit Button -->
+        <div class="text-center mt-4">
+            <button type="submit" class="btn btn-primary w-100">Save Changes</button>
+        </div>
     </div>
 
-    <button type="submit" class="btn mt-3 btn-primary">Save Changes</button>
+
 
 
 
