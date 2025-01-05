@@ -21,6 +21,8 @@ namespace TimeTable.Controllers
         [AuthorizeRole(0)]
         public async Task<IActionResult> Index(string section, int? semester, int? year, string dayOfWeek, int? majorId, int? facultyId, int page = 1, int limit = 10)
         {
+
+          
             // Default page and limit validation
             if (page < 1) page = 1;
             if (limit < 1) limit = 10;
@@ -51,8 +53,9 @@ namespace TimeTable.Controllers
 
             if (!string.IsNullOrWhiteSpace(dayOfWeek))
             {
-                query = query.Where(t => t.DayOfWeek.Equals(dayOfWeek, StringComparison.OrdinalIgnoreCase));
+                query = query.Where(t => t.DayOfWeek.ToLower() == dayOfWeek.ToLower());
             }
+
 
             // Filter by MajorId if provided
             if (majorId.HasValue)
