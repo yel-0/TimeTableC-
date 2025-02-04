@@ -117,7 +117,22 @@ namespace TimeTable.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("CourseId,ClassroomId,DayOfWeek,StartTime,EndTime,Year,Semester,Section,MajorId,FacultyId")] Timetable timetable)
         {
-                _context.Add(timetable);
+            bool isConflict = await _context.Timetables
+       .AnyAsync(t => t.FacultyId == timetable.FacultyId &&
+                      t.DayOfWeek == timetable.DayOfWeek &&
+                      t.Year == timetable.Year &&
+                      t.Semester == timetable.Semester &&
+                      ((t.StartTime <= timetable.StartTime && t.EndTime > timetable.StartTime) ||
+                       (t.StartTime < timetable.EndTime && t.EndTime >= timetable.EndTime) ||
+                       (t.StartTime >= timetable.StartTime && t.EndTime <= timetable.EndTime)));
+
+            if (isConflict)
+            {
+                // Add a validation error message
+                return BadRequest("The teacher is already scheduled to teach during this time on the same day."); // Return the view with the error message
+            }
+
+            _context.Add(timetable);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index)); // Redirect to the index page after saving
            

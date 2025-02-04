@@ -27,6 +27,8 @@ namespace TimeTable.Controllers
 
         public async Task<IActionResult> Index(string section, int? semester, int? year, string dayOfWeek, int? majorId, int? facultyId, int page = 1, int limit = 10)
         {
+
+
             // Default page and limit validation
             if (page < 1) page = 1;
             if (limit < 1) limit = 10;
@@ -57,8 +59,9 @@ namespace TimeTable.Controllers
 
             if (!string.IsNullOrWhiteSpace(dayOfWeek))
             {
-                query = query.Where(t => t.DayOfWeek.Equals(dayOfWeek, StringComparison.OrdinalIgnoreCase));
+                query = query.Where(t => t.DayOfWeek.ToLower() == dayOfWeek.ToLower());
             }
+
 
             // Filter by MajorId if provided
             if (majorId.HasValue)
@@ -81,6 +84,9 @@ namespace TimeTable.Controllers
                 .Take(limit)
                 .ToListAsync();
 
+            var userEmail = HttpContext.Session.GetString("UserEmail");
+
+
             // Create a ViewModel to send data to the view
             var viewModel = new TimetableIndexViewModel
             {
@@ -96,13 +102,10 @@ namespace TimeTable.Controllers
                 FacultyId = facultyId // Pass FacultyId to the view
             };
 
-            var userEmail = HttpContext.Session.GetString("UserEmail");
-
-            // Pass it to the view via ViewData
-            ViewData["UserEmail"] = userEmail;
-
             return View(viewModel);
         }
+
+
 
 
         [HttpGet]

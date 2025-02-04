@@ -165,7 +165,7 @@
 <table class="table">
     <thead>
         <tr>
-            <th>Course Code</th>
+            <th>Teacher</th>
             <th>Course Name</th>
             <th>Classroom</th>
             <th>Day of Week</th>
@@ -181,7 +181,7 @@
         @foreach (var timetable in Model.Timetables)
         {
             <tr>
-                <td>@timetable.Course.CourseCode</td>
+                <td>@timetable.Faculty.Name</td>
                 <td>@timetable.Course.Name</td>
                 <td>@timetable.Classroom.Name</td>
                 <td>@timetable.DayOfWeek</td>

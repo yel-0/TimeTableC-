@@ -105,7 +105,16 @@
             </div>
             <div class="col-md-4 mb-3">
                 <label for="dayOfWeek">Day of Week:</label>
-                <input type="text" id="dayOfWeek" name="dayOfWeek" class="form-control" />
+                <select id="dayOfWeek" name="dayOfWeek" class="form-control">
+                    <option value="" disabled selected>Select a day</option>
+                    <option value="Monday">Monday</option>
+                    <option value="Tuesday">Tuesday</option>
+                    <option value="Wednesday">Wednesday</option>
+                    <option value="Thursday">Thursday</option>
+                    <option value="Friday">Friday</option>
+                    <option value="Saturday">Saturday</option>
+                    <option value="Sunday">Sunday</option>
+                </select>
             </div>
             <div class="col-md-4 mb-3">
                 <label for="semester">Semester:</label>
@@ -154,7 +163,7 @@
 <table class="table">
     <thead>
         <tr>
-            <th>Course Code</th>
+            <th>Teacher</th>
             <th>Course Name</th>
             <th>Classroom</th>
             <th>Day of Week</th>
@@ -169,7 +178,7 @@
         @foreach (var timetable in Model.Timetables)
         {
             <tr>
-                <td>@timetable.Course.CourseCode</td>
+                <td>@timetable.Faculty.Name</td>
                 <td>@timetable.Course.Name</td>
                 <td>@timetable.Classroom.Name</td>
                 <td>@timetable.DayOfWeek</td>
@@ -188,16 +197,16 @@
 <nav aria-label="Page navigation">
     <ul class="pagination">
         <li class="page-item @(Model.Page == 1 ? "disabled" : "")">
-            <a class="page-link" href="@Url.Action("Index", "Timetable", new { page = 1 })">First</a>
+            <a class="page-link" href="@Url.Action("Index", "Home", new { page = 1 })">First</a>
         </li>
         <li class="page-item @(Model.Page == 1 ? "disabled" : "")">
-            <a class="page-link" href="@Url.Action("Index", "Timetable", new { page = Model.Page - 1 })">Previous</a>
+            <a class="page-link" href="@Url.Action("Index", "Home", new { page = Model.Page - 1 })">Previous</a>
         </li>
         <li class="page-item @(Model.Page == (Model.TotalCount + Model.Limit - 1) / Model.Limit ? "disabled" : "")">
-            <a class="page-link" href="@Url.Action("Index", "Timetable", new { page = Model.Page + 1 })">Next</a>
+            <a class="page-link" href="@Url.Action("Index", "Home", new { page = Model.Page + 1 })">Next</a>
         </li>
         <li class="page-item @(Model.Page == (Model.TotalCount + Model.Limit - 1) / Model.Limit ? "disabled" : "")">
-            <a class="page-link" href="@Url.Action("Index", "Timetable", new { page = (Model.TotalCount + Model.Limit - 1) / Model.Limit })">Last</a>
+            <a class="page-link" href="@Url.Action("Index", "Home", new { page = (Model.TotalCount + Model.Limit - 1) / Model.Limit })">Last</a>
         </li>
     </ul>
 </nav>
@@ -226,126 +235,7 @@
 </div>
 
 
-<div class="container mt-5">
-    <h2 class="text-center mb-4">Course Schedule</h2>
 
-    <!-- Main Schedule Table -->
-    <div class="table-responsive">
-        <table class="table table-bordered text-center">
-            <thead class="table-light">
-                <tr>
-                    <th scope="col">Day</th>
-                    <th scope="col">9:00 - 10:00</th>
-                    <th scope="col">10:00 - 11:00</th>
-                    <th scope="col">11:00 - 12:00</th>
-                    <th scope="col">Lunch</th>
-                    <th scope="col">1:00 - 2:00</th>
-                    <th scope="col">2:00 - 3:00</th>
-                    <th scope="col">3:00 - 4:00</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <th scope="row">Mon</th>
-                    <td>Math</td>
-                    <td>Physics</td>
-                    <td>Chemistry</td>
-                    <td>Break</td>
-                    <td>History</td>
-                    <td>English</td>
-                    <td>Art</td>
-                </tr>
-                <tr>
-                    <th scope="row">Tue</th>
-                    <td>Math</td>
-                    <td>Physics</td>
-                    <td>Chemistry</td>
-                    <td>Break</td>
-                    <td>History</td>
-                    <td>English</td>
-                    <td>Art</td>
-                </tr>
-                <tr>
-                    <th scope="row">Wed</th>
-                    <td>Math</td>
-                    <td>Physics</td>
-                    <td>Chemistry</td>
-                    <td>Break</td>
-                    <td>History</td>
-                    <td>English</td>
-                    <td>Art</td>
-                </tr>
-                <tr>
-                    <th scope="row">Thu</th>
-                    <td>Math</td>
-                    <td>Physics</td>
-                    <td>Chemistry</td>
-                    <td>Break</td>
-                    <td>History</td>
-                    <td>English</td>
-                    <td>Art</td>
-                </tr>
-                <tr>
-                    <th scope="row">Fri</th>
-                    <td>Math</td>
-                    <td>Physics</td>
-                    <td>Chemistry</td>
-                    <td>Break</td>
-                    <td>History</td>
-                    <td>English</td>
-                    <td>Art</td>
-                </tr>
-            </tbody>
-        </table>
-    </div>
-
-    <!-- Course Details Section -->
-    <div class="mt-4">
-        <h4>Course Details</h4>
-        <div class="row">
-            <div class="col-md-3 mb-3">
-                <div class="card">
-                    <div class="card-body">
-                        <h5 class="card-title">Math</h5>
-                        <p><strong>Course Code:</strong> MATH101</p>
-                        <p><strong>Teacher:</strong> Dr. John Doe</p>
-                        <p><strong>Room:</strong> A101</p>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-3 mb-3">
-                <div class="card">
-                    <div class="card-body">
-                        <h5 class="card-title">Physics</h5>
-                        <p><strong>Course Code:</strong> PHY201</p>
-                        <p><strong>Teacher:</strong> Dr. Jane Smith</p>
-                        <p><strong>Room:</strong> B202</p>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-3 mb-3">
-                <div class="card">
-                    <div class="card-body">
-                        <h5 class="card-title">Chemistry</h5>
-                        <p><strong>Course Code:</strong> CHE301</p>
-                        <p><strong>Teacher:</strong> Dr. Emily Brown</p>
-                        <p><strong>Room:</strong> C303</p>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-3 mb-3">
-                <div class="card">
-                    <div class="card-body">
-                        <h5 class="card-title">History</h5>
-                        <p><strong>Course Code:</strong> HIS101</p>
-                        <p><strong>Teacher:</strong> Dr. Mark Wilson</p>
-                        <p><strong>Room:</strong> D404</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
 
 <script>
     document.getElementById('deleteTimetableModal').addEventListener('show.bs.modal', function (event) {
