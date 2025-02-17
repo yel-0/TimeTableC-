@@ -36,7 +36,6 @@ A **Timetable Management System** designed for **universities and colleges**, bu
 git clone https://github.com/yourusername/timetable-management.git
 ```
 ```sh
-git clone https://github.com/yourusername/timetable-management.git
 cd timetable-management
 ```
 
