@@ -34,4 +34,6 @@ A **Timetable Management System** designed for **universities and colleges**, bu
 ### 1️⃣ **Clone the Repository**
 ```sh
 https://github.com/yel-0/TimeTableC-.git
+
+```sh
 cd timetable-management
