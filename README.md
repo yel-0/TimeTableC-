@@ -35,7 +35,7 @@ A **Timetable Management System** designed for **universities and colleges**, bu
 ```sh
 git clone https://github.com/yourusername/timetable-management.git
 cd timetable-management
-
+```
 
 ### 2️⃣ **Setup the Database**
 - Create a **Microsoft SQL Server** database.
