@@ -60,3 +60,13 @@ If you'd like to contribute, please fork the repository and submit a pull reques
 ### 📞 Contact
 
 For any issues or queries, feel free to reach out to me at awin4989@gmail.com.
+
+### 👨‍💻 Author
+
+Developed by Yel.
+
+### 🐛 Known Issues and TODOs
+Known Issues:
+
+    Currently, there is no integration with other software products, such as Excel file uploading.
+    Success and error messages are not yet implemented for user interactions, such as when a user submits a form or when an action is completed.
