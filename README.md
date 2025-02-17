@@ -6,13 +6,13 @@ A **Timetable Management System** designed for **universities and colleges**, bu
 
 ## ✨ Features
 
-### 🔹 **Admin Capabilities**  
-- Manage **Users** (Add, Edit, Delete)  
-- Manage **Classrooms**  
-- Manage **Majors & Departments**  
-- Manage **Courses**
-- Manage **Faculties**  
-- Create and Manage **Timetables**  
+### 🔹 **Admin Capabilities**
+- **Manage Users**: Add, edit, and delete users with role-based permissions (Admin, Faculty, Student).
+- **Manage Classrooms**: Create, update, and delete classroom records.
+- **Manage Majors & Departments**: Assign courses to different departments and majors.
+- **Manage Courses**: Add, edit, and remove courses and link them to the relevant departments.
+- **Manage Faculties**: Assign faculty members to courses.
+- **Create and Manage Timetables**: Administrators can create and manage timetables, assigning classes to specific timeslots, classrooms, and teachers.
 
 ### 🔹 **User Capabilities**  
 - View **Timetable** filtered by:  
