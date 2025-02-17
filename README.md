@@ -67,7 +67,7 @@ dotnet run
 - **Migrations**: If you encounter errors while applying migrations, double-check your database configuration and SQL Server permissions.
 
 
-### 🔹 **Contributing**
+### 🤝 **Contributing**
 We welcome contributions! If you would like to improve the project, please follow these steps:
 1. **Fork the repository** and clone your fork locally.
 2. **Create a feature branch** for your changes.
