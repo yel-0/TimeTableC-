@@ -15,9 +15,10 @@ A **Timetable Management System** designed for **universities and colleges**, bu
 - **Create and Manage Timetables**: Administrators can create and manage timetables, assigning classes to specific timeslots, classrooms, and teachers.
 
 ### 🔹 **User Capabilities**  
-- View **Timetable** filtered by:  
-  - **Semester & Section (A/B/C...)**  
-  - **Teacher Name** (Teachers can also check their schedules)  
+- **View Timetable**: Students and faculty can view their timetables filtered by:
+  - **Semester & Section**: View schedules for specific semesters or sections (A/B/C...).
+  - **Teacher Name**: Faculty members can also view their own schedules.
+
 
 ---
 
