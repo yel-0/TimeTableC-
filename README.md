@@ -51,3 +51,11 @@ dotnet ef database update
 ```sh
 dotnet run
 ```
+
+### 📝 Contributing
+
+If you'd like to contribute, please fork the repository and submit a pull request. Contributions, bug reports, and feature requests are always welcome!
+
+### 📞 Contact
+
+For any issues or queries, feel free to reach out to me at awin4989@gmail.com.
