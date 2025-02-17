@@ -69,8 +69,7 @@ Developed by Yel.
 ### Known Issues:
 - **Excel File Upload Integration**: Currently, there is no integration for uploading and importing data from Excel files.
 - **User Feedback**: Success and error messages are not yet implemented for user interactions (e.g., form submissions, timetable creation).
-
-TODOs:
-
-    Excel file upload integration: Implement the ability to import data (such as timetables or user lists) from Excel files.
-    Success and error messages: Add user-friendly success and error messages to improve the user experience (e.g., after submitting a form, receiving a response, or performing actions like creating a timetable).
+  
+### TODOs:
+- **Excel File Upload**: Implement the ability to import timetables and user data from Excel files for bulk uploads.
+- **User Feedback**: Add success and error messages to improve user experience, such as confirming form submissions or action completions.
