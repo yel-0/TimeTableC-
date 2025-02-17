@@ -35,6 +35,12 @@ The **Timetable Management System** is a web application designed to help **univ
 
 ## 🚀 **Getting Started**
 
+### 🔹 **Prerequisites**
+Before you begin, ensure you have the following installed on your machine:
+- **.NET Core SDK** (version 5.0 or later)
+- **Microsoft SQL Server**
+- **Visual Studio** or any code editor of your choice (e.g., VS Code)
+
 ### 1️⃣ **Clone the Repository**
 ```sh
 git clone https://github.com/yel-0/TimeTableC-.git
