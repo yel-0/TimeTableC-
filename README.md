@@ -10,7 +10,8 @@ A **Timetable Management System** designed for **universities and colleges**, bu
 - Manage **Users** (Add, Edit, Delete)  
 - Manage **Classrooms**  
 - Manage **Majors & Departments**  
-- Manage **Courses**  
+- Manage **Courses**
+- Manage **Faculties**  
 - Create and Manage **Timetables**  
 
 ### 🔹 **User Capabilities**  
