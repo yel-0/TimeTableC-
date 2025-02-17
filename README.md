@@ -1,6 +1,8 @@
 # 🏫 Timetable Management System
 
-A **Timetable Management System** designed for **universities and colleges**, built using **ASP.NET and Bootstrap**. It helps administrators efficiently manage timetables, classrooms, courses, departments, and users, while allowing students and teachers to view their schedules with ease.
+
+
+The **Timetable Management System** is a web application designed to help **universities and colleges** manage timetables, classrooms, courses, departments, and user schedules. Built with **ASP.NET Core** for the backend and **Bootstrap** for the frontend, this system allows administrators to efficiently create, update, and manage timetables, while providing users (students and faculty) with an intuitive interface to view their schedules.
 
 ---
 
