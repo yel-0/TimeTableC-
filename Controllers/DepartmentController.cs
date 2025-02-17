@@ -23,8 +23,10 @@ namespace TimeTable.Controllers
 
         public async Task<IActionResult> Index(string code, string name, int page = 1, int limit = 10)
         {
-            // Apply filters and pagination
-            var departmentsQuery = _context.Departments.AsQueryable();
+            // Apply filters and sorting
+            var departmentsQuery = _context.Departments
+                .OrderByDescending(d => d.Id) // Sort by latest first
+                .AsQueryable();
 
             // Filter by Code if provided
             if (!string.IsNullOrEmpty(code))
@@ -58,6 +60,7 @@ namespace TimeTable.Controllers
 
             return View(viewModel);
         }
+
 
         // GET: Department/Create
         public IActionResult Create()

@@ -21,8 +21,6 @@ namespace TimeTable.Controllers
         [AuthorizeRole(0)]
         public async Task<IActionResult> Index(string section, int? semester, int? year, string dayOfWeek, int? majorId, int? facultyId, int page = 1, int limit = 10)
         {
-
-          
             // Default page and limit validation
             if (page < 1) page = 1;
             if (limit < 1) limit = 10;
@@ -33,6 +31,7 @@ namespace TimeTable.Controllers
                 .Include(t => t.Classroom)
                 .Include(t => t.Faculty)
                 .Include(t => t.Major)
+                .OrderByDescending(t => t.Id) // Order by latest records first
                 .AsQueryable();
 
             // Apply filters based on provided parameters
@@ -55,7 +54,6 @@ namespace TimeTable.Controllers
             {
                 query = query.Where(t => t.DayOfWeek.ToLower() == dayOfWeek.ToLower());
             }
-
 
             // Filter by MajorId if provided
             if (majorId.HasValue)
@@ -100,6 +98,7 @@ namespace TimeTable.Controllers
 
 
 
+
         // GET: TimeTable/Create
         [AuthorizeRole(0)]
 
@@ -115,28 +114,30 @@ namespace TimeTable.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("CourseId,ClassroomId,DayOfWeek,StartTime,EndTime,Year,Semester,Section,MajorId,FacultyId")] Timetable timetable)
+        public async Task<IActionResult> Create([Bind("CourseId,ClassroomId,DayOfWeek,StartTime,EndTime,Year,Semester,Section,MajorId,FacultyId")] Timetable timetable, bool IsActive)
         {
-            bool isConflict = await _context.Timetables
-       .AnyAsync(t => t.FacultyId == timetable.FacultyId &&
-                      t.DayOfWeek == timetable.DayOfWeek &&
-                      t.Year == timetable.Year &&
-                      t.Semester == timetable.Semester &&
-                      ((t.StartTime <= timetable.StartTime && t.EndTime > timetable.StartTime) ||
-                       (t.StartTime < timetable.EndTime && t.EndTime >= timetable.EndTime) ||
-                       (t.StartTime >= timetable.StartTime && t.EndTime <= timetable.EndTime)));
 
-            if (isConflict)
+            if (IsActive == false) 
             {
-                // Add a validation error message
-                return BadRequest("The teacher is already scheduled to teach during this time on the same day."); // Return the view with the error message
+                bool isConflict = await _context.Timetables
+                    .AnyAsync(t => t.FacultyId == timetable.FacultyId &&
+                                   t.DayOfWeek == timetable.DayOfWeek &&
+                                   t.Year == timetable.Year &&
+                                   ((t.StartTime <= timetable.StartTime && t.EndTime > timetable.StartTime) ||
+                                    (t.StartTime < timetable.EndTime && t.EndTime >= timetable.EndTime) ||
+                                    (t.StartTime >= timetable.StartTime && t.EndTime <= timetable.EndTime)));
+
+                if (isConflict)
+                {
+                    return BadRequest("The teacher is already scheduled to teach during this time on the same day.");
+                }
             }
 
             _context.Add(timetable);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index)); // Redirect to the index page after saving
-           
+            await _context.SaveChangesAsync();
+            return RedirectToAction(nameof(Index));
         }
+
 
 
 

@@ -23,12 +23,14 @@ namespace TimeTable.Controllers
 
         public async Task<IActionResult> Index(string name, int page = 1, int limit = 10)
         {
-            // Default page and limit values
+            // Default page and limit validation
             if (page < 1) page = 1;
             if (limit < 1) limit = 10;
 
-            // Query the Classroom table, applying filtering and pagination
-            var query = _context.Classrooms.AsQueryable();
+            // Query the Classroom table, applying filtering and ordering by latest records first
+            var query = _context.Classrooms
+                .OrderByDescending(c => c.Id) // Order by latest records first
+                .AsQueryable();
 
             // Filter by name if provided
             if (!string.IsNullOrWhiteSpace(name))
@@ -42,7 +44,7 @@ namespace TimeTable.Controllers
             // Apply pagination (skip and take)
             var classrooms = await query.Skip((page - 1) * limit).Take(limit).ToListAsync();
 
-            // Create a ViewModel to send data to the view (you can create a ClassroomIndexViewModel similar to the FacultyIndexViewModel)
+            // Create a ViewModel to send data to the view
             var viewModel = new ClassroomIndexViewModel
             {
                 Classrooms = classrooms,

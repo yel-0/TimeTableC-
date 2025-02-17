@@ -20,10 +20,13 @@ namespace TimeTable.Controllers
 
         [AuthorizeRole(0)]
 
-        public async Task<IActionResult> Index(string courseCode, string name, int? departmentId, int page = 1, int limit = 1)
+        public async Task<IActionResult> Index(string courseCode, string name, int? departmentId, int page = 1, int limit = 10)
         {
             // Apply filters and pagination
-            var coursesQuery = _context.Courses.Include(c => c.Department).AsQueryable();
+            var coursesQuery = _context.Courses
+                .Include(c => c.Department)
+                .OrderByDescending(c => c.Id) // Order by latest first (Change to CreatedAt if available)
+                .AsQueryable();
 
             // Filter by Course Code if provided
             if (!string.IsNullOrEmpty(courseCode))
@@ -64,6 +67,7 @@ namespace TimeTable.Controllers
 
             return View(viewModel);
         }
+
 
         [HttpGet]
         public async Task<IActionResult> Create(string departmentName = null, int departmentPage = 1, int limit = 5)

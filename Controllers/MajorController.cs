@@ -28,8 +28,10 @@ namespace TimeTable.Controllers
             if (page < 1) page = 1;
             if (limit < 1) limit = 10;
 
-            // Query the majors table, applying filtering and pagination
-            var query = _context.Majors.AsQueryable();
+            // Query the majors table, applying filtering and ordering
+            var query = _context.Majors
+                .OrderByDescending(m => m.Id) // Sort latest first
+                .AsQueryable();
 
             // Filter by name if provided
             if (!string.IsNullOrWhiteSpace(name))
@@ -44,7 +46,7 @@ namespace TimeTable.Controllers
             var majors = await query.Skip((page - 1) * limit).Take(limit).ToListAsync();
 
             // Create a ViewModel to send data to the view
-         var viewModel = new MajorIndexViewModel
+            var viewModel = new MajorIndexViewModel
             {
                 Majors = majors,
                 TotalCount = totalCount,
@@ -55,6 +57,7 @@ namespace TimeTable.Controllers
 
             return View(viewModel);
         }
+
 
         // GET: Major/Details/5
         public async Task<IActionResult> Details(int id)

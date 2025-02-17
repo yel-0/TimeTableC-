@@ -27,8 +27,10 @@ namespace TimeTable.Controllers
             if (page < 1) page = 1;
             if (limit < 1) limit = 10;
 
-            // Query the Faculty table, applying filtering and pagination
-            var query = _context.Faculties.AsQueryable();
+            // Query the Faculty table, applying filtering and ordering
+            var query = _context.Faculties
+                .OrderByDescending(f => f.Id) // Sort latest first
+                .AsQueryable();
 
             // Filter by name if provided
             if (!string.IsNullOrWhiteSpace(name))
@@ -54,6 +56,7 @@ namespace TimeTable.Controllers
 
             return View(viewModel);
         }
+
 
         // GET: Faculty/Details/5
         public async Task<IActionResult> Details(int id)
