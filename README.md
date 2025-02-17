@@ -35,3 +35,11 @@ A **Timetable Management System** designed for **universities and colleges**, bu
 git clone https://github.com/yel-0/TimeTableC-.git
 cd TimeTableC-
 
+### 2️⃣ **Setup the Database**
+- Create a **Microsoft SQL Server** database.
+- Update **`appsettings.json`** with your database connection string.
+- Run migrations:
+```sh
+dotnet ef database update
+
+
