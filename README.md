@@ -70,3 +70,8 @@ Known Issues:
 
     Currently, there is no integration with other software products, such as Excel file uploading.
     Success and error messages are not yet implemented for user interactions, such as when a user submits a form or when an action is completed.
+
+TODOs:
+
+    Excel file upload integration: Implement the ability to import data (such as timetables or user lists) from Excel files.
+    Success and error messages: Add user-friendly success and error messages to improve the user experience (e.g., after submitting a form, receiving a response, or performing actions like creating a timetable).
