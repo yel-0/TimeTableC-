@@ -1,6 +1,7 @@
+```markdown
 # 🏫 Timetable Management System
 
-A **Timetable Management System** designed for **universities and colleges**, built using **ASP.NET and Bootstrap**. It helps administrators efficiently manage timetables, classrooms, courses, departments, and users, while allowing students and teachers to view their schedules with ease.
+A **Timetable Management System** designed for **universities and colleges**, built using **ASP.NET and Bootstrap**. It helps administrators efficiently manage timetables, classrooms, courses, departments, and majors.
 
 ---
 
@@ -30,10 +31,12 @@ A **Timetable Management System** designed for **universities and colleges**, bu
 ---
 
 ## 🚀 **Getting Started**
+
 ### 1️⃣ **Clone the Repository**
 ```sh
 git clone https://github.com/yel-0/TimeTableC-.git
 cd TimeTableC-
+```
 
 ### 2️⃣ **Setup the Database**
 - Create a **Microsoft SQL Server** database.
@@ -41,5 +44,9 @@ cd TimeTableC-
 - Run migrations:
 ```sh
 dotnet ef database update
+```
 
-
+### 3️⃣ **Run the Project**
+```sh
+dotnet run
+```
