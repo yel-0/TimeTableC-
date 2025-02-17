@@ -75,13 +75,7 @@ We welcome contributions! If you would like to improve the project, please follo
 4. **Submit a pull request** describing your changes.
 
 
-### 📞 Contact
 
-For any issues or queries, feel free to reach out to me at awin4989@gmail.com.
-
-### 👨‍💻 Author
-
-Developed by Yel.
 
 ### 🐛 Known Issues and TODOs
 ### Known Issues:
@@ -91,3 +85,12 @@ Developed by Yel.
 ### TODOs:
 - **Excel File Upload**: Implement the ability to import timetables and user data from Excel files for bulk uploads.
 - **User Feedback**: Add success and error messages to improve user experience, such as confirming form submissions or action completions.
+
+
+### 📞 Contact
+
+For any issues or queries, feel free to reach out to me at [awin4989@gmail.com](mailto:awin4989@gmail.com).
+
+### 🙏 Acknowledgements 
+- **Bootstrap**: Thanks to the Bootstrap team for providing a flexible and responsive frontend framework.
+- **ASP.NET Core**: A big thank you to the ASP.NET Core team for their robust and scalable backend framework.
