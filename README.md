@@ -66,10 +66,9 @@ For any issues or queries, feel free to reach out to me at awin4989@gmail.com.
 Developed by Yel.
 
 ### 🐛 Known Issues and TODOs
-Known Issues:
-
-    Currently, there is no integration with other software products, such as Excel file uploading.
-    Success and error messages are not yet implemented for user interactions, such as when a user submits a form or when an action is completed.
+### Known Issues:
+- **Excel File Upload Integration**: Currently, there is no integration for uploading and importing data from Excel files.
+- **User Feedback**: Success and error messages are not yet implemented for user interactions (e.g., form submissions, timetable creation).
 
 TODOs:
 
