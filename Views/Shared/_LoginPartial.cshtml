@@ -4,14 +4,21 @@
 {
     var role = (Role)Context.Session.GetInt32("UserRole"); // Convert the stored role to enum
 
-    <span class="navbar-text">
-        Logged in as: @Context.Session.GetString("UserEmail")
-        with role: @role
-    </span>
-    <a href="@Url.Action("Logout", "Login")">Logout</a>
+    <div class="d-flex align-items-center gap-3">
+        <span class="badge bg-primary text-white px-3 py-2">
+            <i class="fas fa-user"></i> @Context.Session.GetString("UserEmail")
+        </span>
+        <span class="badge bg-secondary text-white px-3 py-2">
+            Role: @role
+        </span>
+        <a href="@Url.Action("Logout", "Login")" class="btn btn-danger btn-sm">
+            <i class="fas fa-sign-out-alt"></i> Logout
+        </a>
+    </div>
 }
 else
 {
-   
-    <a href="@Url.Action("Index", "Login")">Go to Login</a>
+    <a href="@Url.Action("Index", "Login")" class="btn btn-primary btn-sm">
+        <i class="fas fa-sign-in-alt"></i> Go to Login
+    </a>
 }
