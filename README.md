@@ -33,7 +33,7 @@ A **Timetable Management System** designed for **universities and colleges**, bu
 
 ### 1️⃣ **Clone the Repository**
 ```sh
-git clone https://github.com/yourusername/timetable-management.git
+git clone https://github.com/yel-0/TimeTableC-.git
 ```
 ```sh
 cd timetable-management
