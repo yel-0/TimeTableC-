@@ -53,9 +53,13 @@ dotnet ef database update
 dotnet run
 ```
 
-### 📝 Contributing
+### 🔹 **Contributing**
+We welcome contributions! If you would like to improve the project, please follow these steps:
+1. **Fork the repository** and clone your fork locally.
+2. **Create a feature branch** for your changes.
+3. **Commit your changes** with clear and concise messages.
+4. **Submit a pull request** describing your changes.
 
-If you'd like to contribute, please fork the repository and submit a pull request. Contributions, bug reports, and feature requests are always welcome!
 
 ### 📞 Contact
 
