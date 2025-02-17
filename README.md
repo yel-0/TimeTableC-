@@ -62,6 +62,11 @@ dotnet ef database update
 dotnet run
 ```
 
+### 🛠️ **Troubleshooting**
+- **Database Connection Issues**: Ensure your SQL Server instance is running and the connection string in `appsettings.json` is correctly configured.
+- **Migrations**: If you encounter errors while applying migrations, double-check your database configuration and SQL Server permissions.
+
+
 ### 🔹 **Contributing**
 We welcome contributions! If you would like to improve the project, please follow these steps:
 1. **Fork the repository** and clone your fork locally.
