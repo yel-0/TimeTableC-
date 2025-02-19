@@ -1,11 +1,10 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace TimeTable.Models
 {
     public class AssignCourse
-    
-         {
+    {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
@@ -30,6 +29,7 @@ namespace TimeTable.Models
 
         [ForeignKey("CourseId")]
         public virtual Course Course { get; set; }
+
+       
     }
 }
-

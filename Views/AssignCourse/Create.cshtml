@@ -4,92 +4,54 @@
 
 <h1>Assign Course</h1>
 
-<a href="@Url.Action("Create", "AssignCourse")" class="btn btn-secondary mb-3">Create New Assignment</a>
+<form asp-action="Create" method="post">
+    @Html.AntiForgeryToken()
 
-<form asp-action="Index" method="get" class="mb-3">
     <div class="row">
+        <!-- Faculty Dropdown with Live Search -->
         <div class="col-md-2">
             <label for="facultySearch" class="form-label">Faculty</label>
             <div class="custom-select-container">
                 <input type="text" id="facultySearch" class="form-control" placeholder="Search Faculty..." />
-                <input type="hidden" name="facultyId" id="facultyId" value="@Model.FacultyId" />
+                <input type="hidden" name="FacultyId" id="facultyId" value="@Model.FacultyId" />
                 <ul id="facultyDropdown" class="custom-dropdown"></ul>
             </div>
         </div>
 
+        <!-- Course Dropdown with Live Search -->
         <div class="col-md-2">
             <label for="courseSearch" class="form-label">Course</label>
             <div class="custom-select-container">
                 <input type="text" id="courseSearch" class="form-control" placeholder="Search Course..." />
-                <input type="hidden" name="courseId" id="courseId" value="@Model.CourseId" />
+                <input type="hidden" name="CourseId" id="courseId" value="@Model.CourseId" />
                 <ul id="courseDropdown" class="custom-dropdown"></ul>
             </div>
         </div>
 
+        <!-- Section Input -->
         <div class="col-md-2">
             <label for="section" class="form-label">Section</label>
-            <input type="text" name="section" class="form-control" value="@Model.Section" />
+            <input type="text" name="Section" class="form-control" value="@Model.Section" />
         </div>
 
+        <!-- Semester Input -->
         <div class="col-md-2">
             <label for="semester" class="form-label">Semester</label>
-            <input type="text" name="semester" class="form-control" value="@Model.Semester" />
+            <input type="text" name="Semester" class="form-control" value="@Model.Semester" />
         </div>
 
+        <!-- Year Input -->
         <div class="col-md-2">
             <label for="year" class="form-label">Year</label>
-            <input type="number" name="year" class="form-control" value="@Model.Year" />
+            <input type="number" name="Year" class="form-control" value="@Model.Year" />
         </div>
 
+        <!-- Submit Button -->
         <div class="col-md-2 align-self-end">
-            <button type="submit" class="btn btn-primary w-100">Filter</button>
+            <button type="submit" class="btn btn-primary w-100">Assign Course</button>
         </div>
     </div>
 </form>
-
-<table class="table table-bordered">
-    <thead>
-        <tr>
-            <th>Faculty</th>
-            <th>Course</th>
-            <th>Section</th>
-            <th>Semester</th>
-            <th>Year</th>
-            <th>Actions</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var assign in Model.AssignCourses)
-        {
-            <tr>
-                <td>@assign.Faculty?.Name</td>
-                <td>@assign.Course?.Name</td>
-                <td>@assign.Section</td>
-                <td>@assign.Semester</td>
-                <td>@assign.Year</td>
-                <td>
-                    <!-- Edit Button -->
-                    <a href="@Url.Action("Edit", "AssignCourse", new { id = assign.Id })" class="btn btn-warning btn-sm">Edit</a>
-
-                    <!-- Delete Button -->
-                    <button type="button" class="btn btn-danger btn-sm" >Delete</button>
-                </td>
-            </tr>
-        }
-    </tbody>
-</table>
-
-<!-- Pagination -->
-<nav>
-    <ul class="pagination">
-        @for (int i = 1; i <= Math.Ceiling((double)Model.TotalCount / Model.Limit); i++)
-        {
-            <li class="page-item @(i == Model.Page ? "active" : "")">
-                <a class="page-link" href="?page=@i&limit=@Model.Limit"> @i </a>
-            </li>
-        }
-    </ul>
-</nav>
 
 <!-- jQuery and Live Search Script -->
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
@@ -97,34 +59,9 @@
     $(document).ready(function () {
         const limit = 5;
 
-        function searchItems(type, term, page) {
-            $.ajax({
-                url: '/TimeTable/GetDropDownData',
-                type: 'GET',
-                data: { [`${type}Name`]: term, [`${type}Page`]: page, limit: limit },
-                success: function (response) {
-                    let listId = `#${type}Dropdown`;
-                    $(listId).empty().show();
-
-                    let items = response[type + 's'] || response.faculties;
-
-                    if (Array.isArray(items) && items.length > 0) {
-                        items.forEach(item => {
-                            $(listId).append(`<li class="custom-dropdown-item" data-id="${item.id}">${item.name}</li>`);
-                        });
-                    } else {
-                        $(listId).append('<li class="custom-dropdown-item">No results found</li>');
-                    }
-                },
-                error: function (xhr, status, error) {
-                    console.error("Error fetching data:", error);
-                }
-            });
-        }
-
         // Live search for Faculty
         $("#facultySearch").on("input", function () {
-            let searchTerm = $(this).val();
+            var searchTerm = $(this).val();
             if (searchTerm.length >= 2) {
                 searchItems('faculty', searchTerm, 1);
             } else {
@@ -134,7 +71,7 @@
 
         // Live search for Course
         $("#courseSearch").on("input", function () {
-            let searchTerm = $(this).val();
+            var searchTerm = $(this).val();
             if (searchTerm.length >= 2) {
                 searchItems('course', searchTerm, 1);
             } else {
@@ -142,20 +79,47 @@
             }
         });
 
+        // Function to search and populate dropdown
+        function searchItems(type, term, page) {
+            $.ajax({
+                url: '/TimeTable/GetDropDownData',
+                type: 'GET',
+                data: { [`${type}Name`]: term, [`${type}Page`]: page, limit: limit },
+                success: function (response) {
+                    let listId = `#${type}Dropdown`;
+                    $(listId).empty();  // Clear the dropdown
+
+                    // Ensure response contains the correct properties
+                    let items = response[type + 's'] || response.faculties;
+
+                    if (Array.isArray(items) && items.length > 0) {
+                        items.forEach(item => {
+                            $(listId).append(`<li class="custom-dropdown-item" data-id="${item.id}">${item.name}</li>`);
+                        });
+                    } else {
+                        $(listId).append('<li class="custom-dropdown-item">No results found</li>');
+                    }
+
+                    $(listId).show();  // Show the dropdown
+                },
+                error: function (xhr, status, error) {
+                    console.error("Error fetching data:", error);
+                }
+            });
+        }
+
         // Handle selecting an item from the dropdown
         $(document).on('click', '.custom-dropdown-item', function () {
-            let itemId = $(this).data('id');
-            let itemName = $(this).text();
-            let inputBox = $(this).closest('.custom-select-container').find('input').first();
-            let hiddenInput = $(this).closest('.custom-select-container').find('input[type="hidden"]');
+            var itemId = $(this).data('id');
+            var itemName = $(this).text();
+            var inputBox = $(this).closest('.custom-select-container').find('input').first();
+            var hiddenInput = $(this).closest('.custom-select-container').find('input[type="hidden"]');
 
             inputBox.val(itemName);
             hiddenInput.val(itemId);
 
             $(this).closest('.custom-dropdown').hide();
         });
-
-      
     });
 </script>
 
