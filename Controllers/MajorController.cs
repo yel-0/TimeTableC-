@@ -20,7 +20,7 @@ namespace TimeTable.Controllers
         }
 
         // GET: Major
-        [AuthorizeRole(0)]
+        //[AuthorizeRole(0)]
 
         public async Task<IActionResult> Index(string name, int page = 1, int limit = 10)
         {

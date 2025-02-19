@@ -18,7 +18,7 @@ namespace TimeTable.Controllers
             _context = context;
         }
 
-        [AuthorizeRole(0)]
+        //[AuthorizeRole(0)]
         public async Task<IActionResult> Index(string name, Role? role, int page = 1, int limit = 2)
         {
             // Apply filters and pagination
@@ -57,7 +57,7 @@ namespace TimeTable.Controllers
 
 
         //// GET: User/Edit/5
-        [AuthorizeRole(0)]
+        //[AuthorizeRole(0)]
 
         public async Task<IActionResult> Edit(int id)
         {
@@ -72,7 +72,7 @@ namespace TimeTable.Controllers
         }
 
         // POST: User/Edit/5
-        [AuthorizeRole(0)]
+        //[AuthorizeRole(0)]
 
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -107,7 +107,7 @@ namespace TimeTable.Controllers
         }
 
         // GET: User/Delete/5
-        [AuthorizeRole(0)]
+        //[AuthorizeRole(0)]
 
         public async Task<IActionResult> Delete(int id)
         {
@@ -145,8 +145,6 @@ namespace TimeTable.Controllers
 
 
 
-
-        // Login POST action
 
 
     }

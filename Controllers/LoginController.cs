@@ -14,7 +14,6 @@ public class LoginController : Controller
         _context = context;
     }
 
-    // GET: Login
     public IActionResult Index()
     {
         return View();

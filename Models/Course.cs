@@ -18,10 +18,10 @@ namespace TimeTable.Models
         public string Name { get; set; }
 
         [Required]
-        public int DepartmentId { get; set; }
+        public int MajorId { get; set; }
 
-        [ForeignKey("DepartmentId")]
-        public Department Department { get; set; }
+        [ForeignKey("MajorId")]
+        public Major Major { get; set; }
     }
 
 }

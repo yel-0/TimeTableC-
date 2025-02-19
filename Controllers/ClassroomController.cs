@@ -19,7 +19,6 @@ namespace TimeTable.Controllers
         }
 
         // GET: Classroom
-        [AuthorizeRole(0)]
 
         public async Task<IActionResult> Index(string name, int page = 1, int limit = 10)
         {

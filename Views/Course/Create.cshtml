@@ -1,161 +1,161 @@
-﻿<style>
-    /* Custom styling for dropdown and search input */
-    .custom-select-container {
-        position: relative;
-        width: 100%;
-    }
+﻿@* <style> *@
+@*     /* Custom styling for dropdown and search input */ *@
+@*     .custom-select-container { *@
+@*         position: relative; *@
+@*         width: 100%; *@
+@*     } *@
 
-    #departmentSearch {
-        width: 100%;
-        padding: 8px;
-        border: 1px solid #ccc;
-        border-radius: 4px;
-        font-size: 14px;
-    }
+@*     #departmentSearch { *@
+@*         width: 100%; *@
+@*         padding: 8px; *@
+@*         border: 1px solid #ccc; *@
+@*         border-radius: 4px; *@
+@*         font-size: 14px; *@
+@*     } *@
 
-    .custom-dropdown {
-        position: absolute;
-        top: 100%;
-        left: 0;
-        width: 100%;
-        max-height: 200px;
-        overflow-y: auto;
-        border: 1px solid #ccc;
-        border-top: none;
-        background-color: white;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        display: none;
-        z-index: 10;
-    }
+@*     .custom-dropdown { *@
+@*         position: absolute; *@
+@*         top: 100%; *@
+@*         left: 0; *@
+@*         width: 100%; *@
+@*         max-height: 200px; *@
+@*         overflow-y: auto; *@
+@*         border: 1px solid #ccc; *@
+@*         border-top: none; *@
+@*         background-color: white; *@
+@*         box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); *@
+@*         display: none; *@
+@*         z-index: 10; *@
+@*     } *@
 
-    #departmentList {
-        margin: 0;
-        padding: 0;
-        list-style-type: none;
-    }
+@*     #departmentList { *@
+@*         margin: 0; *@
+@*         padding: 0; *@
+@*         list-style-type: none; *@
+@*     } *@
 
-    .custom-dropdown-item {
-        padding: 8px;
-        cursor: pointer;
-        font-size: 14px;
-        transition: background-color 0.2s ease;
-    }
+@*     .custom-dropdown-item { *@
+@*         padding: 8px; *@
+@*         cursor: pointer; *@
+@*         font-size: 14px; *@
+@*         transition: background-color 0.2s ease; *@
+@*     } *@
 
-        .custom-dropdown-item:hover {
-            background-color: #007bff;
-            color: white;
-        }
+@*         .custom-dropdown-item:hover { *@
+@*             background-color: #007bff; *@
+@*             color: white; *@
+@*         } *@
 
-    #departmentList li {
-        padding: 8px;
-        font-size: 14px;
-        color: black;
-    }
+@*     #departmentList li { *@
+@*         padding: 8px; *@
+@*         font-size: 14px; *@
+@*         color: black; *@
+@*     } *@
 
-    #departmentId {
-        display: none;
-    }
-</style>
+@*     #departmentId { *@
+@*         display: none; *@
+@*     } *@
+@* </style> *@
 
-<body>
-    <div class="container my-5">
-        <form method="post" asp-action="Create" id="createCourseForm" class="p-4 border rounded shadow bg-light">
-            <h2 class="text-primary text-center mb-4">Create Course</h2>
+@* <body> *@
+@*     <div class="container my-5"> *@
+@*         <form method="post" asp-action="Create" id="createCourseForm" class="p-4 border rounded shadow bg-light"> *@
+@*             <h2 class="text-primary text-center mb-4">Create Course</h2> *@
 
-            <div class="mb-3">
-                <label for="CourseCode" class="form-label">Course Code</label>
-                <input type="text" class="form-control border-primary" id="CourseCode" name="CourseCode" required />
-            </div>
+@*             <div class="mb-3"> *@
+@*                 <label for="CourseCode" class="form-label">Course Code</label> *@
+@*                 <input type="text" class="form-control border-primary" id="CourseCode" name="CourseCode" required /> *@
+@*             </div> *@
 
-            <div class="mb-3">
-                <label for="Name" class="form-label ">Course Name</label>
-                <input type="text" class="form-control border-primary" id="Name" name="Name" required />
-            </div>
+@*             <div class="mb-3"> *@
+@*                 <label for="Name" class="form-label ">Course Name</label> *@
+@*                 <input type="text" class="form-control border-primary" id="Name" name="Name" required /> *@
+@*             </div> *@
 
-            <div class="mb-3">
-                <label for="DepartmentSearch" class="form-label ">Department</label>
-                <div class="custom-select-container">
-                    <input type="text" id="departmentSearch" name="DepartmentName" class="form-control border-primary" placeholder="Search Department" autocomplete="off" required />
-                    <input type="hidden" id="departmentId" name="DepartmentId">
-                    <div id="departmentDropdown" class="custom-dropdown">
-                        <ul id="departmentList"></ul>
-                    </div>
-                </div>
-            </div>
+@*             <div class="mb-3"> *@
+@*                 <label for="DepartmentSearch" class="form-label ">Department</label> *@
+@*                 <div class="custom-select-container"> *@
+@*                     <input type="text" id="departmentSearch" name="DepartmentName" class="form-control border-primary" placeholder="Search Department" autocomplete="off" required /> *@
+@*                     <input type="hidden" id="departmentId" name="DepartmentId"> *@
+@*                     <div id="departmentDropdown" class="custom-dropdown"> *@
+@*                         <ul id="departmentList"></ul> *@
+@*                     </div> *@
+@*                 </div> *@
+@*             </div> *@
 
-            <div class="text-center">
-                <button type="submit" class="btn btn-primary w-100">Create</button>
-            </div>
-        </form>
+@*             <div class="text-center"> *@
+@*                 <button type="submit" class="btn btn-primary w-100">Create</button> *@
+@*             </div> *@
+@*         </form> *@
 
 
-    </div>
+@*     </div> *@
 
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script>
-        $(document).ready(function () {
-            const limit = 5;
-            let departmentPage = 1;
+@*     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script> *@
+@*     <script> *@
+@*         $(document).ready(function () { *@
+@*             const limit = 5; *@
+@*             let departmentPage = 1; *@
 
-            // Live search for Departments
-            $("#departmentSearch").on("input", function () {
-                var searchTerm = $(this).val();
-                if (searchTerm.length >= 2) {
-                    searchDepartments(searchTerm, departmentPage);
-                } else {
-                    $("#departmentDropdown").hide();
-                }
-            });
+@*             // Live search for Departments *@
+@*             $("#departmentSearch").on("input", function () { *@
+@*                 var searchTerm = $(this).val(); *@
+@*                 if (searchTerm.length >= 2) { *@
+@*                     searchDepartments(searchTerm, departmentPage); *@
+@*                 } else { *@
+@*                     $("#departmentDropdown").hide(); *@
+@*                 } *@
+@*             }); *@
 
-            // Function to search for Departments dynamically using AJAX
-            function searchDepartments(searchTerm, page) {
-                $.ajax({
-                    url: '/Course/Create',  // Adjust to your actual backend endpoint
-                    type: 'GET',
-                    data: { departmentName: searchTerm, departmentPage: page, limit: limit },
-                    success: function (response) {
-                        updateDropdown("#departmentDropdown", "#departmentList", response.departments, 'department');
-                    },
-                    error: function (xhr, status, error) {
-                        console.error("Error fetching departments:", error);
-                    }
-                });
-            }
+@*             // Function to search for Departments dynamically using AJAX *@
+@*             function searchDepartments(searchTerm, page) { *@
+@*                 $.ajax({ *@
+@*                     url: '/Course/Create',  // Adjust to your actual backend endpoint *@
+@*                     type: 'GET', *@
+@*                     data: { departmentName: searchTerm, departmentPage: page, limit: limit }, *@
+@*                     success: function (response) { *@
+@*                         updateDropdown("#departmentDropdown", "#departmentList", response.departments, 'department'); *@
+@*                     }, *@
+@*                     error: function (xhr, status, error) { *@
+@*                         console.error("Error fetching departments:", error); *@
+@*                     } *@
+@*                 }); *@
+@*             } *@
 
-            // Function to update the dropdown with search results
-            function updateDropdown(dropdownSelector, listSelector, data, type) {
-                const list = $(listSelector);
-                list.empty(); // Clear previous list items
+@*             // Function to update the dropdown with search results *@
+@*             function updateDropdown(dropdownSelector, listSelector, data, type) { *@
+@*                 const list = $(listSelector); *@
+@*                 list.empty(); // Clear previous list items *@
 
-                if (data && data.length > 0) {
-                    data.forEach((item) => {
-                        list.append(`<li class="list-group-item custom-dropdown-item" data-id="${item.id}">${item.name}</li>`);
-                    });
-                    $(dropdownSelector).show();
-                } else {
-                    list.append('<li class="list-group-item">No items found</li>');
-                    $(dropdownSelector).show();
-                }
-            }
+@*                 if (data && data.length > 0) { *@
+@*                     data.forEach((item) => { *@
+@*                         list.append(`<li class="list-group-item custom-dropdown-item" data-id="${item.id}">${item.name}</li>`); *@
+@*                     }); *@
+@*                     $(dropdownSelector).show(); *@
+@*                 } else { *@
+@*                     list.append('<li class="list-group-item">No items found</li>'); *@
+@*                     $(dropdownSelector).show(); *@
+@*                 } *@
+@*             } *@
 
-            // Handle selecting an item from the dropdown
-            $(document).on('click', '.custom-dropdown-item', function () {
-                const selectedText = $(this).text();
-                const selectedId = $(this).data('id');  // Get the Id of the selected item
+@*             // Handle selecting an item from the dropdown *@
+@*             $(document).on('click', '.custom-dropdown-item', function () { *@
+@*                 const selectedText = $(this).text(); *@
+@*                 const selectedId = $(this).data('id');  // Get the Id of the selected item *@
 
-                // Set the value of the input field with the name, but set the hidden input with the Id
-                $(this).closest('.custom-select-container').find('input').val(selectedText);
-                $(this).closest('.custom-select-container').find('input[type="hidden"]').val(selectedId); // Store the Id in hidden input
+@*                 // Set the value of the input field with the name, but set the hidden input with the Id *@
+@*                 $(this).closest('.custom-select-container').find('input').val(selectedText); *@
+@*                 $(this).closest('.custom-select-container').find('input[type="hidden"]').val(selectedId); // Store the Id in hidden input *@
 
-                $(this).closest('.custom-dropdown').hide();
-            });
+@*                 $(this).closest('.custom-dropdown').hide(); *@
+@*             }); *@
 
-            // Close dropdown if clicking outside
-            $(document).on('click', function (e) {
-                if (!$(e.target).closest('.custom-select-container').length) {
-                    $('.custom-dropdown').hide();
-                }
-            });
-        });
-    </script>
-</body>
+@*             // Close dropdown if clicking outside *@
+@*             $(document).on('click', function (e) { *@
+@*                 if (!$(e.target).closest('.custom-select-container').length) { *@
+@*                     $('.custom-dropdown').hide(); *@
+@*                 } *@
+@*             }); *@
+@*         }); *@
+@*     </script> *@
+@* </body> *@

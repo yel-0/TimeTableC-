@@ -1,367 +1,367 @@
-﻿@model TimeTable.Models.Timetable
+﻿@* @model TimeTable.Models.Timetable *@
 
-@{
-    ViewData["Title"] = "Create TimeTable";
-}
+@* @{ *@
+@*     ViewData["Title"] = "Create TimeTable"; *@
+@* } *@
 
-<style>
-    /* General Styling for Container */
-    .container {
-        max-width: 1200px;
-        margin: 0 auto;
-    }
+@* <style> *@
+@*     /* General Styling for Container */ *@
+@*     .container { *@
+@*         max-width: 1200px; *@
+@*         margin: 0 auto; *@
+@*     } *@
 
-    /* Custom Select Container */
-    .custom-select-container {
-        position: relative;
-    }
+@*     /* Custom Select Container */ *@
+@*     .custom-select-container { *@
+@*         position: relative; *@
+@*     } *@
 
-    /* Custom Dropdown Styling */
-    .custom-dropdown {
-        display: none;
-        position: absolute;
-        top: 100%;
-        left: 0;
-        right: 0;
-        border: 1px solid #ccc;
-        border-radius: 4px;
-        max-height: 200px;
-        overflow-y: auto;
-        background-color: white;
-        z-index: 1000;
-        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        width: 100%;
-    }
+@*     /* Custom Dropdown Styling */ *@
+@*     .custom-dropdown { *@
+@*         display: none; *@
+@*         position: absolute; *@
+@*         top: 100%; *@
+@*         left: 0; *@
+@*         right: 0; *@
+@*         border: 1px solid #ccc; *@
+@*         border-radius: 4px; *@
+@*         max-height: 200px; *@
+@*         overflow-y: auto; *@
+@*         background-color: white; *@
+@*         z-index: 1000; *@
+@*         box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); *@
+@*         width: 100%; *@
+@*     } *@
 
-    /* Dropdown Items */
-    .custom-dropdown-item {
-        padding: 8px;
-        cursor: pointer;
-        font-size: 14px;
-    }
+@*     /* Dropdown Items */ *@
+@*     .custom-dropdown-item { *@
+@*         padding: 8px; *@
+@*         cursor: pointer; *@
+@*         font-size: 14px; *@
+@*     } *@
 
-        /* Hover Effect on Dropdown Items */
-        .custom-dropdown-item:hover {
-            background-color: #f1f1f1;
-            color: #007bff;
-        }
+@*         /* Hover Effect on Dropdown Items */ *@
+@*         .custom-dropdown-item:hover { *@
+@*             background-color: #f1f1f1; *@
+@*             color: #007bff; *@
+@*         } *@
 
-    /* Highlighted Item */
-    .highlight {
-        background-color: #dcdcdc;
-    }
+@*     /* Highlighted Item */ *@
+@*     .highlight { *@
+@*         background-color: #dcdcdc; *@
+@*     } *@
 
-    /* Dropdown Lists Styling */
-    #courseList, #classroomList, #majorList, #facultyList {
-        padding: 0;
-        margin: 0;
-        list-style-type: none;
-    }
+@*     /* Dropdown Lists Styling */ *@
+@*     #courseList, #classroomList, #majorList, #facultyList { *@
+@*         padding: 0; *@
+@*         margin: 0; *@
+@*         list-style-type: none; *@
+@*     } *@
 
-    /* Search Input Styling */
-    input[type="text"], input[type="time"], select {
-        padding: 10px;
-        font-size: 14px;
-        border-radius: 4px;
-        border: 1px solid #ccc;
-        width: 100%;
-        box-sizing: border-box;
-    }
+@*     /* Search Input Styling */ *@
+@*     input[type="text"], input[type="time"], select { *@
+@*         padding: 10px; *@
+@*         font-size: 14px; *@
+@*         border-radius: 4px; *@
+@*         border: 1px solid #ccc; *@
+@*         width: 100%; *@
+@*         box-sizing: border-box; *@
+@*     } *@
 
-        /* Adjustments for Input Field Hover */
-        input[type="text"]:hover, input[type="time"]:hover, select:hover {
-            border-color: #007bff;
-        }
+@*         /* Adjustments for Input Field Hover */ *@
+@*         input[type="text"]:hover, input[type="time"]:hover, select:hover { *@
+@*             border-color: #007bff; *@
+@*         } *@
 
-        /* Adjustments for Input Focus */
-        input[type="text"]:focus, input[type="time"]:focus, select:focus {
-            border-color: #007bff;
-            outline: none;
-        }
+@*         /* Adjustments for Input Focus */ *@
+@*         input[type="text"]:focus, input[type="time"]:focus, select:focus { *@
+@*             border-color: #007bff; *@
+@*             outline: none; *@
+@*         } *@
 
-    /* Row Spacing Between Fields */
-    .row {
-        margin-bottom: 1rem;
-    }
+@*     /* Row Spacing Between Fields */ *@
+@*     .row { *@
+@*         margin-bottom: 1rem; *@
+@*     } *@
 
-    /* Text Input Field */
-    .form-control {
-        border-radius: 5px;
-        padding: 10px;
-    }
+@*     /* Text Input Field */ *@
+@*     .form-control { *@
+@*         border-radius: 5px; *@
+@*         padding: 10px; *@
+@*     } *@
 
  
 
   
 
-    }
-</style>
+@*     } *@
+@* </style> *@
 
 
 
-<div class="container mt-5">
+@* <div class="container mt-5"> *@
 
-    <form asp-action="Create" method="post" class="p-4">
-        <div class="card shadow-lg border-0">
-            <div class="card-body">
-                <h4 class="card-title text-center mb-4 text-primary">Create Timetable</h4>
+@*     <form asp-action="Create" method="post" class="p-4"> *@
+@*         <div class="card shadow-lg border-0"> *@
+@*             <div class="card-body"> *@
+@*                 <h4 class="card-title text-center mb-4 text-primary">Create Timetable</h4> *@
 
-                <!-- First Row -->
-                <div class="row">
-                    <!-- Course Search Input -->
-                    <div class="col-md-6 mb-3">
-                        <label class="form-label ">Course</label>
-                        <div class="custom-select-container">
-                            <input type="text" id="courseSearch" name="CourseName" class="form-control border-primary" placeholder="Search Course" autocomplete="off" />
-                            <input type="hidden" id="courseId" name="CourseId" />
-                            <div id="courseDropdown" class="custom-dropdown shadow">
-                                <ul id="courseList"></ul>
-                            </div>
-                        </div>
-                        <span asp-validation-for="CourseId" class="text-danger"></span>
-                    </div>
+@*                 <!-- First Row --> *@
+@*                 <div class="row"> *@
+@*                     <!-- Course Search Input --> *@
+@*                     <div class="col-md-6 mb-3"> *@
+@*                         <label class="form-label ">Course</label> *@
+@*                         <div class="custom-select-container"> *@
+@*                             <input type="text" id="courseSearch" name="CourseName" class="form-control border-primary" placeholder="Search Course" autocomplete="off" /> *@
+@*                             <input type="hidden" id="courseId" name="CourseId" /> *@
+@*                             <div id="courseDropdown" class="custom-dropdown shadow"> *@
+@*                                 <ul id="courseList"></ul> *@
+@*                             </div> *@
+@*                         </div> *@
+@*                         <span asp-validation-for="CourseId" class="text-danger"></span> *@
+@*                     </div> *@
 
-                    <!-- Classroom Search Input -->
-                    <div class="col-md-6 mb-3">
-                        <label class="form-label ">Classroom</label>
-                        <div class="custom-select-container">
-                            <input type="text" id="classroomSearch" name="ClassroomName" class="form-control border-primary" placeholder="Search Classroom" autocomplete="off" />
-                            <input type="hidden" id="classroomId" name="ClassroomId" />
-                            <div id="classroomDropdown" class="custom-dropdown shadow">
-                                <ul id="classroomList"></ul>
-                            </div>
-                        </div>
-                        <span asp-validation-for="ClassroomId" class="text-danger"></span>
-                    </div>
-                </div>
+@*                     <!-- Classroom Search Input --> *@
+@*                     <div class="col-md-6 mb-3"> *@
+@*                         <label class="form-label ">Classroom</label> *@
+@*                         <div class="custom-select-container"> *@
+@*                             <input type="text" id="classroomSearch" name="ClassroomName" class="form-control border-primary" placeholder="Search Classroom" autocomplete="off" /> *@
+@*                             <input type="hidden" id="classroomId" name="ClassroomId" /> *@
+@*                             <div id="classroomDropdown" class="custom-dropdown shadow"> *@
+@*                                 <ul id="classroomList"></ul> *@
+@*                             </div> *@
+@*                         </div> *@
+@*                         <span asp-validation-for="ClassroomId" class="text-danger"></span> *@
+@*                     </div> *@
+@*                 </div> *@
 
-                <!-- Second Row -->
-                <div class="row">
-                    <!-- Major Search Input -->
-                    <div class="col-md-6 mb-3">
-                        <label class="form-label ">Major</label>
-                        <div class="custom-select-container">
-                            <input type="text" id="majorSearch" name="MajorName" class="form-control border-primary" placeholder="Search Major" autocomplete="off" />
-                            <input type="hidden" id="majorId" name="MajorId" />
-                            <div id="majorDropdown" class="custom-dropdown shadow">
-                                <ul id="majorList"></ul>
-                            </div>
-                        </div>
-                        <span asp-validation-for="MajorId" class="text-danger"></span>
-                    </div>
+@*                 <!-- Second Row --> *@
+@*                 <div class="row"> *@
+@*                     <!-- Major Search Input --> *@
+@*                     <div class="col-md-6 mb-3"> *@
+@*                         <label class="form-label ">Major</label> *@
+@*                         <div class="custom-select-container"> *@
+@*                             <input type="text" id="majorSearch" name="MajorName" class="form-control border-primary" placeholder="Search Major" autocomplete="off" /> *@
+@*                             <input type="hidden" id="majorId" name="MajorId" /> *@
+@*                             <div id="majorDropdown" class="custom-dropdown shadow"> *@
+@*                                 <ul id="majorList"></ul> *@
+@*                             </div> *@
+@*                         </div> *@
+@*                         <span asp-validation-for="MajorId" class="text-danger"></span> *@
+@*                     </div> *@
 
-                    <!-- Faculty Search Input -->
-                    <div class="col-md-6 mb-3">
-                        <label class="form-label">Faculty</label>
-                        <div class="custom-select-container">
-                            <input type="text" id="facultySearch" name="FacultyName" class="form-control border-primary" placeholder="Search Faculty" autocomplete="off" />
-                            <input type="hidden" id="facultyId" name="FacultyId" />
-                            <div id="facultyDropdown" class="custom-dropdown shadow">
-                                <ul id="facultyList"></ul>
-                            </div>
-                        </div>
-                        <span asp-validation-for="FacultyId" class="text-danger"></span>
-                    </div>
-                </div>
+@*                     <!-- Faculty Search Input --> *@
+@*                     <div class="col-md-6 mb-3"> *@
+@*                         <label class="form-label">Faculty</label> *@
+@*                         <div class="custom-select-container"> *@
+@*                             <input type="text" id="facultySearch" name="FacultyName" class="form-control border-primary" placeholder="Search Faculty" autocomplete="off" /> *@
+@*                             <input type="hidden" id="facultyId" name="FacultyId" /> *@
+@*                             <div id="facultyDropdown" class="custom-dropdown shadow"> *@
+@*                                 <ul id="facultyList"></ul> *@
+@*                             </div> *@
+@*                         </div> *@
+@*                         <span asp-validation-for="FacultyId" class="text-danger"></span> *@
+@*                     </div> *@
+@*                 </div> *@
 
-                <!-- Third Row -->
-                <div class="row">
-                    <!-- Day of Week Dropdown -->
-                    <div class="col-md-6 mb-3">
-                        <label asp-for="DayOfWeek" class="form-label ">Day of the Week</label>
-                        <select asp-for="DayOfWeek" class="form-select border-primary">
-                            <option value="">Select a Day</option>
-                            <option value="Monday">Monday</option>
-                            <option value="Tuesday">Tuesday</option>
-                            <option value="Wednesday">Wednesday</option>
-                            <option value="Thursday">Thursday</option>
-                            <option value="Friday">Friday</option>
-                            <option value="Saturday">Saturday</option>
-                            <option value="Sunday">Sunday</option>
-                        </select>
-                        <span asp-validation-for="DayOfWeek" class="text-danger"></span>
-                    </div>
+@*                 <!-- Third Row --> *@
+@*                 <div class="row"> *@
+@*                     <!-- Day of Week Dropdown --> *@
+@*                     <div class="col-md-6 mb-3"> *@
+@*                         <label asp-for="DayOfWeek" class="form-label ">Day of the Week</label> *@
+@*                         <select asp-for="DayOfWeek" class="form-select border-primary"> *@
+@*                             <option value="">Select a Day</option> *@
+@*                             <option value="Monday">Monday</option> *@
+@*                             <option value="Tuesday">Tuesday</option> *@
+@*                             <option value="Wednesday">Wednesday</option> *@
+@*                             <option value="Thursday">Thursday</option> *@
+@*                             <option value="Friday">Friday</option> *@
+@*                             <option value="Saturday">Saturday</option> *@
+@*                             <option value="Sunday">Sunday</option> *@
+@*                         </select> *@
+@*                         <span asp-validation-for="DayOfWeek" class="text-danger"></span> *@
+@*                     </div> *@
 
-                    <!-- Start Time Input -->
-                    <div class="col-md-6 mb-3">
-                        <label asp-for="StartTime" class="form-label ">Start Time</label>
-                        <input asp-for="StartTime" type="time" class="form-control border-primary" />
-                        <span asp-validation-for="StartTime" class="text-danger"></span>
-                    </div>
-                </div>
+@*                     <!-- Start Time Input --> *@
+@*                     <div class="col-md-6 mb-3"> *@
+@*                         <label asp-for="StartTime" class="form-label ">Start Time</label> *@
+@*                         <input asp-for="StartTime" type="time" class="form-control border-primary" /> *@
+@*                         <span asp-validation-for="StartTime" class="text-danger"></span> *@
+@*                     </div> *@
+@*                 </div> *@
 
-                <!-- Fourth Row -->
-                <div class="row">
-                    <!-- End Time Input -->
-                    <div class="col-md-6 mb-3">
-                        <label asp-for="EndTime" class="form-label ">End Time</label>
-                        <input asp-for="EndTime" type="time" class="form-control border-primary" />
-                        <span asp-validation-for="EndTime" class="text-danger"></span>
-                    </div>
+@*                 <!-- Fourth Row --> *@
+@*                 <div class="row"> *@
+@*                     <!-- End Time Input --> *@
+@*                     <div class="col-md-6 mb-3"> *@
+@*                         <label asp-for="EndTime" class="form-label ">End Time</label> *@
+@*                         <input asp-for="EndTime" type="time" class="form-control border-primary" /> *@
+@*                         <span asp-validation-for="EndTime" class="text-danger"></span> *@
+@*                     </div> *@
 
-                    <!-- Year Input -->
-                    <div class="col-md-6 mb-3">
-                        <label asp-for="Year" class="form-label ">Year</label>
-                        <input asp-for="Year" class="form-control border-primary" />
-                        <span asp-validation-for="Year" class="text-danger"></span>
-                    </div>
-                </div>
+@*                     <!-- Year Input --> *@
+@*                     <div class="col-md-6 mb-3"> *@
+@*                         <label asp-for="Year" class="form-label ">Year</label> *@
+@*                         <input asp-for="Year" class="form-control border-primary" /> *@
+@*                         <span asp-validation-for="Year" class="text-danger"></span> *@
+@*                     </div> *@
+@*                 </div> *@
 
-                <!-- Fifth Row -->
-                <div class="row">
-                    <!-- Semester Dropdown -->
-                    <div class="col-md-6 mb-3">
-                        <label asp-for="Semester" class="form-label ">Semester</label>
-                        <select asp-for="Semester" class="form-select border-primary">
-                            <option value="">Select a Semester</option>
-                            @for (int i = 1; i <= 15; i++)
-                            {
-                                <option value="@i">@i Semester</option>
-                            }
-                        </select>
-                        <span asp-validation-for="Semester" class="text-danger"></span>
-                    </div>
+@*                 <!-- Fifth Row --> *@
+@*                 <div class="row"> *@
+@*                     <!-- Semester Dropdown --> *@
+@*                     <div class="col-md-6 mb-3"> *@
+@*                         <label asp-for="Semester" class="form-label ">Semester</label> *@
+@*                         <select asp-for="Semester" class="form-select border-primary"> *@
+@*                             <option value="">Select a Semester</option> *@
+@*                             @for (int i = 1; i <= 15; i++) *@
+@*                             { *@
+@*                                 <option value="@i">@i Semester</option> *@
+@*                             } *@
+@*                         </select> *@
+@*                         <span asp-validation-for="Semester" class="text-danger"></span> *@
+@*                     </div> *@
 
-                    <!-- Section Input -->
-                    <div class="col-md-6 mb-3">
-                        <label asp-for="Section" class="form-label ">Section</label>
-                        <input asp-for="Section" class="form-control border-primary" />
-                        <span asp-validation-for="Section" class="text-danger"></span>
-                    </div>
-                </div>
+@*                     <!-- Section Input --> *@
+@*                     <div class="col-md-6 mb-3"> *@
+@*                         <label asp-for="Section" class="form-label ">Section</label> *@
+@*                         <input asp-for="Section" class="form-control border-primary" /> *@
+@*                         <span asp-validation-for="Section" class="text-danger"></span> *@
+@*                     </div> *@
+@*                 </div> *@
 
-                <!-- Boolean Radio Button -->
-                <div class="row">
-                    <div class="col-md-6 mb-3">
-                        <label class="form-label">Allow this teacher to teach at overlapping times?</label>
+@*                 <!-- Boolean Radio Button --> *@
+@*                 <div class="row"> *@
+@*                     <div class="col-md-6 mb-3"> *@
+@*                         <label class="form-label">Allow this teacher to teach at overlapping times?</label> *@
 
-                        <div class="form-check">
-                            <input class="form-check-input" type="radio" id="isActiveTrue" name="IsActive" value="true" />
-                            <label class="form-check-label" for="isActiveTrue">Yes</label>
-                        </div>
-                        <div class="form-check">
-                            <input class="form-check-input" type="radio" id="isActiveFalse" name="IsActive" value="false" checked />
-                            <label class="form-check-label" for="isActiveFalse">No</label>
-                        </div>
-                    </div>
-                </div>
-
-
-                <!-- Submit Button -->
-                <div class="text-center mt-4">
-                    <button type="submit" class="btn btn-primary btn-lg px-5">Create Timetable</button>
-                </div>
-            </div>
-        </div>
-    </form>
-
-    <div class="mt-3">
-        <a href="@Url.Action("Index")" class="btn btn-secondary">Back to List</a>
-    </div>
-</div>
+@*                         <div class="form-check"> *@
+@*                             <input class="form-check-input" type="radio" id="isActiveTrue" name="IsActive" value="true" /> *@
+@*                             <label class="form-check-label" for="isActiveTrue">Yes</label> *@
+@*                         </div> *@
+@*                         <div class="form-check"> *@
+@*                             <input class="form-check-input" type="radio" id="isActiveFalse" name="IsActive" value="false" checked /> *@
+@*                             <label class="form-check-label" for="isActiveFalse">No</label> *@
+@*                         </div> *@
+@*                     </div> *@
+@*                 </div> *@
 
 
-@section Scripts {
-    @{
-        await Html.RenderPartialAsync("_ValidationScriptsPartial");
-    }
-}
+@*                 <!-- Submit Button --> *@
+@*                 <div class="text-center mt-4"> *@
+@*                     <button type="submit" class="btn btn-primary btn-lg px-5">Create Timetable</button> *@
+@*                 </div> *@
+@*             </div> *@
+@*         </div> *@
+@*     </form> *@
 
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script>
-        $(document).ready(function () {
-        const limit = 5;
-
-        // Live search for Course
-        $("#courseSearch").on("input", function () {
-            var searchTerm = $(this).val();
-            if (searchTerm.length >= 2) {
-                searchItems('course', searchTerm, 1);
-            } else {
-                $("#courseDropdown").hide();
-            }
-        });
-
-        // Live search for Classroom
-        $("#classroomSearch").on("input", function () {
-            var searchTerm = $(this).val();
-            if (searchTerm.length >= 2) {
-                searchItems('classroom', searchTerm, 1);
-            } else {
-                $("#classroomDropdown").hide();
-            }
-        });
-
-        // Live search for Majors
-        $("#majorSearch").on("input", function () {
-            var searchTerm = $(this).val();
-            if (searchTerm.length >= 2) {
-                searchItems('major', searchTerm, 1);
-            } else {
-                $("#majorDropdown").hide();
-            }
-        });
-
-        // Live search for Faculties
-        $("#facultySearch").on("input", function () {
-            var searchTerm = $(this).val();
-			console.log(searchTerm);
-            if (searchTerm.length >= 2) {
-                searchItems('faculty', searchTerm, 1);
-            } else {
-                $("#facultyDropdown").hide();
-            }
-        });
-
-          function searchItems(type, term, page) {
-        $.ajax({
-            url: '/TimeTable/GetDropDownData',
-            type: 'GET',
-            data: { [`${type}Name`]: term, [`${type}Page`]: page, limit: limit },
-            success: function (response) {
-                let listId = `#${type}List`;
-                let dropdownId = `#${type}Dropdown`;
+@*     <div class="mt-3"> *@
+@*         <a href="@Url.Action("Index")" class="btn btn-secondary">Back to List</a> *@
+@*     </div> *@
+@* </div> *@
 
 
-                $(listId).empty();
+@* @section Scripts { *@
+@*     @{ *@
+@*         await Html.RenderPartialAsync("_ValidationScriptsPartial"); *@
+@*     } *@
+@* } *@
 
-                // Check if the type corresponds to a valid property in the response
-                let items = response[type + 's'] || response.faculties;  // Fallback to faculties if type is not found
+@* <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script> *@
+@* <script> *@
+@*         $(document).ready(function () { *@
+@*         const limit = 5; *@
+
+@*         // Live search for Course *@
+@*         $("#courseSearch").on("input", function () { *@
+@*             var searchTerm = $(this).val(); *@
+@*             if (searchTerm.length >= 2) { *@
+@*                 searchItems('course', searchTerm, 1); *@
+@*             } else { *@
+@*                 $("#courseDropdown").hide(); *@
+@*             } *@
+@*         }); *@
+
+@*         // Live search for Classroom *@
+@*         $("#classroomSearch").on("input", function () { *@
+@*             var searchTerm = $(this).val(); *@
+@*             if (searchTerm.length >= 2) { *@
+@*                 searchItems('classroom', searchTerm, 1); *@
+@*             } else { *@
+@*                 $("#classroomDropdown").hide(); *@
+@*             } *@
+@*         }); *@
+
+@*         // Live search for Majors *@
+@*         $("#majorSearch").on("input", function () { *@
+@*             var searchTerm = $(this).val(); *@
+@*             if (searchTerm.length >= 2) { *@
+@*                 searchItems('major', searchTerm, 1); *@
+@*             } else { *@
+@*                 $("#majorDropdown").hide(); *@
+@*             } *@
+@*         }); *@
+
+@*         // Live search for Faculties *@
+@*         $("#facultySearch").on("input", function () { *@
+@*             var searchTerm = $(this).val(); *@
+@* 			console.log(searchTerm); *@
+@*             if (searchTerm.length >= 2) { *@
+@*                 searchItems('faculty', searchTerm, 1); *@
+@*             } else { *@
+@*                 $("#facultyDropdown").hide(); *@
+@*             } *@
+@*         }); *@
+
+@*           function searchItems(type, term, page) { *@
+@*         $.ajax({ *@
+@*             url: '/TimeTable/GetDropDownData', *@
+@*             type: 'GET', *@
+@*             data: { [`${type}Name`]: term, [`${type}Page`]: page, limit: limit }, *@
+@*             success: function (response) { *@
+@*                 let listId = `#${type}List`; *@
+@*                 let dropdownId = `#${type}Dropdown`; *@
 
 
-                if (Array.isArray(items) && items.length > 0) {
-                    items.forEach(item => {
-                        $(listId).append(`<li class="custom-dropdown-item" data-id="${item.id}">${item.name}</li>`);
-                    });
-                } else {
-                    $(listId).append('<li class="custom-dropdown-item">No results found</li>');
-                }
+@*                 $(listId).empty(); *@
 
-                $(dropdownId).show();
-            },
-            error: function (xhr, status, error) {
-                console.error("Error fetching data:", error);
-            }
-        });
-    }
+@*                 // Check if the type corresponds to a valid property in the response *@
+@*                 let items = response[type + 's'] || response.faculties;  // Fallback to faculties if type is not found *@
 
 
+@*                 if (Array.isArray(items) && items.length > 0) { *@
+@*                     items.forEach(item => { *@
+@*                         $(listId).append(`<li class="custom-dropdown-item" data-id="${item.id}">${item.name}</li>`); *@
+@*                     }); *@
+@*                 } else { *@
+@*                     $(listId).append('<li class="custom-dropdown-item">No results found</li>'); *@
+@*                 } *@
+
+@*                 $(dropdownId).show(); *@
+@*             }, *@
+@*             error: function (xhr, status, error) { *@
+@*                 console.error("Error fetching data:", error); *@
+@*             } *@
+@*         }); *@
+@*     } *@
 
 
 
-        // Handle selecting an item from the dropdown
-        $(document).on('click', '.custom-dropdown-item', function () {
-            var itemId = $(this).data('id');
-            var itemName = $(this).text();
-            var inputId = $(this).closest('.custom-select-container').find('input').first();
-            var hiddenInputId = $(this).closest('.custom-select-container').find('input[type="hidden"]');
-
-            inputId.val(itemName);
-            hiddenInputId.val(itemId);
-
-            $(this).closest('.custom-dropdown').hide();
-        });
-    });
 
 
-</script>
+@*         // Handle selecting an item from the dropdown *@
+@*         $(document).on('click', '.custom-dropdown-item', function () { *@
+@*             var itemId = $(this).data('id'); *@
+@*             var itemName = $(this).text(); *@
+@*             var inputId = $(this).closest('.custom-select-container').find('input').first(); *@
+@*             var hiddenInputId = $(this).closest('.custom-select-container').find('input[type="hidden"]'); *@
+
+@*             inputId.val(itemName); *@
+@*             hiddenInputId.val(itemId); *@
+
+@*             $(this).closest('.custom-dropdown').hide(); *@
+@*         }); *@
+@*     }); *@
+
+
+@* </script> *@

@@ -1,339 +1,339 @@
-﻿@model TimeTable.ViewModels.TimeTableEditViewModel
+﻿@* @model TimeTable.ViewModels.TimeTableEditViewModel *@
 
-@{
-    ViewData["Title"] = "Edit Timetable";
-}
+@* @{ *@
+@*     ViewData["Title"] = "Edit Timetable"; *@
+@* } *@
 
-<style>
-    /* General Styling for Container */
-    .container {
-        max-width: 1200px;
-        margin: 0 auto;
-    }
+@* <style> *@
+@*     /* General Styling for Container */ *@
+@*     .container { *@
+@*         max-width: 1200px; *@
+@*         margin: 0 auto; *@
+@*     } *@
 
-    /* Custom Select Container */
-    .custom-select-container {
-        position: relative;
-    }
+@*     /* Custom Select Container */ *@
+@*     .custom-select-container { *@
+@*         position: relative; *@
+@*     } *@
 
-    /* Custom Dropdown Styling */
-    .custom-dropdown {
-        display: none;
-        position: absolute;
-        top: 100%;
-        left: 0;
-        right: 0;
-        border: 1px solid #ccc;
-        border-radius: 4px;
-        max-height: 200px;
-        overflow-y: auto;
-        background-color: white;
-        z-index: 1000;
-        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        width: 100%;
-    }
+@*     /* Custom Dropdown Styling */ *@
+@*     .custom-dropdown { *@
+@*         display: none; *@
+@*         position: absolute; *@
+@*         top: 100%; *@
+@*         left: 0; *@
+@*         right: 0; *@
+@*         border: 1px solid #ccc; *@
+@*         border-radius: 4px; *@
+@*         max-height: 200px; *@
+@*         overflow-y: auto; *@
+@*         background-color: white; *@
+@*         z-index: 1000; *@
+@*         box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); *@
+@*         width: 100%; *@
+@*     } *@
 
-    /* Dropdown Items */
-    .custom-dropdown-item {
-        padding: 8px;
-        cursor: pointer;
-        font-size: 14px;
-    }
+@*     /* Dropdown Items */ *@
+@*     .custom-dropdown-item { *@
+@*         padding: 8px; *@
+@*         cursor: pointer; *@
+@*         font-size: 14px; *@
+@*     } *@
 
-        /* Hover Effect on Dropdown Items */
-        .custom-dropdown-item:hover {
-            background-color: #f1f1f1;
-            color: #007bff;
-        }
+@*         /* Hover Effect on Dropdown Items */ *@
+@*         .custom-dropdown-item:hover { *@
+@*             background-color: #f1f1f1; *@
+@*             color: #007bff; *@
+@*         } *@
 
-    /* Highlighted Item */
-    .highlight {
-        background-color: #dcdcdc;
-    }
+@*     /* Highlighted Item */ *@
+@*     .highlight { *@
+@*         background-color: #dcdcdc; *@
+@*     } *@
 
-    /* Dropdown Lists Styling */
-    #courseList, #classroomList, #majorList, #facultyList {
-        padding: 0;
-        margin: 0;
-        list-style-type: none;
-    }
+@*     /* Dropdown Lists Styling */ *@
+@*     #courseList, #classroomList, #majorList, #facultyList { *@
+@*         padding: 0; *@
+@*         margin: 0; *@
+@*         list-style-type: none; *@
+@*     } *@
 
-    /* Search Input Styling */
-    input[type="text"], input[type="time"], select {
-        padding: 10px;
-        font-size: 14px;
-        border-radius: 4px;
-        border: 1px solid #ccc;
-        width: 100%;
-        box-sizing: border-box;
-    }
+@*     /* Search Input Styling */ *@
+@*     input[type="text"], input[type="time"], select { *@
+@*         padding: 10px; *@
+@*         font-size: 14px; *@
+@*         border-radius: 4px; *@
+@*         border: 1px solid #ccc; *@
+@*         width: 100%; *@
+@*         box-sizing: border-box; *@
+@*     } *@
 
-        /* Adjustments for Input Field Hover */
-        input[type="text"]:hover, input[type="time"]:hover, select:hover {
-            border-color: #007bff;
-        }
+@*         /* Adjustments for Input Field Hover */ *@
+@*         input[type="text"]:hover, input[type="time"]:hover, select:hover { *@
+@*             border-color: #007bff; *@
+@*         } *@
 
-        /* Adjustments for Input Focus */
-        input[type="text"]:focus, input[type="time"]:focus, select:focus {
-            border-color: #007bff;
-            outline: none;
-        }
+@*         /* Adjustments for Input Focus */ *@
+@*         input[type="text"]:focus, input[type="time"]:focus, select:focus { *@
+@*             border-color: #007bff; *@
+@*             outline: none; *@
+@*         } *@
 
-    /* Row Spacing Between Fields */
-    .row {
-        margin-bottom: 1rem;
-    }
+@*     /* Row Spacing Between Fields */ *@
+@*     .row { *@
+@*         margin-bottom: 1rem; *@
+@*     } *@
 
-    /* Text Input Field */
-    .form-control {
-        border-radius: 5px;
-        padding: 10px;
-    }
+@*     /* Text Input Field */ *@
+@*     .form-control { *@
+@*         border-radius: 5px; *@
+@*         padding: 10px; *@
+@*     } *@
 
-    }
-</style>
+@*     } *@
+@* </style> *@
 
-<h1 class="mb-5"> Edit</h1>
-<form method="post" asp-action="Edit">
-    <div class="container mt-4">
-        <div class="row">
-            <!-- Start Time -->
-            <div class="col-md-6 mb-3">
-                <label for="StartTime">Start Time</label>
-                <input type="time" id="StartTime" class="form-control" name="StartTime" value="@Model.StartTime" required />
-                <span asp-validation-for="StartTime" class="text-danger"></span>
-            </div>
+@* <h1 class="mb-5"> Edit</h1> *@
+@* <form method="post" asp-action="Edit"> *@
+@*     <div class="container mt-4"> *@
+@*         <div class="row"> *@
+@*             <!-- Start Time --> *@
+@*             <div class="col-md-6 mb-3"> *@
+@*                 <label for="StartTime">Start Time</label> *@
+@*                 <input type="time" id="StartTime" class="form-control" name="StartTime" value="@Model.StartTime" required /> *@
+@*                 <span asp-validation-for="StartTime" class="text-danger"></span> *@
+@*             </div> *@
 
-            <!-- End Time -->
-            <div class="col-md-6 mb-3">
-                <label for="EndTime">End Time</label>
-                <input type="time" id="EndTime" class="form-control" name="EndTime" value="@Model.EndTime" required />
-                <span asp-validation-for="EndTime" class="text-danger"></span>
-            </div>
-        </div>
+@*             <!-- End Time --> *@
+@*             <div class="col-md-6 mb-3"> *@
+@*                 <label for="EndTime">End Time</label> *@
+@*                 <input type="time" id="EndTime" class="form-control" name="EndTime" value="@Model.EndTime" required /> *@
+@*                 <span asp-validation-for="EndTime" class="text-danger"></span> *@
+@*             </div> *@
+@*         </div> *@
 
-        <div class="row">
-            <!-- Year -->
-            <div class="col-md-6 mb-3">
-                <label for="Year">Year</label>
-                <input type="number" id="Year" class="form-control" name="Year" value="@Model.Year" required />
-                <span asp-validation-for="Year" class="text-danger"></span>
-            </div>
+@*         <div class="row"> *@
+@*             <!-- Year --> *@
+@*             <div class="col-md-6 mb-3"> *@
+@*                 <label for="Year">Year</label> *@
+@*                 <input type="number" id="Year" class="form-control" name="Year" value="@Model.Year" required /> *@
+@*                 <span asp-validation-for="Year" class="text-danger"></span> *@
+@*             </div> *@
 
-            <!-- Semester -->
-            <div class="col-md-6 mb-3">
-                <label for="Semester">Semester</label>
-                <input type="number" id="Semester" class="form-control" name="Semester" value="@Model.Semester" required />
-                <span asp-validation-for="Semester" class="text-danger"></span>
-            </div>
-        </div>
+@*             <!-- Semester --> *@
+@*             <div class="col-md-6 mb-3"> *@
+@*                 <label for="Semester">Semester</label> *@
+@*                 <input type="number" id="Semester" class="form-control" name="Semester" value="@Model.Semester" required /> *@
+@*                 <span asp-validation-for="Semester" class="text-danger"></span> *@
+@*             </div> *@
+@*         </div> *@
 
-        <div class="row">
-            <!-- Section -->
-            <div class="col-md-6 mb-3">
-                <label for="Section">Section</label>
-                <input type="text" id="Section" class="form-control" name="Section" value="@Model.Section" required />
-                <span asp-validation-for="Section" class="text-danger"></span>
-            </div>
+@*         <div class="row"> *@
+@*             <!-- Section --> *@
+@*             <div class="col-md-6 mb-3"> *@
+@*                 <label for="Section">Section</label> *@
+@*                 <input type="text" id="Section" class="form-control" name="Section" value="@Model.Section" required /> *@
+@*                 <span asp-validation-for="Section" class="text-danger"></span> *@
+@*             </div> *@
 
-            <!-- Day of the Week -->
-            <div class="col-md-6 mb-3">
-                <label for="DayOfWeek">Day of the Week</label>
-                <select id="DayOfWeek" class="form-control" name="DayOfWeek" required>
-                    <option value="Monday">Monday</option>
-                    <option value="Tuesday">Tuesday</option>
-                    <option value="Wednesday">Wednesday</option>
-                    <option value="Thursday">Thursday</option>
-                    <option value="Friday">Friday</option>
-                    <option value="Saturday">Saturday</option>
-                    <option value="Sunday">Sunday</option>
-                </select>
-                <span asp-validation-for="DayOfWeek" class="text-danger"></span>
-            </div>
-        </div>
+@*             <!-- Day of the Week --> *@
+@*             <div class="col-md-6 mb-3"> *@
+@*                 <label for="DayOfWeek">Day of the Week</label> *@
+@*                 <select id="DayOfWeek" class="form-control" name="DayOfWeek" required> *@
+@*                     <option value="Monday">Monday</option> *@
+@*                     <option value="Tuesday">Tuesday</option> *@
+@*                     <option value="Wednesday">Wednesday</option> *@
+@*                     <option value="Thursday">Thursday</option> *@
+@*                     <option value="Friday">Friday</option> *@
+@*                     <option value="Saturday">Saturday</option> *@
+@*                     <option value="Sunday">Sunday</option> *@
+@*                 </select> *@
+@*                 <span asp-validation-for="DayOfWeek" class="text-danger"></span> *@
+@*             </div> *@
+@*         </div> *@
 
-        <div class="row">
-            <!-- Course Search -->
-            <div class="col-md-6 mb-3">
-                <label for="courseSearch">Course</label>
-                <div class="custom-select-container">
-                    <input type="text" id="courseSearch" name="CourseName" class="form-control w-100" placeholder="Search Course" autocomplete="off" value="@Model.CourseName" />
-                    <input type="hidden" id="courseId" name="CourseId" value="@Model.CourseId" />
-                    <div id="courseDropdown" class="custom-dropdown">
-                        <ul id="courseList"></ul>
-                    </div>
-                </div>
-                <span asp-validation-for="CourseId" class="text-danger"></span>
-            </div>
+@*         <div class="row"> *@
+@*             <!-- Course Search --> *@
+@*             <div class="col-md-6 mb-3"> *@
+@*                 <label for="courseSearch">Course</label> *@
+@*                 <div class="custom-select-container"> *@
+@*                     <input type="text" id="courseSearch" name="CourseName" class="form-control w-100" placeholder="Search Course" autocomplete="off" value="@Model.CourseName" /> *@
+@*                     <input type="hidden" id="courseId" name="CourseId" value="@Model.CourseId" /> *@
+@*                     <div id="courseDropdown" class="custom-dropdown"> *@
+@*                         <ul id="courseList"></ul> *@
+@*                     </div> *@
+@*                 </div> *@
+@*                 <span asp-validation-for="CourseId" class="text-danger"></span> *@
+@*             </div> *@
 
-            <!-- Classroom Search -->
-            <div class="col-md-6 mb-3">
-                <label for="classroomSearch">Classroom</label>
-                <div class="custom-select-container">
-                    <input type="text" id="classroomSearch" name="ClassroomName" class="form-control w-100" placeholder="Search Classroom" autocomplete="off" value="@Model.ClassroomName" />
-                    <input type="hidden" id="classroomId" name="ClassroomId" value="@Model.ClassroomId" />
-                    <div id="classroomDropdown" class="custom-dropdown">
-                        <ul id="classroomList"></ul>
-                    </div>
-                </div>
-                <span asp-validation-for="ClassroomId" class="text-danger"></span>
-            </div>
-        </div>
+@*             <!-- Classroom Search --> *@
+@*             <div class="col-md-6 mb-3"> *@
+@*                 <label for="classroomSearch">Classroom</label> *@
+@*                 <div class="custom-select-container"> *@
+@*                     <input type="text" id="classroomSearch" name="ClassroomName" class="form-control w-100" placeholder="Search Classroom" autocomplete="off" value="@Model.ClassroomName" /> *@
+@*                     <input type="hidden" id="classroomId" name="ClassroomId" value="@Model.ClassroomId" /> *@
+@*                     <div id="classroomDropdown" class="custom-dropdown"> *@
+@*                         <ul id="classroomList"></ul> *@
+@*                     </div> *@
+@*                 </div> *@
+@*                 <span asp-validation-for="ClassroomId" class="text-danger"></span> *@
+@*             </div> *@
+@*         </div> *@
 
-        <div class="row">
-            <!-- Major Search -->
-            <div class="col-md-6 mb-3">
-                <label for="majorSearch">Major</label>
-                <div class="custom-select-container">
-                    <input type="text" id="majorSearch" name="MajorName" class="form-control w-100" placeholder="Search Major" autocomplete="off" value="@Model.MajorName" />
-                    <input type="hidden" id="majorId" name="MajorId" value="@Model.MajorId" />
-                    <div id="majorDropdown" class="custom-dropdown">
-                        <ul id="majorList"></ul>
-                    </div>
-                </div>
-                <span asp-validation-for="MajorId" class="text-danger"></span>
-            </div>
+@*         <div class="row"> *@
+@*             <!-- Major Search --> *@
+@*             <div class="col-md-6 mb-3"> *@
+@*                 <label for="majorSearch">Major</label> *@
+@*                 <div class="custom-select-container"> *@
+@*                     <input type="text" id="majorSearch" name="MajorName" class="form-control w-100" placeholder="Search Major" autocomplete="off" value="@Model.MajorName" /> *@
+@*                     <input type="hidden" id="majorId" name="MajorId" value="@Model.MajorId" /> *@
+@*                     <div id="majorDropdown" class="custom-dropdown"> *@
+@*                         <ul id="majorList"></ul> *@
+@*                     </div> *@
+@*                 </div> *@
+@*                 <span asp-validation-for="MajorId" class="text-danger"></span> *@
+@*             </div> *@
 
-            <!-- Faculty Search -->
-            <div class="col-md-6 mb-3">
-                <label for="facultySearch">Faculty</label>
-                <div class="custom-select-container">
-                    <input type="text" id="facultySearch" name="FacultyName" class="form-control w-100" placeholder="Search Faculty" autocomplete="off" value="@Model.FacultyName" />
-                    <input type="hidden" id="facultyId" name="FacultyId" value="@Model.FacultyId" />
-                    <div id="facultyDropdown" class="custom-dropdown">
-                        <ul id="facultyList"></ul>
-                    </div>
-                </div>
-                <span asp-validation-for="FacultyId" class="text-danger"></span>
-            </div>
-        </div>
+@*             <!-- Faculty Search --> *@
+@*             <div class="col-md-6 mb-3"> *@
+@*                 <label for="facultySearch">Faculty</label> *@
+@*                 <div class="custom-select-container"> *@
+@*                     <input type="text" id="facultySearch" name="FacultyName" class="form-control w-100" placeholder="Search Faculty" autocomplete="off" value="@Model.FacultyName" /> *@
+@*                     <input type="hidden" id="facultyId" name="FacultyId" value="@Model.FacultyId" /> *@
+@*                     <div id="facultyDropdown" class="custom-dropdown"> *@
+@*                         <ul id="facultyList"></ul> *@
+@*                     </div> *@
+@*                 </div> *@
+@*                 <span asp-validation-for="FacultyId" class="text-danger"></span> *@
+@*             </div> *@
+@*         </div> *@
 
-        <!-- Hidden ID Field -->
-        <input type="hidden" name="Id" value="@Model.Id" />
+@*         <!-- Hidden ID Field --> *@
+@*         <input type="hidden" name="Id" value="@Model.Id" /> *@
 
-        <!-- Submit Button -->
-        <div class="text-center mt-4">
-            <button type="submit" class="btn btn-primary">Save</button>
-        </div>
-    </div>
-</form>
-
-
-
-
-@section Scripts {
-    @{
-        await Html.RenderPartialAsync("_ValidationScriptsPartial");
-    }
-
-    <script>
-        document.addEventListener("DOMContentLoaded", function () {
-            // Get the DayOfWeek value from the model
-            var dayOfWeek = '@Model.DayOfWeek'; // This will be the selected day from the model
-
-            // Set the selected value for the DayOfWeek dropdown
-            var selectElement = document.getElementById('DayOfWeek');
-            selectElement.value = dayOfWeek;
-        });
-    </script>
-
-
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script>
-            $(document).ready(function () {
-            const limit = 5;
-
-            // Live search for Course
-            $("#courseSearch").on("input", function () {
-                var searchTerm = $(this).val();
-                if (searchTerm.length >= 2) {
-                    searchItems('course', searchTerm, 1);
-                } else {
-                    $("#courseDropdown").hide();
-                }
-            });
-
-            // Live search for Classroom
-            $("#classroomSearch").on("input", function () {
-                var searchTerm = $(this).val();
-                if (searchTerm.length >= 2) {
-                    searchItems('classroom', searchTerm, 1);
-                } else {
-                    $("#classroomDropdown").hide();
-                }
-            });
-
-            // Live search for Majors
-            $("#majorSearch").on("input", function () {
-                var searchTerm = $(this).val();
-                if (searchTerm.length >= 2) {
-                    searchItems('major', searchTerm, 1);
-                } else {
-                    $("#majorDropdown").hide();
-                }
-            });
-
-            // Live search for Faculties
-            $("#facultySearch").on("input", function () {
-                var searchTerm = $(this).val();
-                console.log(searchTerm);
-                if (searchTerm.length >= 2) {
-                    searchItems('faculty', searchTerm, 1);
-                } else {
-                    $("#facultyDropdown").hide();
-                }
-            });
-
-              function searchItems(type, term, page) {
-            $.ajax({
-                url: '/TimeTable/GetDropDownData',
-                type: 'GET',
-                data: { [`${type}Name`]: term, [`${type}Page`]: page, limit: limit },
-                success: function (response) {
-                    let listId = `#${type}List`;
-                    let dropdownId = `#${type}Dropdown`;
-
-
-                    $(listId).empty();
-
-                    // Check if the type corresponds to a valid property in the response
-                    let items = response[type + 's'] || response.faculties;  // Fallback to faculties if type is not found
-
-
-                    if (Array.isArray(items) && items.length > 0) {
-                        items.forEach(item => {
-                            $(listId).append(`<li class="custom-dropdown-item" data-id="${item.id}">${item.name}</li>`);
-                        });
-                    } else {
-                        $(listId).append('<li class="custom-dropdown-item">No results found</li>');
-                    }
-
-                    $(dropdownId).show();
-                },
-                error: function (xhr, status, error) {
-                    console.error("Error fetching data:", error);
-                }
-            });
-        }
+@*         <!-- Submit Button --> *@
+@*         <div class="text-center mt-4"> *@
+@*             <button type="submit" class="btn btn-primary">Save</button> *@
+@*         </div> *@
+@*     </div> *@
+@* </form> *@
 
 
 
 
+@* @section Scripts { *@
+@*     @{ *@
+@*         await Html.RenderPartialAsync("_ValidationScriptsPartial"); *@
+@*     } *@
 
-            // Handle selecting an item from the dropdown
-            $(document).on('click', '.custom-dropdown-item', function () {
-                var itemId = $(this).data('id');
-                var itemName = $(this).text();
-                var inputId = $(this).closest('.custom-select-container').find('input').first();
-                var hiddenInputId = $(this).closest('.custom-select-container').find('input[type="hidden"]');
+@*     <script> *@
+@*         document.addEventListener("DOMContentLoaded", function () { *@
+@*             // Get the DayOfWeek value from the model *@
+@*             var dayOfWeek = '@Model.DayOfWeek'; // This will be the selected day from the model *@
 
-                inputId.val(itemName);
-                hiddenInputId.val(itemId);
-
-                $(this).closest('.custom-dropdown').hide();
-            });
-        });
+@*             // Set the selected value for the DayOfWeek dropdown *@
+@*             var selectElement = document.getElementById('DayOfWeek'); *@
+@*             selectElement.value = dayOfWeek; *@
+@*         }); *@
+@*     </script> *@
 
 
-    </script>
-}
+@*     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script> *@
+@*     <script> *@
+@*             $(document).ready(function () { *@
+@*             const limit = 5; *@
+
+@*             // Live search for Course *@
+@*             $("#courseSearch").on("input", function () { *@
+@*                 var searchTerm = $(this).val(); *@
+@*                 if (searchTerm.length >= 2) { *@
+@*                     searchItems('course', searchTerm, 1); *@
+@*                 } else { *@
+@*                     $("#courseDropdown").hide(); *@
+@*                 } *@
+@*             }); *@
+
+@*             // Live search for Classroom *@
+@*             $("#classroomSearch").on("input", function () { *@
+@*                 var searchTerm = $(this).val(); *@
+@*                 if (searchTerm.length >= 2) { *@
+@*                     searchItems('classroom', searchTerm, 1); *@
+@*                 } else { *@
+@*                     $("#classroomDropdown").hide(); *@
+@*                 } *@
+@*             }); *@
+
+@*             // Live search for Majors *@
+@*             $("#majorSearch").on("input", function () { *@
+@*                 var searchTerm = $(this).val(); *@
+@*                 if (searchTerm.length >= 2) { *@
+@*                     searchItems('major', searchTerm, 1); *@
+@*                 } else { *@
+@*                     $("#majorDropdown").hide(); *@
+@*                 } *@
+@*             }); *@
+
+@*             // Live search for Faculties *@
+@*             $("#facultySearch").on("input", function () { *@
+@*                 var searchTerm = $(this).val(); *@
+@*                 console.log(searchTerm); *@
+@*                 if (searchTerm.length >= 2) { *@
+@*                     searchItems('faculty', searchTerm, 1); *@
+@*                 } else { *@
+@*                     $("#facultyDropdown").hide(); *@
+@*                 } *@
+@*             }); *@
+
+@*               function searchItems(type, term, page) { *@
+@*             $.ajax({ *@
+@*                 url: '/TimeTable/GetDropDownData', *@
+@*                 type: 'GET', *@
+@*                 data: { [`${type}Name`]: term, [`${type}Page`]: page, limit: limit }, *@
+@*                 success: function (response) { *@
+@*                     let listId = `#${type}List`; *@
+@*                     let dropdownId = `#${type}Dropdown`; *@
+
+
+@*                     $(listId).empty(); *@
+
+@*                     // Check if the type corresponds to a valid property in the response *@
+@*                     let items = response[type + 's'] || response.faculties;  // Fallback to faculties if type is not found *@
+
+
+@*                     if (Array.isArray(items) && items.length > 0) { *@
+@*                         items.forEach(item => { *@
+@*                             $(listId).append(`<li class="custom-dropdown-item" data-id="${item.id}">${item.name}</li>`); *@
+@*                         }); *@
+@*                     } else { *@
+@*                         $(listId).append('<li class="custom-dropdown-item">No results found</li>'); *@
+@*                     } *@
+
+@*                     $(dropdownId).show(); *@
+@*                 }, *@
+@*                 error: function (xhr, status, error) { *@
+@*                     console.error("Error fetching data:", error); *@
+@*                 } *@
+@*             }); *@
+@*         } *@
+
+
+
+
+
+@*             // Handle selecting an item from the dropdown *@
+@*             $(document).on('click', '.custom-dropdown-item', function () { *@
+@*                 var itemId = $(this).data('id'); *@
+@*                 var itemName = $(this).text(); *@
+@*                 var inputId = $(this).closest('.custom-select-container').find('input').first(); *@
+@*                 var hiddenInputId = $(this).closest('.custom-select-container').find('input[type="hidden"]'); *@
+
+@*                 inputId.val(itemName); *@
+@*                 hiddenInputId.val(itemId); *@
+
+@*                 $(this).closest('.custom-dropdown').hide(); *@
+@*             }); *@
+@*         }); *@
+
+
+@*     </script> *@
+@* } *@

@@ -25,8 +25,8 @@
                         </li>
 
                         <!-- Check if the user is an Admin (role == 0) and show admin links -->
-                        @if (Context.Session.GetInt32("UserRole") == 0)
-                        {
+                        @* @if (Context.Session.GetInt32("UserRole") == 0) *@
+                        @* { *@
                             <li class="nav-item">
                                 <a class="nav-link text-dark" asp-area="" asp-controller="Department" asp-action="Index">Department</a>
                             </li>
@@ -39,16 +39,19 @@
                             <li class="nav-item">
                                 <a class="nav-link text-dark" asp-area="" asp-controller="Classroom" asp-action="Index">Class</a>
                             </li>
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Course" asp-action="Index">Course</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Timetable" asp-action="Index">Time Table</a>
-                            </li>
+                            @* <li class="nav-item"> *@
+                            @*     <a class="nav-link text-dark" asp-area="" asp-controller="Course" asp-action="Index">Course</a> *@
+                            @* </li> *@
+                            @* <li class="nav-item"> *@
+                            @*     <a class="nav-link text-dark" asp-area="" asp-controller="Timetable" asp-action="Index">Time Table</a> *@
+                            @* </li> *@
                             <li class="nav-item">
                                 <a class="nav-link text-dark" asp-area="" asp-controller="User" asp-action="Index">User</a>
                             </li>
-                        }
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="AssignCourse" asp-action="Index">Assign</a>
+                        </li>
+                        @* } *@
                     </ul>
                 </div>
               
