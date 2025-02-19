@@ -21,5 +21,8 @@ namespace TimeTable.Data
 
         public DbSet<User> Users { get; set; }
 
+        public DbSet<AssignCourse> AssignCourses { get; set; }
+
+
     }
 }
