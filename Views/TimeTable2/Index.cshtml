@@ -1,0 +1,55 @@
+﻿
+    <style>
+        /* Custom CSS to increase row height */
+        .table-bordered td {
+            height: 100px; /* Adjust the height as needed */
+            vertical-align: middle; /* Center content vertically */
+        }
+
+            /* Reduce the width of the lunch column */
+            .table-bordered td.lunch {
+                width: 150px; /* Adjust the width as needed */
+            }
+    </style>
+
+
+    <div class="container mt-4">
+        <h2 class="text-center mb-3">Class Timetable</h2>
+        <div class="table-responsive">
+            <table class="table table-bordered text-center">
+                <thead class="bg-primary text-white">
+                    <tr>
+                        <th>Day/Time</th>
+                        <th>9:00 - 10:00</th>
+                        <th>10:00 - 11:00</th>
+                        <th>11:00 - 12:00</th>
+                        <th class="lunch">12:00 - 1:00 </th>
+                        <th>1:00 - 2:00</th>
+                        <th>2:00 - 3:00</th>
+                        <th>3:00 - 4:00</th>
+                    </tr>
+                </thead>
+                <tbody id="timetable-body">
+                    <!-- Rows will be added dynamically with JS -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script>
+        const days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"];
+        const timetableBody = document.getElementById("timetable-body");
+
+        days.forEach(day => {
+            let row = `<tr><td class="fw-bold">${day}</td>`;
+            for (let i = 0; i < 7; i++) {
+                if (i === 3) { // Lunch break at index 3
+                    row += `<td class="bg-warning text-dark fw-bold lunch">Lunch</td>`;
+                } else {
+                    row += `<td contenteditable="true"></td>`; // Editable cells
+                }
+            }
+            row += `</tr>`;
+            timetableBody.innerHTML += row;
+        });
+    </script>

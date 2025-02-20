@@ -15,7 +15,7 @@ namespace TimeTable.Data
         public DbSet<Classroom> Classrooms { get; set; }
         public DbSet<Faculty> Faculties { get; set; }
         public DbSet<Course> Courses { get; set; }
-        //public DbSet<Timetable> Timetables { get; set; }
+        public DbSet<Timetable2> Timetables2 { get; set; }
 
         public DbSet<Department> Departments { get; set; }
 
