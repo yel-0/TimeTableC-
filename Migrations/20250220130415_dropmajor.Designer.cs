@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using TimeTable.Data;
 
@@ -10,9 +11,11 @@ using TimeTable.Data;
 namespace TimeTable.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250220130415_dropmajor")]
+    partial class dropmajor
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -35,9 +38,6 @@ namespace TimeTable.Migrations
                     b.Property<int>("FacultyId")
                         .HasColumnType("int");
 
-                    b.Property<int>("MajorId")
-                        .HasColumnType("int");
-
                     b.Property<string>("Section")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -54,8 +54,6 @@ namespace TimeTable.Migrations
                     b.HasIndex("CourseId");
 
                     b.HasIndex("FacultyId");
-
-                    b.HasIndex("MajorId");
 
                     b.ToTable("AssignCourses");
                 });
@@ -216,17 +214,9 @@ namespace TimeTable.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("TimeTable.Models.Major", "Major")
-                        .WithMany()
-                        .HasForeignKey("MajorId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.Navigation("Course");
 
                     b.Navigation("Faculty");
-
-                    b.Navigation("Major");
                 });
 #pragma warning restore 612, 618
         }

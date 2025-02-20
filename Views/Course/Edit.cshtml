@@ -81,22 +81,22 @@
         </div>
 
         <!-- Major Search Input -->
-        <div class="form-group mb-3">
-            <label class="form-label">Major</label>
-            <div class="custom-select-container">
-                <input type="text" id="majorSearch" name="MajorName"
-                       class="form-control border-primary"
-                       placeholder="Search Major"
-                       autocomplete="off"
-                       required
-                       value="@Model.MajorName" />
-                <input type="hidden" id="majorId" name="MajorId" value="@Model.MajorId" />
-                <div id="majorDropdown" class="custom-dropdown">
-                    <ul id="majorList"></ul>
-                </div>
-            </div>
-            @Html.ValidationMessageFor(model => model.MajorName, "", new { @class = "text-danger" })
-        </div>
+        @* <div class="form-group mb-3"> *@
+        @*     <label class="form-label">Major</label> *@
+        @*     <div class="custom-select-container"> *@
+        @*         <input type="text" id="majorSearch" name="MajorName" *@
+        @*                class="form-control border-primary" *@
+        @*                placeholder="Search Major" *@
+        @*                autocomplete="off" *@
+        @*                required *@
+        @*                value="@Model.MajorName" /> *@
+        @*         <input type="hidden" id="majorId" name="MajorId" value="@Model.MajorId" /> *@
+        @*         <div id="majorDropdown" class="custom-dropdown"> *@
+        @*             <ul id="majorList"></ul> *@
+        @*         </div> *@
+        @*     </div> *@
+        @*     @Html.ValidationMessageFor(model => model.MajorName, "", new { @class = "text-danger" }) *@
+        @* </div> *@
 
         <!-- Submit Button -->
         <div class="text-center mt-4">

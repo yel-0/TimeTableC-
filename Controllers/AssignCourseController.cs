@@ -15,7 +15,7 @@ namespace TimeTable.Controllers
         {
             _context = context;
         }
-        public async Task<IActionResult> Index(int? facultyId, int? courseId, string section, string semester, int? year, int page = 1, int limit = 10)
+        public async Task<IActionResult> Index(int? facultyId, int? courseId, int? majorId, string section, string semester, int? year, int page = 1, int limit = 10)
         {
             // Default page and limit validation
             if (page < 1) page = 1;
@@ -25,6 +25,7 @@ namespace TimeTable.Controllers
             var query = _context.AssignCourses
                 .Include(a => a.Faculty)
                 .Include(a => a.Course)
+                .Include(a => a.Major) // Include Major
                 .OrderByDescending(a => a.Id) // Order by latest records first
                 .AsQueryable();
 
@@ -37,6 +38,11 @@ namespace TimeTable.Controllers
             if (courseId.HasValue)
             {
                 query = query.Where(a => a.CourseId == courseId.Value);
+            }
+
+            if (majorId.HasValue)
+            {
+                query = query.Where(a => a.MajorId == majorId.Value);
             }
 
             if (!string.IsNullOrWhiteSpace(section))
@@ -72,6 +78,7 @@ namespace TimeTable.Controllers
                 Limit = limit,
                 FacultyId = facultyId,
                 CourseId = courseId,
+                MajorId = majorId, // Include MajorId in the ViewModel
                 Section = section,
                 Semester = semester,
                 Year = year
@@ -80,6 +87,7 @@ namespace TimeTable.Controllers
             // Return the View with the ViewModel
             return View(viewModel);
         }
+
 
 
         public IActionResult Create()
@@ -91,7 +99,7 @@ namespace TimeTable.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("CourseId,Year,Semester,Section,FacultyId")] AssignCourse assignCourse)
+        public async Task<IActionResult> Create([Bind("CourseId,Year,Semester,Section,FacultyId, MajorId")] AssignCourse assignCourse)
         {
 
             _context.Add(assignCourse);
@@ -103,10 +111,11 @@ namespace TimeTable.Controllers
         // GET: Edit
         public async Task<IActionResult> Edit(int id)
         {
-            // Fetch the timetable record with related entities (Course and Faculty)
+            // Fetch the timetable record with related entities (Course, Faculty, and Major)
             var timetable = await _context.AssignCourses
                 .Include(t => t.Course)
                 .Include(t => t.Faculty)
+                .Include(t => t.Major) // Include Major
                 .FirstOrDefaultAsync(t => t.Id == id);
 
             // Check if timetable exists, if not, return NotFound
@@ -123,6 +132,8 @@ namespace TimeTable.Controllers
                 CourseName = timetable.Course.Name,
                 FacultyId = timetable.FacultyId,
                 FacultyName = timetable.Faculty.Name,
+                MajorId = timetable.MajorId, // Include MajorId
+                MajorName = timetable.Major?.Name, // Include MajorName
                 Year = timetable.Year.ToString(),
                 Semester = timetable.Semester,
                 Section = timetable.Section,
@@ -132,10 +143,11 @@ namespace TimeTable.Controllers
             return View(viewModel);
         }
 
+
         // POST: Edit
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,CourseId,Year,Semester,Section,FacultyId")] AssignCourse assignCourse)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,CourseId,Year,Semester,Section,FacultyId ,MajorId")] AssignCourse assignCourse)
         {
             if (id != assignCourse.Id)
             {
@@ -154,6 +166,25 @@ namespace TimeTable.Controllers
         {
             return _context.AssignCourses.Any(e => e.Id == id);
         }
+
+        // POST: Delete
+        [HttpPost, ActionName("Delete")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteConfirmed(int id)
+        {
+            var assignCourse = await _context.AssignCourses.FindAsync(id);
+
+            if (assignCourse == null)
+            {
+                return NotFound();
+            }
+
+            _context.AssignCourses.Remove(assignCourse);
+            await _context.SaveChangesAsync();
+
+            return RedirectToAction(nameof(Index));
+        }
+
 
     }
 }

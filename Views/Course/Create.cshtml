@@ -71,16 +71,16 @@
                 <input type="text" class="form-control border-primary" id="Name" name="Name" required />
             </div>
 
-            <div class="mb-3">
-                <label for="MajorSearch" class="form-label">Major</label>
-                <div class="custom-select-container">
-                    <input type="text" id="majorSearch" name="MajorName" class="form-control border-primary" placeholder="Search Major" autocomplete="off" required />
-                    <input type="hidden" id="majorId" name="MajorId">
-                    <div id="majorDropdown" class="custom-dropdown">
-                        <ul id="majorList"></ul>
-                    </div>
-                </div>
-            </div>
+            @* <div class="mb-3"> *@
+            @*     <label for="MajorSearch" class="form-label">Major</label> *@
+            @*     <div class="custom-select-container"> *@
+            @*         <input type="text" id="majorSearch" name="MajorName" class="form-control border-primary" placeholder="Search Major" autocomplete="off" required /> *@
+            @*         <input type="hidden" id="majorId" name="MajorId"> *@
+            @*         <div id="majorDropdown" class="custom-dropdown"> *@
+            @*             <ul id="majorList"></ul> *@
+            @*         </div> *@
+            @*     </div> *@
+            @* </div> *@
 
             <div class="text-center">
                 <button type="submit" class="btn btn-primary w-100">Create</button>
@@ -88,63 +88,63 @@
         </form>
     </div>
 
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script>
-        $(document).ready(function () {
-            const limit = 5;
-            let majorPage = 1;
+    @* <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script> *@
+    @* <script> *@
+    @*     $(document).ready(function () { *@
+    @*         const limit = 5; *@
+    @*         let majorPage = 1; *@
 
-            $("#majorSearch").on("input", function () {
-                var searchTerm = $(this).val();
-                if (searchTerm.length >= 2) {
-                    searchMajors(searchTerm, majorPage);
-                } else {
-                    $("#majorDropdown").hide();
-                }
-            });
+    @*         $("#majorSearch").on("input", function () { *@
+    @*             var searchTerm = $(this).val(); *@
+    @*             if (searchTerm.length >= 2) { *@
+    @*                 searchMajors(searchTerm, majorPage); *@
+    @*             } else { *@
+    @*                 $("#majorDropdown").hide(); *@
+    @*             } *@
+    @*         }); *@
 
-            function searchMajors(searchTerm, page) {
-                $.ajax({
-                    url: '/Course/Create',
-                    type: 'GET',
-                    data: { majorName: searchTerm, majorPage: page, limit: limit },
-                    success: function (response) {
-                        updateDropdown("#majorDropdown", "#majorList", response.majors, 'major');
-                    },
-                    error: function (xhr, status, error) {
-                        console.error("Error fetching majors:", error);
-                    }
-                });
-            }
+    @*         function searchMajors(searchTerm, page) { *@
+    @*             $.ajax({ *@
+    @*                 url: '/Course/Create', *@
+    @*                 type: 'GET', *@
+    @*                 data: { majorName: searchTerm, majorPage: page, limit: limit }, *@
+    @*                 success: function (response) { *@
+    @*                     updateDropdown("#majorDropdown", "#majorList", response.majors, 'major'); *@
+    @*                 }, *@
+    @*                 error: function (xhr, status, error) { *@
+    @*                     console.error("Error fetching majors:", error); *@
+    @*                 } *@
+    @*             }); *@
+    @*         } *@
 
-            function updateDropdown(dropdownSelector, listSelector, data, type) {
-                const list = $(listSelector);
-                list.empty();
+    @*         function updateDropdown(dropdownSelector, listSelector, data, type) { *@
+    @*             const list = $(listSelector); *@
+    @*             list.empty(); *@
 
-                if (data && data.length > 0) {
-                    data.forEach((item) => {
-                        list.append(`<li class="list-group-item custom-dropdown-item" data-id="${item.id}">${item.name}</li>`);
-                    });
-                    $(dropdownSelector).show();
-                } else {
-                    list.append('<li class="list-group-item">No items found</li>');
-                    $(dropdownSelector).show();
-                }
-            }
+    @*             if (data && data.length > 0) { *@
+    @*                 data.forEach((item) => { *@
+    @*                     list.append(`<li class="list-group-item custom-dropdown-item" data-id="${item.id}">${item.name}</li>`); *@
+    @*                 }); *@
+    @*                 $(dropdownSelector).show(); *@
+    @*             } else { *@
+    @*                 list.append('<li class="list-group-item">No items found</li>'); *@
+    @*                 $(dropdownSelector).show(); *@
+    @*             } *@
+    @*         } *@
 
-            $(document).on('click', '.custom-dropdown-item', function () {
-                const selectedText = $(this).text();
-                const selectedId = $(this).data('id');
-                $(this).closest('.custom-select-container').find('input').val(selectedText);
-                $(this).closest('.custom-select-container').find('input[type="hidden"]').val(selectedId);
-                $(this).closest('.custom-dropdown').hide();
-            });
+    @*         $(document).on('click', '.custom-dropdown-item', function () { *@
+    @*             const selectedText = $(this).text(); *@
+    @*             const selectedId = $(this).data('id'); *@
+    @*             $(this).closest('.custom-select-container').find('input').val(selectedText); *@
+    @*             $(this).closest('.custom-select-container').find('input[type="hidden"]').val(selectedId); *@
+    @*             $(this).closest('.custom-dropdown').hide(); *@
+    @*         }); *@
 
-            $(document).on('click', function (e) {
-                if (!$(e.target).closest('.custom-select-container').length) {
-                    $('.custom-dropdown').hide();
-                }
-            });
-        });
-    </script>
+    @*         $(document).on('click', function (e) { *@
+    @*             if (!$(e.target).closest('.custom-select-container').length) { *@
+    @*                 $('.custom-dropdown').hide(); *@
+    @*             } *@
+    @*         }); *@
+    @*     }); *@
+    @* </script> *@
 </body>

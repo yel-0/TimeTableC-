@@ -7,69 +7,68 @@
 <form asp-action="Create" method="post">
     @Html.AntiForgeryToken()
 
-    <div class="row">
-        <!-- Faculty Dropdown with Live Search -->
-        <div class="col-md-2">
-            <label for="facultySearch" class="form-label">Faculty</label>
-            <div class="custom-select-container">
-                <input type="text" id="facultySearch" class="form-control" placeholder="Search Faculty..." />
-                <input type="hidden" name="FacultyId" id="facultyId" value="@Model.FacultyId" />
-                <ul id="facultyDropdown" class="custom-dropdown"></ul>
+    <!-- Course Search Input -->
+    <div class=" mb-3">
+        <label class="form-label">Course</label>
+        <div class="custom-select-container">
+            <input type="text" id="courseSearch" name="CourseName" class="form-control border-primary" placeholder="Search Course" autocomplete="off" />
+            <input type="hidden" id="courseId" name="CourseId" />
+            <div id="courseDropdown" class="custom-dropdown shadow">
+                <ul id="courseList"></ul>
             </div>
-        </div>
-
-        <!-- Course Dropdown with Live Search -->
-        <div class="col-md-2">
-            <label for="courseSearch" class="form-label">Course</label>
-            <div class="custom-select-container">
-                <input type="text" id="courseSearch" class="form-control" placeholder="Search Course..." />
-                <input type="hidden" name="CourseId" id="courseId" value="@Model.CourseId" />
-                <ul id="courseDropdown" class="custom-dropdown"></ul>
-            </div>
-        </div>
-
-        <!-- Section Input -->
-        <div class="col-md-2">
-            <label for="section" class="form-label">Section</label>
-            <input type="text" name="Section" class="form-control" value="@Model.Section" />
-        </div>
-
-        <!-- Semester Input -->
-        <div class="col-md-2">
-            <label for="semester" class="form-label">Semester</label>
-            <input type="text" name="Semester" class="form-control" value="@Model.Semester" />
-        </div>
-
-        <!-- Year Input -->
-        <div class="col-md-2">
-            <label for="year" class="form-label">Year</label>
-            <input type="number" name="Year" class="form-control" value="@Model.Year" />
-        </div>
-
-        <!-- Submit Button -->
-        <div class="col-md-2 align-self-end">
-            <button type="submit" class="btn btn-primary w-100">Assign Course</button>
         </div>
     </div>
+
+
+    <!-- Major Search Input -->
+    <div class=" mb-3">
+        <label class="form-label">Major</label>
+        <div class="custom-select-container">
+            <input type="text" id="majorSearch" name="MajorName" class="form-control border-primary" placeholder="Search Major" autocomplete="off" />
+            <input type="hidden" id="majorId" name="MajorId" />
+            <div id="majorDropdown" class="custom-dropdown shadow">
+                <ul id="majorList"></ul>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- Faculty Search Input -->
+    <div class=" mb-3">
+        <label class="form-label">Faculty</label>
+        <div class="custom-select-container">
+            <input type="text" id="facultySearch" name="FacultyName" class="form-control border-primary" placeholder="Search Faculty" autocomplete="off" />
+            <input type="hidden" id="facultyId" name="FacultyId" />
+            <div id="facultyDropdown" class="custom-dropdown shadow">
+                <ul id="facultyList"></ul>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="mb-3">
+        <label for="section" class="form-label">Section</label>
+        <input type="text" name="Section" class="form-control" value="@Model.Section" />
+    </div>
+
+    <div class="mb-3">
+        <label for="semester" class="form-label">Semester</label>
+        <input type="text" name="Semester" class="form-control" value="@Model.Semester" />
+    </div>
+
+    <div class="mb-3">
+        <label for="year" class="form-label">Year</label>
+        <input type="number" name="Year" class="form-control" value="@Model.Year" />
+    </div>
+
+    <button type="submit" class="btn btn-primary w-100">Assign Course</button>
 </form>
 
-<!-- jQuery and Live Search Script -->
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
     $(document).ready(function () {
         const limit = 5;
 
-        // Live search for Faculty
-        $("#facultySearch").on("input", function () {
-            var searchTerm = $(this).val();
-            if (searchTerm.length >= 2) {
-                searchItems('faculty', searchTerm, 1);
-            } else {
-                $("#facultyDropdown").hide();
-            }
-        });
-
-        // Live search for Course
         $("#courseSearch").on("input", function () {
             var searchTerm = $(this).val();
             if (searchTerm.length >= 2) {
@@ -79,17 +78,36 @@
             }
         });
 
-        // Function to search and populate dropdown
+
+        $("#majorSearch").on("input", function () {
+            var searchTerm = $(this).val();
+            if (searchTerm.length >= 2) {
+                searchItems('major', searchTerm, 1);
+            } else {
+                $("#majorDropdown").hide();
+            }
+        });
+
+        $("#facultySearch").on("input", function () {
+            var searchTerm = $(this).val();
+            console.log(searchTerm);
+            if (searchTerm.length >= 2) {
+                searchItems('faculty', searchTerm, 1);
+            } else {
+                $("#facultyDropdown").hide();
+            }
+        });
+
         function searchItems(type, term, page) {
             $.ajax({
                 url: '/Home/GetDropDownData',
                 type: 'GET',
                 data: { [`${type}Name`]: term, [`${type}Page`]: page, limit: limit },
                 success: function (response) {
-                    let listId = `#${type}Dropdown`;
-                    $(listId).empty();  // Clear the dropdown
+                    let listId = `#${type}List`;
+                    let dropdownId = `#${type}Dropdown`;
 
-                    // Ensure response contains the correct properties
+                    $(listId).empty();
                     let items = response[type + 's'] || response.faculties;
 
                     if (Array.isArray(items) && items.length > 0) {
@@ -100,7 +118,7 @@
                         $(listId).append('<li class="custom-dropdown-item">No results found</li>');
                     }
 
-                    $(listId).show();  // Show the dropdown
+                    $(dropdownId).show();
                 },
                 error: function (xhr, status, error) {
                     console.error("Error fetching data:", error);
@@ -108,45 +126,92 @@
             });
         }
 
-        // Handle selecting an item from the dropdown
         $(document).on('click', '.custom-dropdown-item', function () {
             var itemId = $(this).data('id');
             var itemName = $(this).text();
-            var inputBox = $(this).closest('.custom-select-container').find('input').first();
-            var hiddenInput = $(this).closest('.custom-select-container').find('input[type="hidden"]');
+            var inputId = $(this).closest('.custom-select-container').find('input').first();
+            var hiddenInputId = $(this).closest('.custom-select-container').find('input[type="hidden"]');
 
-            inputBox.val(itemName);
-            hiddenInput.val(itemId);
-
+            inputId.val(itemName);
+            hiddenInputId.val(itemId);
             $(this).closest('.custom-dropdown').hide();
         });
     });
 </script>
 
+
 <style>
+    .container {
+        max-width: 1200px;
+        margin: 0 auto;
+    }
+
+    .custom-select-container {
+        position: relative;
+    }
+
     .custom-dropdown {
         display: none;
         position: absolute;
-        background: white;
-        border: 1px solid #ddd;
-        width: 100%;
-        max-height: 150px;
+        top: 100%;
+        left: 0;
+        right: 0;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        max-height: 200px;
         overflow-y: auto;
-        list-style: none;
-        padding: 0;
-        margin: 0;
+        background-color: white;
+        z-index: 1000;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        width: 100%;
     }
 
     .custom-dropdown-item {
         padding: 8px;
         cursor: pointer;
+        font-size: 14px;
     }
 
         .custom-dropdown-item:hover {
-            background: #f0f0f0;
+            background-color: #f1f1f1;
+            color: #007bff;
         }
 
-    .custom-select-container {
-        position: relative;
+    .highlight {
+        background-color: #dcdcdc;
     }
+
+    #courseList, #classroomList, #majorList, #facultyList {
+        padding: 0;
+        margin: 0;
+        list-style-type: none;
+    }
+
+    input[type="text"], input[type="time"], select {
+        padding: 10px;
+        font-size: 14px;
+        border-radius: 4px;
+        border: 1px solid #ccc;
+        width: 100%;
+        box-sizing: border-box;
+    }
+
+        input[type="text"]:hover, input[type="time"]:hover, select:hover {
+            border-color: #007bff;
+        }
+
+        input[type="text"]:focus, input[type="time"]:focus, select:focus {
+            border-color: #007bff;
+            outline: none;
+        }
+
+    .row {
+        margin-bottom: 1rem;
+    }
+
+    .form-control {
+        border-radius: 5px;
+        padding: 10px;
+    }
+
 </style>

@@ -112,6 +112,18 @@
             </div>
         </div>
 
+        <!-- Major Search Input -->
+        <div class=" mb-3">
+            <label class="form-label">Major</label>
+            <div class="custom-select-container">
+                <input type="text" id="majorSearch" name="MajorName" class="form-control border-primary" placeholder="Search Major" autocomplete="off" />
+                <input type="hidden" id="majorId" name="MajorId" />
+                <div id="majorDropdown" class="custom-dropdown shadow">
+                    <ul id="majorList"></ul>
+                </div>
+            </div>
+        </div>
+
         <!-- Course Field -->
         <div class="col-md-6 mb-3">
             <label for="courseSearch" class="form-label">Course</label>
@@ -164,6 +176,15 @@
                 searchItems('course', searchTerm, 1);
             } else {
                 $("#courseDropdown").hide();
+            }
+        });
+
+          $("#majorSearch").on("input", function () {
+            var searchTerm = $(this).val();
+            if (searchTerm.length >= 2) {
+                searchItems('major', searchTerm, 1);
+            } else {
+                $("#majorDropdown").hide();
             }
         });
 

@@ -3,7 +3,6 @@ using Microsoft.EntityFrameworkCore;
 using System.Linq;
 using System.Threading.Tasks;
 using TimeTable.Data;
-using TimeTable.Filters;
 using TimeTable.Models;
 using TimeTable.ViewModels;
 
@@ -18,10 +17,9 @@ namespace TimeTable.Controllers
             _context = context;
         }
 
-        public async Task<IActionResult> Index(string courseCode, string name, int? majorId, int page = 1, int limit = 10)
+        public async Task<IActionResult> Index(string courseCode, string name, int page = 1, int limit = 10)
         {
             var coursesQuery = _context.Courses
-                .Include(c => c.Major)
                 .OrderByDescending(c => c.Id)
                 .AsQueryable();
 
@@ -33,11 +31,6 @@ namespace TimeTable.Controllers
             if (!string.IsNullOrEmpty(name))
             {
                 coursesQuery = coursesQuery.Where(c => c.Name.Contains(name));
-            }
-
-            if (majorId.HasValue)
-            {
-                coursesQuery = coursesQuery.Where(c => c.MajorId == majorId.Value);
             }
 
             var totalCourses = await coursesQuery.CountAsync();
@@ -53,41 +46,16 @@ namespace TimeTable.Controllers
                 Limit = limit,
                 TotalCount = totalCourses,
                 CourseCodeFilter = courseCode,
-                NameFilter = name,
-                MajorIdFilter = majorId 
+                NameFilter = name
             };
 
             return View(viewModel);
         }
 
         [HttpGet]
-        public async Task<IActionResult> Create(string majorName = null, int majorPage = 1, int limit = 5)
+        public IActionResult Create()
         {
-            if (Request.Headers["X-Requested-With"] == "XMLHttpRequest")
-            {
-                var majorsQuery = _context.Majors.AsQueryable();
-                if (!string.IsNullOrEmpty(majorName))
-                {
-                    majorsQuery = majorsQuery.Where(m => m.Name.Contains(majorName));
-                }
-
-                var majors = await majorsQuery
-                    .OrderBy(m => m.Name)
-                    .Skip((majorPage - 1) * limit)
-                    .Take(limit)
-                    .ToListAsync();
-
-                return Json(new { majors = majors });
-            }
-
-            var majorsList = await _context.Majors.Take(limit).ToListAsync();
-
-            var viewModel = new CourseCreateViewModel
-            {
-                Majors = majorsList
-            };
-
-            return View(viewModel);
+            return View();
         }
 
         [HttpPost]
@@ -97,8 +65,7 @@ namespace TimeTable.Controllers
             var course = new Course
             {
                 CourseCode = model.CourseCode,
-                Name = model.Name,
-                MajorId = model.MajorId
+                Name = model.Name
             };
 
             _context.Courses.Add(course);
@@ -110,9 +77,7 @@ namespace TimeTable.Controllers
         [HttpGet]
         public async Task<IActionResult> Edit(int id)
         {
-            var course = await _context.Courses
-                .Include(c => c.Major)
-                .FirstOrDefaultAsync(c => c.Id == id);
+            var course = await _context.Courses.FindAsync(id);
 
             if (course == null)
             {
@@ -123,9 +88,7 @@ namespace TimeTable.Controllers
             {
                 Id = course.Id,
                 Name = course.Name,
-                CourseCode = course.CourseCode,
-                MajorId = course.MajorId,
-                MajorName = course.Major.Name
+                CourseCode = course.CourseCode
             };
 
             return View(viewModel);
@@ -146,7 +109,6 @@ namespace TimeTable.Controllers
             {
                 course.Name = viewModel.Name;
                 course.CourseCode = viewModel.CourseCode;
-                course.MajorId = viewModel.MajorId;
 
                 _context.Courses.Update(course);
                 await _context.SaveChangesAsync();
@@ -163,7 +125,6 @@ namespace TimeTable.Controllers
         [HttpPost, ActionName("Delete")]
         public IActionResult Delete(int id)
         {
-
             var course = _context.Courses.Find(id);
             if (course != null)
             {

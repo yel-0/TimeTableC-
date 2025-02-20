@@ -16,6 +16,9 @@ namespace TimeTable.Models
         public int CourseId { get; set; }
 
         [Required]
+        public int MajorId { get; set; }  // Added MajorId
+
+        [Required]
         public string Semester { get; set; }
 
         [Required]
@@ -30,6 +33,7 @@ namespace TimeTable.Models
         [ForeignKey("CourseId")]
         public virtual Course Course { get; set; }
 
-       
+        [ForeignKey("MajorId")]
+        public virtual Major Major { get; set; }  // Added Major reference
     }
 }

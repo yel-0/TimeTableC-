@@ -17,11 +17,8 @@ namespace TimeTable.Models
         [StringLength(100)]
         public string Name { get; set; }
 
-        [Required]
-        public int MajorId { get; set; }
 
-        [ForeignKey("MajorId")]
-        public Major Major { get; set; }
+
     }
 
 }
