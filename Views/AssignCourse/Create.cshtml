@@ -82,7 +82,7 @@
         // Function to search and populate dropdown
         function searchItems(type, term, page) {
             $.ajax({
-                url: '/TimeTable/GetDropDownData',
+                url: '/Home/GetDropDownData',
                 type: 'GET',
                 data: { [`${type}Name`]: term, [`${type}Page`]: page, limit: limit },
                 success: function (response) {

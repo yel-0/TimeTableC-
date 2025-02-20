@@ -1,197 +1,178 @@
-﻿//using Microsoft.AspNetCore.Mvc;
-//using Microsoft.EntityFrameworkCore;
-//using System.Linq;
-//using System.Threading.Tasks;
-//using TimeTable.Data;
-//using TimeTable.Filters;
-//using TimeTable.Models;
-//using TimeTable.ViewModels;
+﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using System.Linq;
+using System.Threading.Tasks;
+using TimeTable.Data;
+using TimeTable.Filters;
+using TimeTable.Models;
+using TimeTable.ViewModels;
 
-//namespace TimeTable.Controllers
-//{
-//    public class CourseController : Controller
-//    {
-//        private readonly ApplicationDbContext _context;
+namespace TimeTable.Controllers
+{
+    public class CourseController : Controller
+    {
+        private readonly ApplicationDbContext _context;
 
-//        public CourseController(ApplicationDbContext context)
-//        {
-//            _context = context;
-//        }
+        public CourseController(ApplicationDbContext context)
+        {
+            _context = context;
+        }
 
-//        [AuthorizeRole(0)]
+        public async Task<IActionResult> Index(string courseCode, string name, int? majorId, int page = 1, int limit = 10)
+        {
+            var coursesQuery = _context.Courses
+                .Include(c => c.Major)
+                .OrderByDescending(c => c.Id)
+                .AsQueryable();
 
-//        public async Task<IActionResult> Index(string courseCode, string name, int? departmentId, int page = 1, int limit = 10)
-//        {
-//            // Apply filters and pagination
-//            var coursesQuery = _context.Courses
-//                .Include(c => c.Department)
-//                .OrderByDescending(c => c.Id) // Order by latest first (Change to CreatedAt if available)
-//                .AsQueryable();
+            if (!string.IsNullOrEmpty(courseCode))
+            {
+                coursesQuery = coursesQuery.Where(c => c.CourseCode.Contains(courseCode));
+            }
 
-//            // Filter by Course Code if provided
-//            if (!string.IsNullOrEmpty(courseCode))
-//            {
-//                coursesQuery = coursesQuery.Where(c => c.CourseCode.Contains(courseCode));
-//            }
+            if (!string.IsNullOrEmpty(name))
+            {
+                coursesQuery = coursesQuery.Where(c => c.Name.Contains(name));
+            }
 
-//            // Filter by Name if provided
-//            if (!string.IsNullOrEmpty(name))
-//            {
-//                coursesQuery = coursesQuery.Where(c => c.Name.Contains(name));
-//            }
+            if (majorId.HasValue)
+            {
+                coursesQuery = coursesQuery.Where(c => c.MajorId == majorId.Value);
+            }
 
-//            // Filter by Department if provided
-//            if (departmentId.HasValue)
-//            {
-//                coursesQuery = coursesQuery.Where(c => c.DepartmentId == departmentId.Value);
-//            }
+            var totalCourses = await coursesQuery.CountAsync();
+            var courses = await coursesQuery
+                .Skip((page - 1) * limit)
+                .Take(limit)
+                .ToListAsync();
 
-//            // Pagination logic
-//            var totalCourses = await coursesQuery.CountAsync();
-//            var courses = await coursesQuery
-//                .Skip((page - 1) * limit)
-//                .Take(limit)
-//                .ToListAsync();
+            var viewModel = new CourseIndexViewModel
+            {
+                Courses = courses,
+                Page = page,
+                Limit = limit,
+                TotalCount = totalCourses,
+                CourseCodeFilter = courseCode,
+                NameFilter = name,
+                MajorIdFilter = majorId 
+            };
 
-//            // Create a ViewModel to pass data to the view
-//            var viewModel = new CourseIndexViewModel
-//            {
-//                Courses = courses,
-//                Page = page,
-//                Limit = limit,
-//                TotalCount = totalCourses,
-//                CourseCodeFilter = courseCode,
-//                NameFilter = name,
-//                DepartmentIdFilter = departmentId
-//            };
+            return View(viewModel);
+        }
 
-//            return View(viewModel);
-//        }
+        [HttpGet]
+        public async Task<IActionResult> Create(string majorName = null, int majorPage = 1, int limit = 5)
+        {
+            if (Request.Headers["X-Requested-With"] == "XMLHttpRequest")
+            {
+                var majorsQuery = _context.Majors.AsQueryable();
+                if (!string.IsNullOrEmpty(majorName))
+                {
+                    majorsQuery = majorsQuery.Where(m => m.Name.Contains(majorName));
+                }
 
+                var majors = await majorsQuery
+                    .OrderBy(m => m.Name)
+                    .Skip((majorPage - 1) * limit)
+                    .Take(limit)
+                    .ToListAsync();
 
-//        [HttpGet]
-//        public async Task<IActionResult> Create(string departmentName = null, int departmentPage = 1, int limit = 5)
-//        {
-//            if (Request.Headers["X-Requested-With"] == "XMLHttpRequest") // Check if it's an AJAX request
-//            {
-//                // Searching Departments
-//                var departmentsQuery = _context.Departments.AsQueryable();
-//                if (!string.IsNullOrEmpty(departmentName))
-//                {
-//                    departmentsQuery = departmentsQuery.Where(d => d.Name.Contains(departmentName));
-//                }
+                return Json(new { majors = majors });
+            }
 
-//                var departments = await departmentsQuery
-//                    .OrderBy(d => d.Name)
-//                    .Skip((departmentPage - 1) * limit)
-//                    .Take(limit)
-//                    .ToListAsync();
+            var majorsList = await _context.Majors.Take(limit).ToListAsync();
 
-//                return Json(new { departments = departments });
-//            }
+            var viewModel = new CourseCreateViewModel
+            {
+                Majors = majorsList
+            };
 
-//            // For regular page load (non-AJAX), return the view as usual
-//            var departmentsList = await _context.Departments.Take(limit).ToListAsync();
+            return View(viewModel);
+        }
 
-//            var viewModel = new CourseCreateViewModel
-//            {
-//                Departments = departmentsList
-//            };
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Create(Course model)
+        {
+            var course = new Course
+            {
+                CourseCode = model.CourseCode,
+                Name = model.Name,
+                MajorId = model.MajorId
+            };
 
-//            return View(viewModel);
-//        }
-//        [HttpPost]
-//        [ValidateAntiForgeryToken]
-//        public async Task<IActionResult> Create(Course model)
-//        {
-        
-//                var course = new Course
-//                {
-//                    CourseCode = model.CourseCode,
-//                    Name = model.Name,
-//                    DepartmentId = model.DepartmentId
-//                };
+            _context.Courses.Add(course);
+            await _context.SaveChangesAsync();
 
-//                // Save course to the database
-//                _context.Courses.Add(course);
-//                await _context.SaveChangesAsync();
+            return RedirectToAction("Index");
+        }
 
-//                // Redirect to Index page after successful course creation
-//                return RedirectToAction("Index");
-        
-//        }
+        [HttpGet]
+        public async Task<IActionResult> Edit(int id)
+        {
+            var course = await _context.Courses
+                .Include(c => c.Major)
+                .FirstOrDefaultAsync(c => c.Id == id);
 
+            if (course == null)
+            {
+                return NotFound();
+            }
 
-//        [HttpGet]
-//        public async Task<IActionResult> Edit(int id)
-//        {
-//            var course = await _context.Courses
-//                .Include(c => c.Department) // Ensure the department is included
-//                .FirstOrDefaultAsync(c => c.Id == id);
+            var viewModel = new CourseEditViewModel
+            {
+                Id = course.Id,
+                Name = course.Name,
+                CourseCode = course.CourseCode,
+                MajorId = course.MajorId,
+                MajorName = course.Major.Name
+            };
 
-//            if (course == null)
-//            {
-//                return NotFound();
-//            }
+            return View(viewModel);
+        }
 
-//            // Prepare the ViewModel with course details and department options
-//            var viewModel = new CourseEditViewModel
-//            {
-//                Id = course.Id,
-//                Name = course.Name,
-//                CourseCode = course.CourseCode,
-//                DepartmentId = course.DepartmentId,
-//                DepartmentName = course.Department.Name // Get department name
-//            };
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Edit(int id, CourseEditViewModel viewModel)
+        {
+            var course = await _context.Courses.FindAsync(id);
 
-//            return View(viewModel);
-//        }
+            if (course == null)
+            {
+                return NotFound();
+            }
 
-//        [HttpPost]
-//        [ValidateAntiForgeryToken]
-//        public async Task<IActionResult> Edit(int id, CourseEditViewModel viewModel)
-//        {
-//            var course = await _context.Courses.FindAsync(id);
+            try
+            {
+                course.Name = viewModel.Name;
+                course.CourseCode = viewModel.CourseCode;
+                course.MajorId = viewModel.MajorId;
 
-//            if (course == null)
-//            {
-//                return NotFound();
-//            }
+                _context.Courses.Update(course);
+                await _context.SaveChangesAsync();
 
-//            try
-//            {
-//                // Update course properties
-//                course.Name = viewModel.Name;
-//                course.CourseCode = viewModel.CourseCode;
-//                course.DepartmentId = viewModel.DepartmentId;
+                return RedirectToAction(nameof(Index));
+            }
+            catch (Exception)
+            {
+                ModelState.AddModelError("", "An error occurred while updating the course. Please try again later.");
+                return View(viewModel);
+            }
+        }
 
-//                // Save changes to the database
-//                _context.Courses.Update(course);
-//                await _context.SaveChangesAsync();
+        [HttpPost, ActionName("Delete")]
+        public IActionResult Delete(int id)
+        {
 
-//                return RedirectToAction(nameof(Index));
-//            }
-//            catch (Exception ex)
-//            {
-//                ModelState.AddModelError("", "An error occurred while updating the course. Please try again later.");
-//                return View(viewModel);
-//            }
-//        }
+            var course = _context.Courses.Find(id);
+            if (course != null)
+            {
+                _context.Courses.Remove(course);
+                _context.SaveChanges();
+                return RedirectToAction("Index");
+            }
 
-//        [HttpPost]
-//        public IActionResult Delete(int id)
-//        {
-//            var course = _context.Courses.Find(id);
-//            if (course != null)
-//            {
-//                _context.Courses.Remove(course);
-//                _context.SaveChanges();
-//                return RedirectToAction("Index"); // Redirect to the course list page
-//            }
-
-//            return NotFound(); // Handle case where course is not found
-//        }
-
-
-//    }
-//}
+            return NotFound();
+        }
+    }
+}

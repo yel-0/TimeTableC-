@@ -1,336 +1,234 @@
-﻿@* <style> *@
-@*     /* General Styling for Container */ *@
-@*     .container { *@
-@*         max-width: 1200px; *@
-@*         margin: 0 auto; *@
-@*     } *@
+﻿<style>
+    .custom-select-container {
+        position: relative;
+        width: 100%;
+    }
 
-@*     /* Custom Select Container */ *@
-@*     .custom-select-container { *@
-@*         position: relative; *@
-@*         width: 100%; *@
-@*     } *@
+    #majorSearch {
+        width: 100%;
+        padding: 8px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        font-size: 14px;
+    }
 
-@*     /* Search Input Styling */ *@
-@*     #departmentSearch { *@
-@*         padding: 10px; *@
-@*         font-size: 14px; *@
-@*         border-radius: 4px; *@
-@*         border: 1px solid #ccc; *@
-@*         width: 100%; *@
-@*         box-sizing: border-box; *@
-@*         transition: border-color 0.3s ease; *@
-@*     } *@
+    .custom-dropdown {
+        position: absolute;
+        top: 100%;
+        left: 0;
+        width: 100%;
+        max-height: 200px;
+        overflow-y: auto;
+        border: 1px solid #ccc;
+        border-top: none;
+        background-color: white;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        display: none;
+        z-index: 10;
+    }
 
-@*         #departmentSearch:hover { *@
-@*             border-color: #007bff; *@
-@*         } *@
+    #majorList {
+        margin: 0;
+        padding: 0;
+        list-style-type: none;
+    }
 
-@*         #departmentSearch:focus { *@
-@*             border-color: #007bff; *@
-@*             outline: none; *@
-@*         } *@
+    .custom-dropdown-item {
+        padding: 8px;
+        cursor: pointer;
+        font-size: 14px;
+        transition: background-color 0.2s ease;
+    }
 
-@*     /* Custom Dropdown Styling */ *@
-@*     .custom-dropdown { *@
-@*         display: none; *@
-@*         position: absolute; *@
-@*         top: 100%; *@
-@*         left: 0; *@
-@*         right: 0; *@
-@*         border: 1px solid #ccc; *@
-@*         border-radius: 4px; *@
-@*         max-height: 200px; *@
-@*         overflow-y: auto; *@
-@*         background-color: white; *@
-@*         z-index: 1000; *@
-@*         box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); *@
-@*         width: 100%; *@
-@*     } *@
+        .custom-dropdown-item:hover {
+            background-color: #007bff;
+            color: white;
+        }
 
-@*     /* Dropdown Items */ *@
-@*     .custom-dropdown-item { *@
-@*         padding: 8px 10px; *@
-@*         cursor: pointer; *@
-@*         font-size: 14px; *@
-@*         transition: background-color 0.3s ease, color 0.3s ease; *@
-@*     } *@
+    #majorList li {
+        padding: 8px;
+        font-size: 14px;
+        color: black;
+    }
 
-@*         .custom-dropdown-item:hover { *@
-@*             background-color: #f1f1f1; *@
-@*             color: #007bff; *@
-@*         } *@
+    #majorId {
+        display: none;
+    }
+</style>
 
-@*         /* Highlighted Dropdown Item */ *@
-@*         .custom-dropdown-item.highlight { *@
-@*             background-color: #dcdcdc; *@
-@*             color: #007bff; *@
-@*         } *@
+<a href="@Url.Action("Create", "Course")" class="btn btn-success btn-sm">
+    Create
+</a>
 
-@*     /* Dropdown List Styling */ *@
-@*     #departmentList { *@
-@*         padding: 0; *@
-@*         margin: 0; *@
-@*         list-style-type: none; *@
-@*     } *@
+<form method="get" class="d-flex flex-wrap mb-4">
+    <div class="d-flex flex-column flex-md-row mb-3 w-100">
+        <div class="flex-fill">
+            <label for="courseCode" class="form-label font-weight-bold">Course Code</label>
+            <input type="text" name="courseCode" value="@Model.CourseCodeFilter" class="form-control" placeholder="Search by course code" />
+        </div>
+    </div>
 
-@*     /* Buttons */ *@
-@*     .btn-search { *@
-@*         background-color: #007bff; *@
-@*         border-color: #007bff; *@
-@*         color: white; *@
-@*         padding: 10px 20px; *@
-@*         font-size: 16px; *@
-@*         font-weight: 500; *@
-@*         border-radius: 4px; *@
-@*         transition: background-color 0.3s ease, border-color 0.3s ease; *@
-@*     } *@
+    <div class="d-flex flex-column flex-md-row mb-3 w-100">
+        <div class="flex-fill">
+            <label for="name" class="form-label font-weight-bold">Course Name</label>
+            <input type="text" name="name" value="@Model.NameFilter" class="form-control" placeholder="Search by course name" />
+        </div>
+    </div>
 
-@*         .btn-search:hover { *@
-@*             background-color: #0056b3; *@
-@*             border-color: #0056b3; *@
-@*         } *@
+    <div class="mb-3">
+        <label for="MajorSearch" class="form-label">Major</label>
+        <div class="custom-select-container">
+            <input type="text" id="majorSearch" name="MajorName" class="form-control border-primary" placeholder="Search Major" autocomplete="off"  />
+            <input type="hidden" id="majorId" name="MajorId">
+            <div id="majorDropdown" class="custom-dropdown">
+                <ul id="majorList"></ul>
+            </div>
+        </div>
+    </div>
+ 
 
-@*     /* Pagination Links */ *@
-@*     .pagination .page-item a { *@
-@*         color: #007bff; *@
-@*         font-weight: bold; *@
-@*     } *@
+    <div class="w-100 mb-3">
+        <button type="submit" class="btn btn-primary w-100">Search</button>
+    </div>
+</form>
 
-@*         .pagination .page-item a:hover { *@
-@*             color: #0056b3; *@
-@*         } *@
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Course Code</th>
+            <th>Course Name</th>
+            <th>Major</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var course in Model.Courses)
+        {
+            <tr>
+                <td>@course.CourseCode</td>
+                <td>@course.Name</td>
+                <td>@course.Major.Name</td>
+                <td>
+                    <a href="@Url.Action("Edit", "Course", new { id = course.Id })" class="btn btn-warning btn-sm">
+                        Edit
+                    </a>
+                    <a href="javascript:void(0)" class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#deleteCourseModal" data-id="@course.Id" data-name="@course.Name">Delete</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
 
-@*     /* Row Spacing Between Fields */ *@
-@*     .row { *@
-@*         margin-bottom: 1rem; *@
-@*     } *@
+<div class="d-flex justify-content-between align-items-center">
+    <div>
+        <p>Page @Model.Page of @((Model.TotalCount + Model.Limit - 1) / Model.Limit)</p>
+    </div>
+    <div>
+        <nav aria-label="Page navigation">
+            <ul class="pagination">
+                <li class="page-item @(Model.Page == 1 ? "disabled" : "")">
+                    <a class="page-link" href="@Url.Action("Index", "Course", new { page = 1, courseCode = Model.CourseCodeFilter, name = Model.NameFilter, majorId = Model.MajorIdFilter })">First</a>
+                </li>
+                <li class="page-item @(Model.Page == 1 ? "disabled" : "")">
+                    <a class="page-link" href="@Url.Action("Index", "Course", new { page = Model.Page - 1, courseCode = Model.CourseCodeFilter, name = Model.NameFilter, majorId = Model.MajorIdFilter })">Previous</a>
+                </li>
+                <li class="page-item @(Model.Page == (Model.TotalCount + Model.Limit - 1) / Model.Limit ? "disabled" : "")">
+                    <a class="page-link" href="@Url.Action("Index", "Course", new { page = Model.Page + 1, courseCode = Model.CourseCodeFilter, name = Model.NameFilter, majorId = Model.MajorIdFilter })">Next</a>
+                </li>
+                <li class="page-item @(Model.Page == (Model.TotalCount + Model.Limit - 1) / Model.Limit ? "disabled" : "")">
+                    <a class="page-link" href="@Url.Action("Index", "Course", new { page = (Model.TotalCount + Model.Limit - 1) / Model.Limit, courseCode = Model.CourseCodeFilter, name = Model.NameFilter, majorId = Model.MajorIdFilter })">Last</a>
+                </li>
+            </ul>
+        </nav>
+    </div>
 
-@*     /* Input and Select Fields */ *@
-@*     input[type="text"], input[type="time"], select { *@
-@*         padding: 10px; *@
-@*         font-size: 14px; *@
-@*         border-radius: 4px; *@
-@*         border: 1px solid #ccc; *@
-@*         width: 100%; *@
-@*         box-sizing: border-box; *@
-@*     } *@
+</div>
 
-@*         input[type="text"]:hover, input[type="time"]:hover, select:hover { *@
-@*             border-color: #007bff; *@
-@*         } *@
-
-@*         input[type="text"]:focus, input[type="time"]:focus, select:focus { *@
-@*             border-color: #007bff; *@
-@*             outline: none; *@
-@*         } *@
-
-@* </style> *@
-
-@* <a href="@Url.Action("Create", "Course")" class="btn btn-success btn-sm"> *@
-@*     Create *@
-@* </a> *@
-
-
-@* <form method="get" class="d-flex flex-wrap mb-4"> *@
-@*     <!-- Course Code Filter --> *@
-@*     <div class="d-flex flex-column flex-md-row mb-3 w-100"> *@
-@*         <div class="flex-fill"> *@
-@*             <label for="courseCode" class="form-label font-weight-bold">Course Code</label> *@
-@*             <input type="text" name="courseCode" value="@Model.CourseCodeFilter" class="form-control" placeholder="Search by course code" /> *@
-@*         </div> *@
-@*     </div> *@
-
-@*     <!-- Course Name Filter --> *@
-@*     <div class="d-flex flex-column flex-md-row mb-3 w-100"> *@
-@*         <div class="flex-fill"> *@
-@*             <label for="name" class="form-label font-weight-bold">Course Name</label> *@
-@*             <input type="text" name="name" value="@Model.NameFilter" class="form-control" placeholder="Search by course name" /> *@
-@*         </div> *@
-@*     </div> *@
-
-@*     <!-- Department Filter --> *@
-@*     <div class="d-flex flex-column flex-md-row mb-3 w-100"> *@
-@*         <div class="flex-fill"> *@
-@*             <label for="departmentSearch" class="form-label font-weight-bold">Department</label> *@
-@*             <div class="custom-select-container"> *@
-@*                 <input type="text" id="departmentSearch" name="DepartmentName" class="form-control" placeholder="Search Department" autocomplete="off" /> *@
-@*                 <input type="hidden" id="departmentId" name="DepartmentId"> *@
-@*                 <div id="departmentDropdown" class="custom-dropdown"> *@
-@*                     <ul id="departmentList"></ul> *@
-@*                 </div> *@
-@*             </div> *@
-@*         </div> *@
-@*     </div> *@
-
-@*     <!-- Search Button --> *@
-@*     <div class="w-100 mb-3"> *@
-@*         <button type="submit" class="btn btn-primary w-100">Search</button> *@
-@*     </div> *@
-@* </form> *@
+<div class="modal fade" id="deleteCourseModal" tabindex="-1" aria-labelledby="deleteCourseModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="deleteCourseModalLabel">Delete Course</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p>Are you sure you want to delete this course?</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <form method="post" asp-action="Delete">
+                    <input type="hidden" id="deleteCourseId" name="id" />
+                    <button type="submit" class="btn btn-danger">Delete</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
 
 
-@* <!-- Course List Table --> *@
-@* <table class="table table-striped"> *@
-@*     <thead> *@
-@*         <tr> *@
-@*             <th>Course Code</th> *@
-@*             <th>Course Name</th> *@
-@*             <th>Department</th> *@
-@*             <th>Actions</th> *@
-@*         </tr> *@
-@*     </thead> *@
-@*     <tbody> *@
-@*         @foreach (var course in Model.Courses) *@
-@*         { *@
-@*             <tr> *@
-@*                 <td>@course.CourseCode</td> *@
-@*                 <td>@course.Name</td> *@
-@*                 <td>@course.Department.Name</td> *@
-@*                 <td> *@
-@*                     <!-- View Course Details Button --> *@
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $(document).ready(function () {
+        const limit = 5;
+        let majorPage = 1;
 
-@*                     <!-- Edit Course Button --> *@
-@*                     <a href="@Url.Action("Edit", "Course", new { id = course.Id })" class="btn btn-warning btn-sm"> *@
-@*                         Edit *@
-@*                     </a> *@
+        $("#majorSearch").on("input", function () {
+            var searchTerm = $(this).val();
+            if (searchTerm.length >= 2) {
+                searchMajors(searchTerm, majorPage);
+            } else {
+                $("#majorDropdown").hide();
+            }
+        });
 
-@*                     <!-- Delete Course Button --> *@
-@*                     <a href="javascript:void(0)" class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#deleteCourseModal" data-id="@course.Id" data-name="@course.Name">Delete</a> *@
-@*                 </td> *@
-@*             </tr> *@
-@*         } *@
-@*     </tbody> *@
-@* </table> *@
+        function searchMajors(searchTerm, page) {
+            $.ajax({
+                url: '/Course/Create',
+                type: 'GET',
+                data: { majorName: searchTerm, majorPage: page, limit: limit },
+                success: function (response) {
+                    updateDropdown("#majorDropdown", "#majorList", response.majors, 'major');
+                },
+                error: function (xhr, status, error) {
+                    console.error("Error fetching majors:", error);
+                }
+            });
+        }
 
-@* <!-- Pagination Controls --> *@
-@* <div class="d-flex justify-content-between align-items-center"> *@
-@*     <div> *@
-@*         <p>Page @Model.Page of @((Model.TotalCount + Model.Limit - 1) / Model.Limit)</p> *@
-@*     </div> *@
-@*     <div> *@
-@*         <nav aria-label="Page navigation"> *@
-@*             <ul class="pagination"> *@
-@*                 <li class="page-item @(Model.Page == 1 ? "disabled" : "")"> *@
-@*                     <a class="page-link" href="@Url.Action("Index", "Course", new { page = 1, courseCode = Model.CourseCodeFilter, name = Model.NameFilter, departmentId = Model.DepartmentIdFilter })">First</a> *@
-@*                 </li> *@
-@*                 <li class="page-item @(Model.Page == 1 ? "disabled" : "")"> *@
-@*                     <a class="page-link" href="@Url.Action("Index", "Course", new { page = Model.Page - 1, courseCode = Model.CourseCodeFilter, name = Model.NameFilter, departmentId = Model.DepartmentIdFilter })">Previous</a> *@
-@*                 </li> *@
-@*                 <li class="page-item @(Model.Page == (Model.TotalCount + Model.Limit - 1) / Model.Limit ? "disabled" : "")"> *@
-@*                     <a class="page-link" href="@Url.Action("Index", "Course", new { page = Model.Page + 1, courseCode = Model.CourseCodeFilter, name = Model.NameFilter, departmentId = Model.DepartmentIdFilter })">Next</a> *@
-@*                 </li> *@
-@*                 <li class="page-item @(Model.Page == (Model.TotalCount + Model.Limit - 1) / Model.Limit ? "disabled" : "")"> *@
-@*                     <a class="page-link" href="@Url.Action("Index", "Course", new { page = (Model.TotalCount + Model.Limit - 1) / Model.Limit, courseCode = Model.CourseCodeFilter, name = Model.NameFilter, departmentId = Model.DepartmentIdFilter })">Last</a> *@
-@*                 </li> *@
-@*             </ul> *@
-@*         </nav> *@
-@*     </div> *@
-@* </div> *@
+        function updateDropdown(dropdownSelector, listSelector, data, type) {
+            const list = $(listSelector);
+            list.empty();
 
+            if (data && data.length > 0) {
+                data.forEach((item) => {
+                    list.append(`<li class="list-group-item custom-dropdown-item" data-id="${item.id}">${item.name}</li>`);
+                });
+                $(dropdownSelector).show();
+            } else {
+                list.append('<li class="list-group-item">No items found</li>');
+                $(dropdownSelector).show();
+            }
+        }
 
-@* <div class="modal fade" id="deleteCourseModal" tabindex="-1" aria-labelledby="deleteCourseModalLabel" aria-hidden="true"> *@
-@*     <div class="modal-dialog"> *@
-@*         <div class="modal-content"> *@
-@*             <div class="modal-header"> *@
-@*                 <h5 class="modal-title" id="deleteCourseModalLabel">Delete Course</h5> *@
-@*                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button> *@
-@*             </div> *@
-@*             <div class="modal-body"> *@
-@*                 <p>Are you sure you want to delete this course?</p> *@
-@*             </div> *@
-@*             <div class="modal-footer"> *@
-@*                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button> *@
-@*                 <form method="post" asp-action="Delete"> *@
-@*                     <input type="hidden" id="deleteCourseId" name="id" /> *@
-@*                     <button type="submit" class="btn btn-danger">Delete</button> *@
-@*                 </form> *@
-@*             </div> *@
-@*         </div> *@
-@*     </div> *@
-@* </div> *@
+        $(document).on('click', '.custom-dropdown-item', function () {
+            const selectedText = $(this).text();
+            const selectedId = $(this).data('id');
+            $(this).closest('.custom-select-container').find('input').val(selectedText);
+            $(this).closest('.custom-select-container').find('input[type="hidden"]').val(selectedId);
+            $(this).closest('.custom-dropdown').hide();
+        });
 
-@* <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script> *@
-@* <script> *@
-@*     $(document).ready(function () { *@
-@*         const limit = 5; *@
+        $(document).on('click', function (e) {
+            if (!$(e.target).closest('.custom-select-container').length) {
+                $('.custom-dropdown').hide();
+            }
+        });
 
-@*         // Live search for Departments *@
-@*         $("#departmentSearch").on("input", function () { *@
-@*             const searchTerm = $(this).val(); *@
-@*             if (searchTerm.length >= 2) { *@
-@*                 searchDepartments(searchTerm); *@
-@*             } else { *@
-@*                 $("#departmentDropdown").hide(); *@
-@*             } *@
-@*         }); *@
+          $('#deleteCourseModal').on('show.bs.modal', function (event) {
+        var button = $(event.relatedTarget); // Button that triggered the modal
+        var courseId = button.data('id'); // Extract course ID from data-id
+        $('#deleteCourseId').val(courseId); // Set the hidden input value
+    });
+    });
+</script>
 
-@*         // AJAX request to search departments *@
-@*         function searchDepartments(searchTerm) { *@
-@*             $.ajax({ *@
-@*                 url: '/Course/Create', // Replace with actual endpoint *@
-@*                 type: 'GET', *@
-@*                 data: { departmentName: searchTerm, limit: limit }, *@
-@*                 success: function (response) { *@
-@*                     updateDropdown("#departmentDropdown", "#departmentList", response.departments || []); *@
-@*                 }, *@
-@*                 error: function (xhr, status, error) { *@
-@*                     console.error("Error fetching departments:", error); *@
-@*                 } *@
-@*             }); *@
-@*         } *@
-
-@*         // Update dropdown with search results *@
-@*         function updateDropdown(dropdownSelector, listSelector, data) { *@
-@*             const list = $(listSelector); *@
-@*             list.empty(); // Clear previous results *@
-
-@*             if (data.length > 0) { *@
-@*                 data.forEach((item) => { *@
-@*                     list.append(`<li class="list-group-item custom-dropdown-item" data-id="${item.id}">${item.name}</li>`); *@
-@*                 }); *@
-@*                 $(dropdownSelector).show(); *@
-@*             } else { *@
-@*                 list.append('<li class="list-group-item">No items found</li>'); *@
-@*                 $(dropdownSelector).show(); *@
-@*             } *@
-@*         } *@
-
-@*         // Handle item selection *@
-@*         $(document).on('click', '.custom-dropdown-item', function () { *@
-@*             const selectedText = $(this).text(); *@
-@*             const selectedId = $(this).data('id'); *@
-
-@*             // Update input and hidden field *@
-@*             $(this).closest('.custom-select-container').find('input[type="text"]').val(selectedText); *@
-@*             $(this).closest('.custom-select-container').find('input[type="hidden"]').val(selectedId); *@
-
-@*             $(this).closest('.custom-dropdown').hide(); *@
-@*         }); *@
-
-@*         // Close dropdown if clicking outside *@
-@*         $(document).on('click', function (e) { *@
-@*             if (!$(e.target).closest('.custom-select-container').length) { *@
-@*                 $('.custom-dropdown').hide(); *@
-@*             } *@
-@*         }); *@
-@*     }); *@
-
-@*     // Delete Course Modal Setup *@
-@*     const deleteCourseModal = document.getElementById('deleteCourseModal'); *@
-@*     if (deleteCourseModal) { *@
-@*         deleteCourseModal.addEventListener('show.bs.modal', function (event) { *@
-@*             const button = event.relatedTarget; // Button that triggered the modal *@
-@*             const courseId = button.getAttribute('data-id'); *@
-@*             const courseName = button.getAttribute('data-name'); *@
-
-@*             // Set the hidden field for the course ID *@
-@*             const deleteCourseIdInput = deleteCourseModal.querySelector('#deleteCourseId'); *@
-@*             deleteCourseIdInput.value = courseId; *@
-
-@*             // Optionally, display the course name in the confirmation message *@
-@*             const modalBody = deleteCourseModal.querySelector('.modal-body'); *@
-@*             modalBody.innerHTML = `<p>Are you sure you want to delete the course <strong>${courseName}</strong>?</p>`; *@
-@*         }); *@
-@*     } *@
-@* </script> *@

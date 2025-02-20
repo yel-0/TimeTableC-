@@ -9,5 +9,5 @@ public class CourseIndexViewModel
     public string CourseCodeFilter { get; set; }
     public string NameFilter { get; set; }
 
-    public int? DepartmentIdFilter { get; set; }
+    public int? MajorIdFilter { get; set; }
 }

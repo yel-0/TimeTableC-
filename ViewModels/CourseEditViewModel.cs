@@ -11,12 +11,10 @@
         // Course Code
         public string CourseCode { get; set; }
 
-      
+        // Major ID (this will be used to populate the Major dropdown)
+        public int MajorId { get; set; }
 
-        // Department ID (this will be used to populate the Department dropdown)
-        public int DepartmentId { get; set; }
-
-        // Department Name (this will be displayed in the input for the department search)
-        public string DepartmentName { get; set; }
+        // Major Name (this will be displayed in the input for the major search)
+        public string MajorName { get; set; }
     }
 }
