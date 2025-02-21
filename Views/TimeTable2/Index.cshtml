@@ -1,55 +1,282 @@
 ﻿
-    <style>
-        /* Custom CSS to increase row height */
-        .table-bordered td {
-            height: 100px; /* Adjust the height as needed */
-            vertical-align: middle; /* Center content vertically */
+<style>
+    /* Custom CSS to increase row height */
+    .table-bordered td {
+        height: 100px; /* Adjust the height as needed */
+        vertical-align: middle; /* Center content vertically */
+    }
+
+        /* Reduce the width of the lunch column */
+        .table-bordered td.lunch {
+            width: 150px; /* Adjust the width as needed */
         }
 
-            /* Reduce the width of the lunch column */
-            .table-bordered td.lunch {
-                width: 150px; /* Adjust the width as needed */
-            }
-    </style>
+    .course-list {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        max-width: 700px; /* Adjust width as needed */
+    }
 
+    .course-item {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 10px;
+        cursor: pointer;
+    }
 
-    <div class="container mt-4">
-        <h2 class="text-center mb-3">Class Timetable</h2>
-        <div class="table-responsive">
-            <table class="table table-bordered text-center">
-                <thead class="bg-primary text-white">
-                    <tr>
-                        <th>Day/Time</th>
-                        <th>9:00 - 10:00</th>
-                        <th>10:00 - 11:00</th>
-                        <th>11:00 - 12:00</th>
-                        <th class="lunch">12:00 - 1:00 </th>
-                        <th>1:00 - 2:00</th>
-                        <th>2:00 - 3:00</th>
-                        <th>3:00 - 4:00</th>
-                    </tr>
-                </thead>
-                <tbody id="timetable-body">
-                    <!-- Rows will be added dynamically with JS -->
-                </tbody>
-            </table>
+    .course-radio {
+        transform: scale(1.2);
+        cursor: pointer;
+    }
+
+    .course-details {
+        font-weight: bold;
+        flex-grow: 1;
+    }
+
+    .faculty-name {
+        color: #555;
+        font-style: italic;
+    }
+
+    .custom-dropdown {
+        display: none;
+        position: absolute;
+        background: white;
+        border: 1px solid #ddd;
+        width: 100%;
+        max-height: 150px;
+        overflow-y: auto;
+        list-style: none;
+        padding: 0;
+        margin: 0;
+        z-index: 10;
+    }
+
+    .custom-dropdown-item {
+        padding: 8px;
+        cursor: pointer;
+    }
+
+        .custom-dropdown-item:hover {
+            background: #f0f0f0;
+        }
+
+    .custom-select-container {
+        position: relative;
+    }
+</style>
+
+<form asp-action="Index" method="get" class="mb-3">
+    <div class="row">
+        <div class="mb-4">
+            <label for="facultySearch" class="form-label">Faculty</label>
+            <div class="custom-select-container">
+                <input type="text" id="facultySearch" class="form-control" placeholder="Search Faculty..." />
+                <input type="hidden" name="facultyId" id="facultyId" value="@Model.FacultyId" />
+                <ul id="facultyDropdown" class="custom-dropdown"></ul>
+            </div>
+        </div>
+
+        <!-- Major Search Input -->
+        <div class="mb-3">
+            <label class="form-label">Major</label>
+            <div class="custom-select-container">
+                <input type="text" id="majorSearch" name="MajorName" class="form-control border-primary" placeholder="Search Major" autocomplete="off" />
+                <input type="hidden" id="majorId" name="MajorId" />
+                <div id="majorDropdown" class="custom-dropdown shadow">
+                    <ul id="majorList"></ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-2">
+            <label for="section" class="form-label">Section</label>
+            <input type="text" name="section" class="form-control" />
+        </div>
+
+        <div class="col-md-2">
+            <label for="semester" class="form-label">Semester</label>
+            <input type="number" id="semester" name="semester" />
+        </div>
+
+        <div class="col-md-2">
+            <label for="year" class="form-label">Year</label>
+            <input type="number" name="year" class="form-control" />
+        </div>
+
+        <div class="col-md-2 align-self-end">
+            <button type="submit" class="btn btn-primary w-100">Filter</button>
         </div>
     </div>
+</form>
 
-    <script>
-        const days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"];
-        const timetableBody = document.getElementById("timetable-body");
+<div class="container mt-4">
+    <h2 class="text-center mb-3">Class Timetable</h2>
+    <div class="table-responsive">
+        <table class="table table-bordered text-center">
+            <thead class="bg-primary text-white">
+                <tr>
+                    <th>Day/Time</th>
+                    <th>9:00 - 10:00</th>
+                    <th>10:00 - 11:00</th>
+                    <th>11:00 - 12:00</th>
+                    <th class="lunch">12:00 - 1:00 </th>
+                    <th>1:00 - 2:00</th>
+                    <th>2:00 - 3:00</th>
+                    <th>3:00 - 4:00</th>
+                </tr>
+            </thead>
+            <tbody id="timetable-body">
+                <!-- Rows will be added dynamically with JS -->
+            </tbody>
+        </table>
+    </div>
+</div>
 
-        days.forEach(day => {
-            let row = `<tr><td class="fw-bold">${day}</td>`;
-            for (let i = 0; i < 7; i++) {
-                if (i === 3) { // Lunch break at index 3
-                    row += `<td class="bg-warning text-dark fw-bold lunch">Lunch</td>`;
-                } else {
-                    row += `<td contenteditable="true"></td>`; // Editable cells
+<div class="course-list">
+    @foreach (var assign in Model.AssignCourses)
+    {
+        <div class="course-item">
+            <input type="radio" name="selectedCourse" value="@assign.Course?.CourseCode" class="course-radio">
+            <span class="course-details">
+                @assign.Course?.CourseCode &nbsp;&nbsp;&nbsp;&nbsp;
+                @assign.Course?.Name
+            </span>
+            <span class="faculty-name">— @assign.Faculty?.Name</span>
+        </div>
+    }
+</div>
+
+<div class="timetable-data">
+    @foreach (var timetable in Model.TimetableEntries)
+    {
+        <div class="timetable-entry">
+            <span class="day-of-week">@timetable.DayOfWeek</span>
+            <span class="time">
+                @timetable.StartTime.ToString(@"hh\:mm") - @timetable.EndTime.ToString(@"hh\:mm")
+            </span>
+            <span class="room">@timetable.Classroom?.Name</span> <!-- Assuming 'Classroom' has a 'Name' property -->
+        </div>
+    }
+</div>
+
+
+
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $(document).ready(function () {
+        const limit = 5;
+
+        function searchItems(type, term, page) {
+            $.ajax({
+                url: '/Home/GetDropDownData',
+                type: 'GET',
+                data: { [`${type}Name`]: term, [`${type}Page`]: page, limit: limit },
+                success: function (response) {
+                    let listId = `#${type}Dropdown`;
+                    $(listId).empty().show();
+
+                    let items = response[type + 's'] || response.faculties;
+
+                    if (Array.isArray(items) && items.length > 0) {
+                        items.forEach(item => {
+                            $(listId).append(`<li class="custom-dropdown-item" data-id="${item.id}">${item.name}</li>`);
+                        });
+                    } else {
+                        $(listId).append('<li class="custom-dropdown-item">No results found</li>');
+                    }
+                },
+                error: function (xhr, status, error) {
+                    console.error("Error fetching data:", error);
                 }
+            });
+        }
+
+        // Live search for Faculty
+        $("#facultySearch").on("input", function () {
+            let searchTerm = $(this).val();
+            if (searchTerm.length >= 2) {
+                searchItems('faculty', searchTerm, 1);
+            } else {
+                $("#facultyDropdown").hide();
             }
-            row += `</tr>`;
-            timetableBody.innerHTML += row;
         });
-    </script>
+
+        // Live search for Course
+        $("#courseSearch").on("input", function () {
+            let searchTerm = $(this).val();
+            if (searchTerm.length >= 2) {
+                searchItems('course', searchTerm, 1);
+            } else {
+                $("#courseDropdown").hide();
+            }
+        });
+
+        // Live search for Major
+        $("#majorSearch").on("input", function () {
+            var searchTerm = $(this).val();
+            if (searchTerm.length >= 2) {
+                searchItems('major', searchTerm, 1);
+            } else {
+                $("#majorDropdown").hide();
+            }
+        });
+
+        // Handle selecting an item from the dropdown
+        $(document).on('click', '.custom-dropdown-item', function () {
+            let itemId = $(this).data('id');
+            let itemName = $(this).text();
+            let inputBox = $(this).closest('.custom-select-container').find('input').first();
+            let hiddenInput = $(this).closest('.custom-select-container').find('input[type="hidden"]');
+
+            inputBox.val(itemName);
+            hiddenInput.val(itemId);
+
+            $(this).closest('.custom-dropdown').hide();
+        });
+
+
+    });
+</script>
+
+
+<script>
+    const days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"];
+    const timetableBody = document.getElementById("timetable-body");
+    const timetableData = []; // Array to store the generated timetable
+
+    // Create the timetable rows dynamically
+    days.forEach(day => {
+        let row = `<tr><td class="fw-bold">${day}</td>`;
+        let rowData = { day: day, slots: [] }; // Object to store the row's data
+
+        for (let i = 0; i < 7; i++) {
+            if (i === 3) { // Lunch break at index 3
+                row += `<td class="bg-warning text-dark fw-bold lunch">Lunch</td>`;
+                rowData.slots.push('Lunch'); // Store lunch slot
+            } else {
+                row += `<td></td>`;
+                rowData.slots.push(null); // No content
+            }
+        }
+
+        row += `</tr>`;
+        timetableBody.innerHTML += row;
+
+        // Push the row data to timetableData array
+        timetableData.push(rowData);
+    });
+
+    // Log the entire timetable data after it has been generated
+    console.log(timetableData);
+
+    
+</script>
+
+
+
+
