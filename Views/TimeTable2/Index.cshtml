@@ -117,17 +117,8 @@
     <h2 class="text-center mb-3">Class Timetable</h2>
     <div class="table-responsive">
         <table class="table table-bordered text-center">
-            <thead class="bg-primary text-white">
-                <tr>
-                    <th>Day/Time</th>
-                    <th>9:00 - 10:00</th>
-                    <th>10:00 - 11:00</th>
-                    <th>11:00 - 12:00</th>
-                    <th class="lunch">12:00 - 1:00 </th>
-                    <th>1:00 - 2:00</th>
-                    <th>2:00 - 3:00</th>
-                    <th>3:00 - 4:00</th>
-                </tr>
+            <thead class="bg-primary text-white" id="timetable-header">
+                <!-- Timeslot headers will be added dynamically with JS -->
             </thead>
             <tbody id="timetable-body">
                 <!-- Rows will be added dynamically with JS -->
@@ -135,6 +126,96 @@
         </table>
     </div>
 </div>
+
+<script>
+    const timetableEntries = @Html.Raw(Json.Serialize(Model.TimetableEntries));
+    const days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"];
+    const timetableBody = document.getElementById("timetable-body");
+    const timetableHeader = document.getElementById("timetable-header");
+
+    // Log timetable entries to see the structure
+    console.log(timetableEntries);
+
+    // Create the timeslot headers dynamically
+    const timeslots = ["Day/Time", "9:00 - 10:00", "10:00 - 11:00", "11:00 - 12:00", "12:00 - 1:00", "1:00 - 2:00", "2:00 - 3:00", "3:00 - 4:00"];
+    let headerRow = "<tr>";
+
+    timeslots.forEach((timeslot, index) => {
+        // Apply bg-warning class only to the 12:00 - 1:00 slot
+        if (index === 4) { // 12:00 - 1:00 at index 4
+            headerRow += `<th class="bg-warning text-dark fw-bold lunch">${timeslot}</th>`;
+        } else {
+            headerRow += `<th>${timeslot}</th>`;
+        }
+    });
+
+    headerRow += "</tr>";
+    timetableHeader.innerHTML = headerRow;
+
+    // Create the timetable structure to store courses by day and timeslot
+    const timetableStructure = {
+        "Monday": Array(7).fill(null),
+        "Tuesday": Array(7).fill(null),
+        "Wednesday": Array(7).fill(null),
+        "Thursday": Array(7).fill(null),
+        "Friday": Array(7).fill(null)
+    };
+
+    // Function to map the start and end times to the correct timeslot index
+    function getTimeslotIndex(startTime, endTime) {
+        const timeSlots = [
+            { start: "09:00", end: "10:00" },
+            { start: "10:00", end: "11:00" },
+            { start: "11:00", end: "12:00" },
+            { start: "12:00", end: "13:00" },
+            { start: "13:00", end: "14:00" },
+            { start: "14:00", end: "15:00" },
+            { start: "15:00", end: "16:00" }
+        ];
+
+        for (let i = 0; i < timeSlots.length; i++) {
+            if (startTime === timeSlots[i].start && endTime === timeSlots[i].end) {
+                return i;
+            }
+        }
+        return -1; // No matching timeslot found
+    }
+
+    // Populate the timetable structure with courses
+    timetableEntries.forEach(timetable => {
+        const dayIndex = days.indexOf(timetable.dayOfWeek);
+        const timeslotIndex = getTimeslotIndex(timetable.startTime.slice(0, 5), timetable.endTime.slice(0, 5));
+
+        if (dayIndex !== -1 && timeslotIndex !== -1) {
+            timetableStructure[timetable.dayOfWeek][timeslotIndex] = timetable;
+        }
+    });
+
+    // Create timetable rows dynamically
+    days.forEach(day => {
+        let row = `<tr><td class="fw-bold">${day}</td>`;
+
+        for (let i = 0; i < 7; i++) {
+            const timetable = timetableStructure[day][i];
+            if (timetable) {
+                row += `<td>
+                            <div class="course-info">
+                                <span class="course-name">${timetable.assignCourse.course.name}</span><br>
+                            </div>
+                        </td>`;
+            } else {
+                // Insert "Free" in the empty cells with green text
+                row += `<td><span class="text-success fw-bold">Free</span></td>`;
+            }
+        }
+
+        row += `</tr>`;
+        timetableBody.innerHTML += row;
+    });
+</script>
+
+
+
 
 <div class="course-list">
     @foreach (var assign in Model.AssignCourses)
@@ -150,18 +231,24 @@
     }
 </div>
 
-<div class="timetable-data">
-    @foreach (var timetable in Model.TimetableEntries)
-    {
-        <div class="timetable-entry">
-            <span class="day-of-week">@timetable.DayOfWeek</span>
-            <span class="time">
-                @timetable.StartTime.ToString(@"hh\:mm") - @timetable.EndTime.ToString(@"hh\:mm")
-            </span>
-            <span class="room">@timetable.Classroom?.Name</span> <!-- Assuming 'Classroom' has a 'Name' property -->
-        </div>
-    }
-</div>
+@* <div class="timetable-data"> *@
+@*     @foreach (var timetable in Model.TimetableEntries) *@
+@*     { *@
+@*         <div class="timetable-entry"> *@
+@*             <span class="day-of-week">@timetable.DayOfWeek</span> *@
+@*             <span class="time"> *@
+@*                 @timetable.StartTime.ToString(@"hh\:mm") - @timetable.EndTime.ToString(@"hh\:mm") *@
+@*             </span> *@
+@*             <span class="room">@timetable.Classroom?.Name</span> *@
+
+@*             <!-- Displaying the course details --> *@
+@*             <div class="course-info"> *@
+@*                 <span class="course-name">@timetable.AssignCourse.Course.Name</span> *@
+@*             </div> *@
+@*         </div> *@
+@*     } *@
+@* </div> *@
+
 
 
 
@@ -244,38 +331,8 @@
 </script>
 
 
-<script>
-    const days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"];
-    const timetableBody = document.getElementById("timetable-body");
-    const timetableData = []; // Array to store the generated timetable
 
-    // Create the timetable rows dynamically
-    days.forEach(day => {
-        let row = `<tr><td class="fw-bold">${day}</td>`;
-        let rowData = { day: day, slots: [] }; // Object to store the row's data
 
-        for (let i = 0; i < 7; i++) {
-            if (i === 3) { // Lunch break at index 3
-                row += `<td class="bg-warning text-dark fw-bold lunch">Lunch</td>`;
-                rowData.slots.push('Lunch'); // Store lunch slot
-            } else {
-                row += `<td></td>`;
-                rowData.slots.push(null); // No content
-            }
-        }
-
-        row += `</tr>`;
-        timetableBody.innerHTML += row;
-
-        // Push the row data to timetableData array
-        timetableData.push(rowData);
-    });
-
-    // Log the entire timetable data after it has been generated
-    console.log(timetableData);
-
-    
-</script>
 
 
 

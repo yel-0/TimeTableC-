@@ -98,13 +98,10 @@ namespace TimeTable.Controllers
             }
 
             // Get the total count of records for pagination before applying Skip/Take for Timetable2
-            var totalTimetableCount = await timetableQuery.CountAsync();
+            var timetableEntries = await timetableQuery.ToListAsync();
 
-            // Apply pagination after filters are applied for Timetable2
-            var timetableEntries = await timetableQuery
-                .Skip((page - 1) * limit)
-                .Take(limit)
-                .ToListAsync();
+            // Get the total count of records for pagination if needed
+            var totalTimetableCount = await timetableQuery.CountAsync();
 
             // Create a ViewModel to send data to the view
             var viewModel = new ViewModels.TimeTableAssignCourseIndexViewModel
