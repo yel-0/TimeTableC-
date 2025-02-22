@@ -196,8 +196,8 @@ namespace TimeTable.Controllers
                     t.Id,
                     t.ClassroomId,
                     t.DayOfWeek,
-                    StartTime = t.StartTime.ToString(@"hh\:mm\:ss"),
-                    EndTime = t.EndTime.ToString(@"hh\:mm\:ss"),
+                    StartTime = t.StartTime.ToString(@"hh\:mm"),
+                    EndTime = t.EndTime.ToString(@"hh\:mm"),
                     AssignCourse = new
                     {
                         t.AssignCourse.Semester,

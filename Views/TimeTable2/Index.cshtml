@@ -227,8 +227,7 @@
     const timetableBody = document.getElementById("timetable-body");
     const timetableHeader = document.getElementById("timetable-header");
 
-    // Log timetable entries to see the structure
-    console.log(timetableEntries);
+
 
     // Create the timeslot headers dynamically
     const timeslots = ["Day/Time", "9:00 - 10:00", "10:00 - 11:00", "11:00 - 12:00", "12:00 - 1:00", "1:00 - 2:00", "2:00 - 3:00", "3:00 - 4:00"];
@@ -284,6 +283,8 @@
             timetableStructure[timetable.dayOfWeek][timeslotIndex] = timetable;
         }
     });
+
+     
 
     // Create timetable rows dynamically
     days.forEach((day, rowIndex) => {
@@ -384,9 +385,7 @@
             document.getElementById("startTime").value = selectedTimeslot.start;
             document.getElementById("endTime").value = selectedTimeslot.end;
 
-            // console.log(`Assigned Course: ${selectedCourse.value}`);
-            // console.log(`Selected Day: ${day}`);
-            // console.log(`starttime : ${selectedTimeslot.start} / endtime : ${selectedTimeslot.end}`);
+          
 
             // Submit the form after setting values
             document.getElementById("addCourseForm").submit();
@@ -592,37 +591,92 @@
     });
 </script>
 
-
 <script>
-      $(document).ready(function () {
-        // Listen for changes to the radio buttons
+    $(document).ready(function () {
+        let responseData = [];
+
         $('input[name="selectedCourse"]').change(function () {
-            // Check if a radio button is selected
             const selectedCourse = document.querySelector('input[name="selectedCourse"]:checked');
 
             if (selectedCourse) {
-                const facultyId = selectedCourse.getAttribute('data-faculty-id'); // Get Faculty ID from selected course
+                const facultyId = selectedCourse.getAttribute('data-faculty-id');
 
-                console.log("Fetching data for Faculty ID: " + facultyId);  // Log Faculty ID
+                console.log("Fetching data for Faculty ID: " + facultyId);
 
-                // AJAX request to fetch data using the facultyId
                 $.ajax({
-                    url: '/Timetable2/ByFaculty', // Ensure this is the correct URL
+                    url: '/Timetable2/ByFaculty',
                     type: 'GET',
                     data: { facultyId: facultyId },
                     dataType: 'json',
                     success: function (response) {
-                        console.log("Response Data: ", response);  // Log the response data
+                        responseData = response;
+
+                        let tableBody = document.getElementById('timetable-body');
+                        let tableRows = tableBody.getElementsByTagName('tr');
+
+                        const timeSlots = [
+                            { start: "09:00", end: "10:00" },
+                            { start: "10:00", end: "11:00" },
+                            { start: "11:00", end: "12:00" },
+                            { start: "12:00", end: "13:00" },
+                            { start: "13:00", end: "14:00" },
+                            { start: "14:00", end: "15:00" },
+                            { start: "15:00", end: "16:00" }
+                        ];
+
+                        // **Remove only previously appended divs with a specific class**
+                        for (let i = 0; i < tableRows.length; i++) {
+                            let cells = tableRows[i].getElementsByTagName('td');
+                            for (let c = 1; c < cells.length; c++) { // Skip first column (Day)
+                                let existingDiv = cells[c].querySelector('.timetable-entry');
+                                if (existingDiv) {
+                                    existingDiv.remove(); // Remove only the divs added by script
+                                }
+                            }
+                        }
+
+                        // Populate timetable
+                        for (let i = 0; i < tableRows.length; i++) {
+                            let firstCellText = tableRows[i].getElementsByTagName('td')[0].innerText; // Day
+
+                            for (let j = 0; j < responseData.length; j++) {
+                                let timetable = responseData[j];
+
+                                if (timetable.dayOfWeek === firstCellText) {
+                                    let timeSlotIndex = timeSlots.findIndex(slot =>
+                                        slot.start === timetable.startTime && slot.end === timetable.endTime
+                                    );
+
+                                    if (timeSlotIndex !== -1) {
+                                        let cell = tableRows[i].getElementsByTagName('td')[timeSlotIndex + 1];
+
+                                        // Create and style a new div
+                                        let newDiv = document.createElement('div');
+                                        newDiv.classList.add('timetable-entry'); // Add class for easy removal
+                                        newDiv.innerText = timetable.id;
+                                        newDiv.style.backgroundColor = "red";
+                                        newDiv.style.color = "white";
+                                        newDiv.style.width = "100%";
+                                        newDiv.style.textAlign = "center";
+                                        newDiv.style.padding = "5px";
+                                        newDiv.style.borderRadius = "4px";
+
+                                        // Append the new div to the cell
+                                        cell.appendChild(newDiv);
+                                    }
+                                }
+                            }
+                        }
                     },
                     error: function () {
-                        console.log("Error fetching data.");  // Log error message if the request fails
+                        console.log("Error fetching data.");
                     }
                 });
             }
         });
     });
-
 </script>
+
 
 
 
