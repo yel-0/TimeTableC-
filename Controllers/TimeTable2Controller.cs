@@ -21,25 +21,25 @@ namespace TimeTable.Controllers
             if (page < 1) page = 1;
             if (limit < 1) limit = 10;
 
-            //if (!facultyId.HasValue && (!majorId.HasValue || string.IsNullOrWhiteSpace(section) || string.IsNullOrWhiteSpace(semester)))
-            //{
-            //    var emptyViewModel = new ViewModels.TimeTableAssignCourseIndexViewModel
-            //    {
-            //        AssignCourses = new List<AssignCourse>(),
-            //        TotalAssignCount = 0,
-            //        TimetableEntries = new List<Timetable2>(),
-            //        TotalTimetableCount = 0,
-            //        Page = page,
-            //        Limit = limit,
-            //        FacultyId = facultyId,
-            //        MajorId = majorId,
-            //        Section = section,
-            //        Semester = semester,
-            //        Year = year
-            //    };
+            if (!majorId.HasValue || string.IsNullOrWhiteSpace(section) || string.IsNullOrWhiteSpace(semester))
+            {
+                var emptyViewModel = new ViewModels.TimeTableAssignCourseIndexViewModel
+                {
+                    AssignCourses = new List<AssignCourse>(),
+                    TotalAssignCount = 0,
+                    TimetableEntries = new List<Timetable2>(),
+                    TotalTimetableCount = 0,
+                    Page = page,
+                    Limit = limit,
+                    FacultyId = facultyId,
+                    MajorId = majorId,
+                    Section = section,
+                    Semester = semester,
+                    Year = year
+                };
 
-            //    return View(emptyViewModel);
-            //}
+                return View(emptyViewModel);
+            }
 
             // Start building the query for the AssignCourses table with eager loading
             var assignQuery = _context.AssignCourses
@@ -183,6 +183,35 @@ namespace TimeTable.Controllers
 
             // Return NotFound if timetable does not exist
             return NotFound();
+        }
+
+        public async Task<JsonResult> ByFaculty(int facultyId)
+        {
+            var timetables = await _context.Timetables2
+                .Include(t => t.AssignCourse)
+                    .ThenInclude(ac => ac.Major)  // Include Major details
+                .Where(t => t.AssignCourse.FacultyId == facultyId)
+                .Select(t => new
+                {
+                    t.Id,
+                    t.ClassroomId,
+                    t.DayOfWeek,
+                    StartTime = t.StartTime.ToString(@"hh\:mm\:ss"),
+                    EndTime = t.EndTime.ToString(@"hh\:mm\:ss"),
+                    AssignCourse = new
+                    {
+                        t.AssignCourse.Semester,
+                        t.AssignCourse.Section,
+                        Major = new
+                        {
+                            t.AssignCourse.Major.Id,
+                            t.AssignCourse.Major.Name
+                        }
+                    }
+                })
+                .ToListAsync();
+
+            return Json(timetables);
         }
 
 

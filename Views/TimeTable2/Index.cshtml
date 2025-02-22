@@ -100,21 +100,21 @@
 </style>
 <form asp-action="Index" method="get" class="mb-3">
     <div class="row">
-        <div class="mb-4">
-            <label for="facultySearch" class="form-label">Faculty</label>
-            <div class="custom-select-container">
-                <input type="text" id="facultySearch" name="facultyName" class="form-control"
-                       value="@Context.Request.Query["facultyName"]" placeholder="Search Faculty..." />
-                <input type="hidden" name="facultyId" id="facultyId" value="@Context.Request.Query["facultyId"]" />
-                <ul id="facultyDropdown" class="custom-dropdown"></ul>
-            </div>
-        </div>
+        @* <div class="mb-4"> *@
+        @*     <label for="facultySearch" class="form-label">Faculty</label> *@
+        @*     <div class="custom-select-container"> *@
+        @*         <input type="text" id="facultySearch" name="facultyName" class="form-control" *@
+        @*                value="@Context.Request.Query["facultyName"]" placeholder="Search Faculty..." /> *@
+        @*         <input type="hidden" name="facultyId" id="facultyId" value="@Context.Request.Query["facultyId"]" /> *@
+        @*         <ul id="facultyDropdown" class="custom-dropdown"></ul> *@
+        @*     </div> *@
+        @* </div> *@
 
         <!-- Major Search Input -->
         <div class="mb-3">
             <label class="form-label">Major</label>
             <div class="custom-select-container">
-                <input type="text" id="majorSearch" name="MajorName" value="@Context.Request.Query["MajorName"]"
+                <input type="text" id="majorSearch" name="MajorName" required value="@Context.Request.Query["MajorName"]"
                        class="form-control border-primary" placeholder="Search Major" autocomplete="off" />
                 <input type="hidden" id="majorId" name="MajorId" value="@Context.Request.Query["MajorId"]" />
                 <div id="majorDropdown" class="custom-dropdown shadow">
@@ -145,13 +145,13 @@
 
 
         <div class="col-md-2">
-            <label for="section" class="form-label">Section</label>
-            <input type="text" name="section" value="@Context.Request.Query["section"]" class="form-control" />
+            <label for="section"  class="form-label">Section</label>
+            <input type="text" required name="section" value="@Context.Request.Query["section"]" class="form-control" />
         </div>
 
         <div class="col-md-6 mb-3">
             <label for="semester" class="form-label">Semester</label>
-            <select id="semester" name="semester" class="form-select border-primary">
+            <select id="semester" required name="semester" class="form-select border-primary">
                 <option value="">Select a Semester</option>
                 @for (int i = 1; i <= 15; i++)
                 {
@@ -178,7 +178,7 @@
 
         <div class="col-md-2">
             <label for="year" class="form-label">Year</label>
-            <input type="number" name="year" id="year" class="form-control" />
+            <input type="number" required name="year" id="year" class="form-control" />
         </div>
 
         <script>
@@ -493,12 +493,12 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
 
-
 <div class="course-list">
     @foreach (var assign in Model.AssignCourses)
     {
         <div class="course-item">
-            <input type="radio" name="selectedCourse" value="@assign.Id" class="course-radio">
+            <input type="radio" name="selectedCourse" value="@assign.Id" class="course-radio"
+                   data-faculty-id="@assign.Faculty?.Id">
             <span class="course-details">
                 @assign.Course?.CourseCode &nbsp;&nbsp;&nbsp;&nbsp;
                 @assign.Course?.Name
@@ -507,6 +507,7 @@
         </div>
     }
 </div>
+
 
 
 
@@ -544,14 +545,14 @@
         }
 
         // Live search for Faculty
-        $("#facultySearch").on("input", function () {
-            let searchTerm = $(this).val();
-            if (searchTerm.length >= 2) {
-                searchItems('faculty', searchTerm, 1);
-            } else {
-                $("#facultyDropdown").hide();
-            }
-        });
+        // $("#facultySearch").on("input", function () {
+        //     let searchTerm = $(this).val();
+        //     if (searchTerm.length >= 2) {
+        //         searchItems('faculty', searchTerm, 1);
+        //     } else {
+        //         $("#facultyDropdown").hide();
+        //     }
+        // });
 
         // Live search for Course
          $("#classroomSearch").on("input", function () {
@@ -590,6 +591,40 @@
 
     });
 </script>
+
+
+<script>
+      $(document).ready(function () {
+        // Listen for changes to the radio buttons
+        $('input[name="selectedCourse"]').change(function () {
+            // Check if a radio button is selected
+            const selectedCourse = document.querySelector('input[name="selectedCourse"]:checked');
+
+            if (selectedCourse) {
+                const facultyId = selectedCourse.getAttribute('data-faculty-id'); // Get Faculty ID from selected course
+
+                console.log("Fetching data for Faculty ID: " + facultyId);  // Log Faculty ID
+
+                // AJAX request to fetch data using the facultyId
+                $.ajax({
+                    url: '/Timetable2/ByFaculty', // Ensure this is the correct URL
+                    type: 'GET',
+                    data: { facultyId: facultyId },
+                    dataType: 'json',
+                    success: function (response) {
+                        console.log("Response Data: ", response);  // Log the response data
+                    },
+                    error: function () {
+                        console.log("Error fetching data.");  // Log error message if the request fails
+                    }
+                });
+            }
+        });
+    });
+
+</script>
+
+
 
 
 
