@@ -162,5 +162,31 @@ namespace TimeTable.Controllers
         }
 
 
+        [HttpPost, ActionName("Delete")]
+        [ValidateAntiForgeryToken]
+        public IActionResult Delete(int timetableId)
+        {
+            // Find the timetable by its ID
+            var timetable = _context.Timetables2.Find(timetableId);
+
+
+            // Check if the timetable exists
+            if (timetable != null)
+            {
+                // Remove the timetable from the database
+                _context.Timetables2.Remove(timetable);
+                _context.SaveChanges();
+
+                // Redirect back to the previous page (or a specific action)
+                return Redirect(Request.Headers["Referer"].ToString());
+            }
+
+            // Return NotFound if timetable does not exist
+            return NotFound();
+        }
+
+
+
+
     }
 }

@@ -1,4 +1,5 @@
-﻿
+﻿<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
 <style>
     /* Custom CSS to increase row height */
     .table-bordered td {
@@ -296,6 +297,16 @@
                                 <span class="course-name">${timetable.assignCourse.course.name}</span><br>
                                 <span class="classroom-name">(${timetable.classroom.name})</span>
                             </div>
+                              <a href="#" class="btn btn-danger"
+       data-bs-toggle="modal"
+       data-bs-target="#deleteModalTemplate"
+       data-course-name="${timetable.assignCourse.course.name}"
+       data-classroom-name="${timetable.classroom.name}"
+       data-timetable-id="${timetable.id}">
+       Delete
+    </a>
+
+
                         </td>`;
             } else if (i === 3) {
                 row += `<td class="bg-warning text-dark fw-bold lunch"><span class="">Lunch</span></td>`;
@@ -323,10 +334,10 @@
 
         row += `</tr>`;
         timetableBody.innerHTML += row;
+
+
     });
-
-
-
+         
 
           function validateAndSubmit(event) {
         event.preventDefault(); // Prevent default form submission
@@ -387,6 +398,54 @@
 
 
 </script>
+
+<script>
+
+         $(document).ready(function() {
+        $('#deleteModalTemplate').on('show.bs.modal', function (event) {
+            var button = $(event.relatedTarget); // Button that triggered the modal
+            var courseName = button.data('course-name'); // Extract course name from data-* attributes
+            var classroomName = button.data('classroom-name'); // Extract classroom name
+            var timetableId = button.data('timetable-id'); // Extract timetable ID
+            console.log(timetableId);
+            console.log("Course name: " + courseName);
+            var modal = $(this);
+            modal.find('#course-name').text(courseName); // Dynamically set course name
+            modal.find('#delete-course-btn').attr('data-timetable-id', timetableId); // Set timetable ID on the delete button
+                modal.find('#timetable-id-input').val(timetableId);
+        });
+    });
+
+
+</script>
+
+<!-- Modal Template for Delete Confirmation -->
+<div class="modal fade" id="deleteModalTemplate" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="deleteModalLabel">Delete Course</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <!-- Form to handle deletion -->
+                <form id="delete-course-form" asp-action="Delete" method="POST">
+                    Do you want to delete <strong id="course-name"></strong> from this timetable?
+                    <!-- Hidden input field to store the timetableId -->
+                    <input type="hidden" id="timetable-id-input" name="timetableId">
+                  
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="submit" class="btn btn-danger" id="delete-course-btn" form="delete-course-form">Delete</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
 
 
 <!-- Add Course Button (Triggers Modal) -->
@@ -456,7 +515,6 @@
 
 
 
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
     $(document).ready(function () {
         const limit = 5;
