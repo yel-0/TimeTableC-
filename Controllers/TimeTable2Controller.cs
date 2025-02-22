@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using TimeTable.Data;
+using TimeTable.Models;
 using TimeTable.ViewModels;
 
 namespace TimeTable.Controllers
@@ -19,6 +20,26 @@ namespace TimeTable.Controllers
             // Default page and limit validation
             if (page < 1) page = 1;
             if (limit < 1) limit = 10;
+
+            //if (!facultyId.HasValue && (!majorId.HasValue || string.IsNullOrWhiteSpace(section) || string.IsNullOrWhiteSpace(semester)))
+            //{
+            //    var emptyViewModel = new ViewModels.TimeTableAssignCourseIndexViewModel
+            //    {
+            //        AssignCourses = new List<AssignCourse>(),
+            //        TotalAssignCount = 0,
+            //        TimetableEntries = new List<Timetable2>(),
+            //        TotalTimetableCount = 0,
+            //        Page = page,
+            //        Limit = limit,
+            //        FacultyId = facultyId,
+            //        MajorId = majorId,
+            //        Section = section,
+            //        Semester = semester,
+            //        Year = year
+            //    };
+
+            //    return View(emptyViewModel);
+            //}
 
             // Start building the query for the AssignCourses table with eager loading
             var assignQuery = _context.AssignCourses
@@ -67,7 +88,9 @@ namespace TimeTable.Controllers
             var timetableQuery = _context.Timetables2
                 .Include(t => t.AssignCourse)
                 .ThenInclude(ac => ac.Course)
-                .Include(t => t.AssignCourse.Faculty)  // Include Faculty through AssignCourse
+                .Include(t => t.AssignCourse.Faculty)
+                 .Include(t => t.Classroom)
+                // Include Faculty through AssignCourse
                 .OrderBy(t => t.DayOfWeek) // Adjust ordering if necessary
                 .AsQueryable();
 
@@ -123,6 +146,20 @@ namespace TimeTable.Controllers
             return View(viewModel);
         }
 
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Create([Bind("ClassroomId,AssignCourseId,DayOfWeek,StartTime,EndTime")] Timetable2 timetable2)
+        {
+
+
+            //if (ModelState.IsValid)
+            
+                _context.Add(timetable2);
+                await _context.SaveChangesAsync();
+            return Redirect(Request.Headers["Referer"].ToString());
+            //return View(timetable2);
+        }
 
 
     }

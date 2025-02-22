@@ -67,15 +67,44 @@
     .custom-select-container {
         position: relative;
     }
-</style>
 
+    .radio-label {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        cursor: pointer;
+        font-size: 14px;
+    }
+
+    input[type="radio"] {
+        accent-color: #007bff; /* Blue color for the radio button */
+        width: 20px;
+        height: 20px;
+        cursor: pointer;
+    }
+
+        input[type="radio"]:checked {
+            background-color: #007bff;
+        }
+
+    .radio-container{
+		display: flex;
+		align-items: center;
+		gap: 5px;
+		border: 2px solid #007bff;
+		padding: 5px;
+		border-radius: 5px;
+    }
+
+</style>
 <form asp-action="Index" method="get" class="mb-3">
     <div class="row">
         <div class="mb-4">
             <label for="facultySearch" class="form-label">Faculty</label>
             <div class="custom-select-container">
-                <input type="text" id="facultySearch" class="form-control" placeholder="Search Faculty..." />
-                <input type="hidden" name="facultyId" id="facultyId" value="@Model.FacultyId" />
+                <input type="text" id="facultySearch" name="facultyName" class="form-control"
+                       value="@Context.Request.Query["facultyName"]" placeholder="Search Faculty..." />
+                <input type="hidden" name="facultyId" id="facultyId" value="@Context.Request.Query["facultyId"]" />
                 <ul id="facultyDropdown" class="custom-dropdown"></ul>
             </div>
         </div>
@@ -84,27 +113,49 @@
         <div class="mb-3">
             <label class="form-label">Major</label>
             <div class="custom-select-container">
-                <input type="text" id="majorSearch" name="MajorName" class="form-control border-primary" placeholder="Search Major" autocomplete="off" />
-                <input type="hidden" id="majorId" name="MajorId" />
+                <input type="text" id="majorSearch" name="MajorName" value="@Context.Request.Query["MajorName"]"
+                       class="form-control border-primary" placeholder="Search Major" autocomplete="off" />
+                <input type="hidden" id="majorId" name="MajorId" value="@Context.Request.Query["MajorId"]" />
                 <div id="majorDropdown" class="custom-dropdown shadow">
                     <ul id="majorList"></ul>
                 </div>
             </div>
         </div>
 
+        <script>
+            document.addEventListener("DOMContentLoaded", function () {
+                function clearHiddenInput(inputField, hiddenField) {
+                    inputField.addEventListener("input", function () {
+                        if (inputField.value.trim().length === 0) {
+                            hiddenField.value = "";
+                        }
+                    });
+                }
+
+                const facultySearch = document.getElementById("facultySearch");
+                const facultyId = document.getElementById("facultyId");
+                const majorSearch = document.getElementById("majorSearch");
+                const majorId = document.getElementById("majorId");
+
+                clearHiddenInput(facultySearch, facultyId);
+                clearHiddenInput(majorSearch, majorId);
+            });
+        </script>
+
+
         <div class="col-md-2">
             <label for="section" class="form-label">Section</label>
-            <input type="text" name="section" class="form-control" />
+            <input type="text" name="section" value="@Context.Request.Query["section"]" class="form-control" />
         </div>
 
         <div class="col-md-2">
             <label for="semester" class="form-label">Semester</label>
-            <input type="number" id="semester" name="semester" />
+            <input type="number" id="semester" name="semester" value="@Context.Request.Query["semester"]" class="form-control" />
         </div>
 
         <div class="col-md-2">
             <label for="year" class="form-label">Year</label>
-            <input type="number" name="year" class="form-control" />
+            <input type="number" name="year" value="@(Context.Request.Query["year"].ToString() ?? DateTime.Now.Year.ToString())" class="form-control" />
         </div>
 
         <div class="col-md-2 align-self-end">
@@ -113,19 +164,26 @@
     </div>
 </form>
 
+
 <div class="container mt-4">
     <h2 class="text-center mb-3">Class Timetable</h2>
-    <div class="table-responsive">
-        <table class="table table-bordered text-center">
-            <thead class="bg-primary text-white" id="timetable-header">
-                <!-- Timeslot headers will be added dynamically with JS -->
-            </thead>
-            <tbody id="timetable-body">
-                <!-- Rows will be added dynamically with JS -->
-            </tbody>
-        </table>
-    </div>
+
+    
+    
+        <div class="table-responsive">
+            <table class="table table-bordered text-center">
+                <thead class="bg-primary text-white" id="timetable-header">
+                    <!-- Timeslot headers will be added dynamically with JS -->
+                </thead>
+                <tbody id="timetable-body">
+                    <!-- Rows will be added dynamically with JS -->
+                </tbody>
+            </table>
+        </div>
+    
 </div>
+
+
 
 <script>
     const timetableEntries = @Html.Raw(Json.Serialize(Model.TimetableEntries));
@@ -192,7 +250,7 @@
     });
 
     // Create timetable rows dynamically
-    days.forEach(day => {
+    days.forEach((day, rowIndex) => {
         let row = `<tr><td class="fw-bold">${day}</td>`;
 
         for (let i = 0; i < 7; i++) {
@@ -201,19 +259,145 @@
                 row += `<td>
                             <div class="course-info">
                                 <span class="course-name">${timetable.assignCourse.course.name}</span><br>
+                                <span class="classroom-name">(${timetable.classroom.name})</span>
                             </div>
                         </td>`;
+            } else if (i === 3) {
+                row += `<td class="bg-warning text-dark fw-bold lunch"><span class="">Lunch</span></td>`;
             } else {
-                // Insert "Free" in the empty cells with green text
-                row += `<td><span class="text-success fw-bold">Free</span></td>`;
+                // Insert "Free" in the empty cells with green text and add radio button
+                row += `<td>
+                             <div class="radio-button-container">
+       <label for="scheduleRadio${rowIndex}-${i}" class="radio-button">
+          <span class="text-success fw-bold">LMS</span><br>
+          <div class="radio-container">
+          
+            <input type="radio"
+                 id="scheduleRadio${rowIndex}-${i}"
+                 name="schedule"
+                 value="${day}-${i}"
+                  <span>Add</span>
+          </div>
+         
+       </label>
+    </div>
+
+                        </td>`;
             }
         }
 
         row += `</tr>`;
         timetableBody.innerHTML += row;
     });
+
+
+
+
+          function validateAndSubmit(event) {
+        event.preventDefault(); // Prevent default form submission
+
+        const urlParams = new URLSearchParams(window.location.search);
+        const requiredParams = ["MajorId", "semester", "year", "section"];
+
+        // Ensure required parameters are present
+        const allParamsPresent = requiredParams.every(param => urlParams.has(param) && urlParams.get(param).trim());
+        if (!allParamsPresent) {
+            alert("Please make sure you have selected a Major, Semester, Year, and Section.");
+            return false;
+        }
+
+        const timeSlots = [
+            { start: "09:00", end: "10:00" },
+            { start: "10:00", end: "11:00" },
+            { start: "11:00", end: "12:00" },
+            { start: "12:00", end: "13:00" },
+            { start: "13:00", end: "14:00" },
+            { start: "14:00", end: "15:00" },
+            { start: "15:00", end: "16:00" }
+        ];
+
+        const schedule = document.querySelector('input[name="schedule"]:checked');
+        const selectedCourse = document.querySelector('input[name="selectedCourse"]:checked');
+
+        // Ensure both schedule and course selection
+        if (!schedule || !selectedCourse) {
+            alert("Please make sure both a schedule and a course are selected.");
+            return false;
+        }
+
+        // Process the selected schedule
+        const [day, index] = schedule.value.split('-');
+        const timeslotIndex = parseInt(index);
+
+        if (timeslotIndex >= 0 && timeslotIndex < timeSlots.length) {
+            const selectedTimeslot = timeSlots[timeslotIndex];
+
+            // Set values in hidden inputs
+            document.getElementById("assignCourseId").value = selectedCourse.value;
+            document.getElementById("dayOfWeek").value = day;
+            document.getElementById("startTime").value = selectedTimeslot.start;
+            document.getElementById("endTime").value = selectedTimeslot.end;
+
+            // console.log(`Assigned Course: ${selectedCourse.value}`);
+            // console.log(`Selected Day: ${day}`);
+            // console.log(`starttime : ${selectedTimeslot.start} / endtime : ${selectedTimeslot.end}`);
+
+            // Submit the form after setting values
+            document.getElementById("addCourseForm").submit();
+        } else {
+            alert("Invalid timeslot selected.");
+            return false;
+        }
+    }
+
+
 </script>
 
+
+<!-- Add Course Button (Triggers Modal) -->
+<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addCourseModal">
+    Add Course
+</button>
+
+<!-- Bootstrap Modal -->
+<div class="modal fade" id="addCourseModal" tabindex="-1" aria-labelledby="addCourseModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addCourseModalLabel">Add Course</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form id="addCourseForm" method="post" asp-action="Create" onsubmit="return validateAndSubmit(event)">
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label class="form-label">Classroom</label>
+                        <div class="custom-select-container">
+                            <input type="text" id="classroomSearch" name="ClassroomName" class="form-control border-primary" placeholder="Search Classroom" required autocomplete="off" />
+                            <input type="hidden" id="classroomId" name="ClassroomId" />
+                            <div id="classroomDropdown" class="custom-dropdown shadow">
+                                <ul id="classroomList"></ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Hidden inputs -->
+                    <input type="hidden" id="assignCourseId" name="AssignCourseId" />
+                    <input type="hidden" id="dayOfWeek" name="DayOfWeek" />
+                    <input type="hidden" id="startTime" name="StartTime" />
+                    <input type="hidden" id="endTime" name="EndTime" />
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary">Confirm</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+<!-- Bootstrap JS (Needed for Modal) -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
 
 
@@ -221,7 +405,7 @@
     @foreach (var assign in Model.AssignCourses)
     {
         <div class="course-item">
-            <input type="radio" name="selectedCourse" value="@assign.Course?.CourseCode" class="course-radio">
+            <input type="radio" name="selectedCourse" value="@assign.Id" class="course-radio">
             <span class="course-details">
                 @assign.Course?.CourseCode &nbsp;&nbsp;&nbsp;&nbsp;
                 @assign.Course?.Name
@@ -231,23 +415,7 @@
     }
 </div>
 
-@* <div class="timetable-data"> *@
-@*     @foreach (var timetable in Model.TimetableEntries) *@
-@*     { *@
-@*         <div class="timetable-entry"> *@
-@*             <span class="day-of-week">@timetable.DayOfWeek</span> *@
-@*             <span class="time"> *@
-@*                 @timetable.StartTime.ToString(@"hh\:mm") - @timetable.EndTime.ToString(@"hh\:mm") *@
-@*             </span> *@
-@*             <span class="room">@timetable.Classroom?.Name</span> *@
 
-@*             <!-- Displaying the course details --> *@
-@*             <div class="course-info"> *@
-@*                 <span class="course-name">@timetable.AssignCourse.Course.Name</span> *@
-@*             </div> *@
-@*         </div> *@
-@*     } *@
-@* </div> *@
 
 
 
@@ -294,14 +462,15 @@
         });
 
         // Live search for Course
-        $("#courseSearch").on("input", function () {
-            let searchTerm = $(this).val();
-            if (searchTerm.length >= 2) {
-                searchItems('course', searchTerm, 1);
-            } else {
-                $("#courseDropdown").hide();
-            }
-        });
+         $("#classroomSearch").on("input", function () {
+        var searchTerm = $(this).val();
+        if (searchTerm.length >= 2) {
+            searchItems('classroom', searchTerm, 1);
+        } else {
+            $("#classroomDropdown").hide();
+        }
+    });
+
 
         // Live search for Major
         $("#majorSearch").on("input", function () {
