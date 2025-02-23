@@ -208,7 +208,7 @@
 
     timeslots.forEach((timeslot, index) => {
         if (index === 4) {
-            headerRow += `<th class="bg-warning text-dark fw-bold lunch" style="width: 200px;" >${timeslot}</th>`;
+            headerRow += `<th class="bg-warning text-dark fw-bold lunch" style="width: 200px;">${timeslot}</th>`;
         } else {
             headerRow += `<th>${timeslot}</th>`;
         }
@@ -218,11 +218,11 @@
     timetableHeader.innerHTML = headerRow;
 
     const timetableStructure = {
-        "Monday": Array(7).fill(null),
-        "Tuesday": Array(7).fill(null),
-        "Wednesday": Array(7).fill(null),
-        "Thursday": Array(7).fill(null),
-        "Friday": Array(7).fill(null)
+        "Monday": Array.from({ length: 7 }, () => []),
+        "Tuesday": Array.from({ length: 7 }, () => []),
+        "Wednesday": Array.from({ length: 7 }, () => []),
+        "Thursday": Array.from({ length: 7 }, () => []),
+        "Friday": Array.from({ length: 7 }, () => [])
     };
 
     function getTimeslotIndex(startTime, endTime) {
@@ -249,7 +249,7 @@
         const timeslotIndex = getTimeslotIndex(timetable.startTime.slice(0, 5), timetable.endTime.slice(0, 5));
 
         if (dayIndex !== -1 && timeslotIndex !== -1) {
-            timetableStructure[timetable.dayOfWeek][timeslotIndex] = timetable;
+            timetableStructure[timetable.dayOfWeek][timeslotIndex].push(timetable);
         }
     });
 
@@ -257,22 +257,25 @@
         let row = `<tr><td class="fw-bold">${day}</td>`;
 
         for (let i = 0; i < 7; i++) {
-            const timetable = timetableStructure[day][i];
-            if (timetable) {
-                row += `<td>
-                            <div class="course-info">
-                                <span class="course-name">${timetable.assignCourse.course.shortTerm}</span><br>
-                                <span class="classroom-name">(${timetable.classroom.name})</span>
+            const timetables = timetableStructure[day][i];
 
-                            </div>
-    <button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#courseModal"
-                                    onclick="showCourseDetails('${timetable.assignCourse.course.shortTerm}', '${timetable.classroom.name}', '${timetable.classroom.location}', '${timetable.assignCourse.semester}', '${timetable.assignCourse.section}', '${timetable.assignCourse.major.name}')">
-                                    Details
-                                </button>
+            if (timetables.length > 0) {
+                let cellContent = "";
+                timetables.forEach(timetable => {
+                    cellContent += `
+                        <div class="course-info" style="margin-bottom: 5px; padding: 5px; background: lightblue; border-radius: 5px;">
+                            <span class="course-name">${timetable.assignCourse.course.shortTerm}</span><br>
+                            <span class="classroom-name">(${timetable.classroom.name})</span>
+                            <button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#courseModal"
+                                onclick="showCourseDetails('${timetable.assignCourse.course.shortTerm}', '${timetable.classroom.name}', '${timetable.classroom.location}', '${timetable.assignCourse.semester}', '${timetable.assignCourse.section}', '${timetable.assignCourse.major.name}')">
+                                Details
+                            </button>
+                        </div>`;
+                });
 
-                        </td>`;
+                row += `<td>${cellContent}</td>`;
             } else if (i === 3) {
-                row += `<td class="bg-warning text-dark fw-bold lunch"><span class="">Lunch</span></td>`;
+                row += `<td class="bg-warning text-dark fw-bold lunch"><span>Lunch</span></td>`;
             } else {
                 row += `<td style="background-color: green; color: white; font-weight: bold; text-align: center; padding: 8px;">
                         LMS
@@ -283,7 +286,8 @@
         row += `</tr>`;
         timetableBody.innerHTML += row;
     });
-           function showCourseDetails(courseShortTerm, classroom, location, semester, section, major) {
+
+    function showCourseDetails(courseShortTerm, classroom, location, semester, section, major) {
         document.getElementById("modalCourseName").textContent = courseShortTerm;
         document.getElementById("modalClassroomName").textContent = classroom;
         document.getElementById("modalClassroomLocation").textContent = location;
@@ -291,8 +295,6 @@
         document.getElementById("modalSection").textContent = section;
         document.getElementById("modalMajor").textContent = major;
     }
-
-
 </script>
 
 <!-- Bootstrap Modal -->

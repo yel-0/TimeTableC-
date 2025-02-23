@@ -163,19 +163,33 @@ namespace TimeTable.Controllers
         // POST: Edit
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,CourseId,Year,Semester,Section,FacultyId ,MajorId")] AssignCourse assignCourse)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,CourseId,Year,Semester,Section,FacultyId,MajorId")] AssignCourse assignCourse)
         {
             if (id != assignCourse.Id)
             {
-                return NotFound();
+                return BadRequest("not found");
             }
 
-                    _context.Update(assignCourse);
-                    await _context.SaveChangesAsync();
-              
-                return RedirectToAction(nameof(Index));
-           
+            // Check if another record exists with the same details but a different Id
+            bool isDuplicate = await _context.AssignCourses.AnyAsync(ac =>
+                ac.FacultyId == assignCourse.FacultyId &&
+                ac.Year == assignCourse.Year &&
+                ac.Semester == assignCourse.Semester &&
+                ac.Section == assignCourse.Section &&
+                ac.CourseId == assignCourse.CourseId && // Only restrict if CourseId is the same
+                ac.Id != assignCourse.Id); // Ensure it's not the same record
+
+            if (isDuplicate)
+            {
+                return BadRequest("This faculty is already assigned to the same course in the same year, semester, and section.");
+            }
+
+            _context.Update(assignCourse);
+            await _context.SaveChangesAsync();
+
+            return RedirectToAction(nameof(Index));
         }
+
 
         // Helper method to check if the assignment exists
         private bool AssignCourseExists(int id)

@@ -94,74 +94,112 @@
 <h1>Edit Assign Course</h1>
 
 <a href="@Url.Action("Index", "AssignCourse")" class="btn btn-secondary mb-3">Back to List</a>
+<form asp-action="Edit" method="post" class="container mt-4">
+    <div class="card shadow-lg p-4">
+        <h4 class="mb-4 text-center">Edit Assignment</h4>
 
-<form asp-action="Edit" method="post">
-    <div class="row">
-        <!-- Hidden Field to Store the Assignment Id -->
-        <input type="hidden" name="Id" value="@Model.Id" />
+        <input type="hidden" id="assignmentId" name="Id" value="@Model.Id" />
 
-        <!-- Faculty Field -->
-        <div class="col-md-6 mb-3">
-            <label for="facultySearch" class="form-label">Faculty</label>
-            <div class="custom-select-container">
-                <input type="text" id="facultySearch" class="form-control" placeholder="Search Faculty..." value="@Model.FacultyName"  autocomplete="off" />
-                <input type="hidden" id="facultyId" name="FacultyId" value="@Model.FacultyId" />
-                <div id="facultyDropdown" class="custom-dropdown">
-                    <ul id="facultyList"></ul>
+        <div class="row">
+            <!-- Faculty Field -->
+            <!-- Faculty Field -->
+            <div class="col-md-6 mb-3">
+                <label for="facultySearch" class="form-label">Faculty</label>
+                <div class="input-group">
+                    <input type="text" id="facultySearch" class="form-control" placeholder="Search Faculty..." value="@Model.FacultyName" autocomplete="off" />
+                    <input type="hidden" id="facultyId" name="FacultyId" value="@Model.FacultyId" />
+                </div>
+                <div id="facultyDropdown" class="dropdown-menu w-100">
+                    <ul id="facultyList" class="list-group"></ul>
+                </div>
+            </div>
+
+            <!-- Major Field -->
+            <div class="col-md-6 mb-3">
+                <label class="form-label">Major</label>
+                <div class="input-group">
+                    <input type="text" id="majorSearch" name="MajorName" class="form-control" value="@Model.MajorName" placeholder="Search Major" autocomplete="off" />
+                    <input type="hidden" id="majorId" name="MajorId" value="@Model.MajorId" />
+                </div>
+                <div id="majorDropdown" class="dropdown-menu w-100">
+                    <ul id="majorList" class="list-group"></ul>
                 </div>
             </div>
         </div>
 
-        <!-- Major Search Input -->
-        <div class=" mb-3">
-            <label class="form-label">Major</label>
-            <div class="custom-select-container">
-                <input type="text" id="majorSearch" name="MajorName" class="form-control border-primary" value="@Model.MajorName" placeholder="Search Major" autocomplete="off" />
-                <input type="hidden" id="majorId" name="MajorId" value="@Model.MajorId" />
-                <div id="majorDropdown" class="custom-dropdown shadow">
-                    <ul id="majorList"></ul>
+        <div class="row">
+            <!-- Course Field -->
+            <div class="col-md-6 mb-3">
+                <label for="courseSearch" class="form-label">Course</label>
+                <div class="input-group">
+                    <input type="text" id="courseSearch" class="form-control" placeholder="Search Course..." value="@Model.CourseName" autocomplete="off" />
+                    <input type="hidden" id="courseId" name="CourseId" value="@Model.CourseId" />
                 </div>
+                <div id="courseDropdown" class="dropdown-menu w-100">
+                    <ul id="courseList" class="list-group"></ul>
+                </div>
+            </div>
+
+            <!-- Semester Field -->
+            <div class="col-md-6 mb-3">
+                <label for="semester" class="form-label">Semester</label>
+                <select id="semester" required name="Semester" class="form-select border-primary">
+                    <option value="">Select a Semester</option>
+                    <script>
+                        for (let i = 1; i <= 15; i++) {
+                            document.write(`<option value="${i}">Semester ${i}</option>`);
+                        }
+                    </script>
+                </select>
             </div>
         </div>
 
-        <!-- Course Field -->
-        <div class="col-md-6 mb-3">
-            <label for="courseSearch" class="form-label">Course</label>
-            <div class="custom-select-container">
-                <input type="text" id="courseSearch" class="form-control" placeholder="Search Course..." value="@Model.CourseName"  autocomplete="off" />
-                <input type="hidden" id="courseId" name="CourseId" value="@Model.CourseId" />
-                <div id="courseDropdown" class="custom-dropdown">
-                    <ul id="courseList"></ul>
-                </div>
+        <div class="row">
+            <!-- Section Field -->
+            <div class="col-md-2">
+                <label for="section" class="form-label">Section</label>
+                <select id="section" required name="Section" class="form-select border-primary">
+                    <option value="">Select a Section</option>
+                    <script>
+                        for (let sec = 65; sec <= 74; sec++) {
+                            let char = String.fromCharCode(sec);
+                            document.write(`<option value="${char}">${char}</option>`);
+                        }
+                    </script>
+                </select>
+            </div>
+
+            <!-- Year Field -->
+            <div class="col-md-6 mb-3">
+                <label for="year" class="form-label">Year</label>
+                <input type="text" id="year" name="Year" class="form-control" />
             </div>
         </div>
-    </div>
 
-    <div class="row">
-        <!-- Semester Field -->
-        <div class="col-md-6 mb-3">
-            <label for="semester" class="form-label">Semester</label>
-            <input type="text" id="semester" name="Semester" class="form-control" value="@Model.Semester" />
+        <!-- Submit Button -->
+        <div class="text-center mt-4">
+            <button type="submit" class="btn btn-primary px-4">Save</button>
         </div>
-
-        <!-- Section Field -->
-        <div class="col-md-6 mb-3">
-            <label for="section" class="form-label">Section</label>
-            <input type="text" id="section" name="Section" class="form-control" value="@Model.Section" />
-        </div>
-
-        <!-- Year Field -->
-        <div class="col-md-6 mb-3">
-            <label for="year" class="form-label">Year</label>
-            <input type="text" id="year" name="Year" class="form-control" value="@Model.Year" />
-        </div>
-    </div>
-
-    <!-- Submit Button -->
-    <div class="text-center mt-4">
-        <button type="submit" class="btn btn-primary">Save</button>
     </div>
 </form>
+
+<script>
+    // Preselected values (Replace these with actual values from backend)
+    const preselectedValues = {
+        semester: "@Model.Semester",
+        section: "@Model.Section",
+        year: "@Model.Year"
+    };
+
+    // Set preselected values in the form
+    document.getElementById("year").value = preselectedValues.year;
+
+    // Set preselected semester
+    document.getElementById("semester").value = preselectedValues.semester;
+
+    // Set preselected section
+    document.getElementById("section").value = preselectedValues.section;
+</script>
 
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
@@ -169,86 +207,66 @@
         $(document).ready(function () {
         const limit = 5;
 
-        // Live search for Course
-        $("#courseSearch").on("input", function () {
-            var searchTerm = $(this).val();
-            if (searchTerm.length >= 2) {
-                searchItems('course', searchTerm, 1);
-            } else {
-                $("#courseDropdown").hide();
-            }
-        });
+        function searchItems(type, term, page) {
+            $.ajax({
+                url: '/Home/GetDropDownData',
+                type: 'GET',
+                data: { [`${type}Name`]: term, [`${type}Page`]: page, limit: limit },
+                success: function (response) {
+                    let listId = `#${type}List`;
+                    let dropdownId = `#${type}Dropdown`;
 
-          $("#majorSearch").on("input", function () {
-            var searchTerm = $(this).val();
-            if (searchTerm.length >= 2) {
-                searchItems('major', searchTerm, 1);
-            } else {
-                $("#majorDropdown").hide();
-            }
-        });
+                    $(listId).empty();
 
+                    let items = response[type + 's'] || response.faculties;
 
+                    if (Array.isArray(items) && items.length > 0) {
+                        items.forEach(item => {
+                            $(listId).append(`<li class="custom-dropdown-item list-group-item" data-id="${item.id}">${item.name}</li>`);
+                        });
+                    } else {
+                        $(listId).append('<li class="custom-dropdown-item list-group-item disabled">No results found</li>');
+                    }
 
-
-        // Live search for Faculties
-        $("#facultySearch").on("input", function () {
-            var searchTerm = $(this).val();
-            console.log(searchTerm);
-            if (searchTerm.length >= 2) {
-                searchItems('faculty', searchTerm, 1);
-            } else {
-                $("#facultyDropdown").hide();
-            }
-        });
-
-          function searchItems(type, term, page) {
-        $.ajax({
-            url: '/Home/GetDropDownData',
-            type: 'GET',
-            data: { [`${type}Name`]: term, [`${type}Page`]: page, limit: limit },
-            success: function (response) {
-                let listId = `#${type}List`;
-                let dropdownId = `#${type}Dropdown`;
-
-
-                $(listId).empty();
-
-                let items = response[type + 's'] || response.faculties; 
-
-
-                if (Array.isArray(items) && items.length > 0) {
-                    items.forEach(item => {
-                        $(listId).append(`<li class="custom-dropdown-item" data-id="${item.id}">${item.name}</li>`);
-                    });
-                } else {
-                    $(listId).append('<li class="custom-dropdown-item">No results found</li>');
+                    $(dropdownId).show();
+                },
+                error: function (xhr, status, error) {
+                    console.error("Error fetching data:", error);
                 }
+            });
+        }
 
-                $(dropdownId).show();
-            },
-            error: function (xhr, status, error) {
-                console.error("Error fetching data:", error);
-            }
-        });
-    }
+        function setupLiveSearch(inputId, dropdownId, listId, type) {
+            $(inputId).on("input", function () {
+                var searchTerm = $(this).val();
+                if (searchTerm.length >= 2) {
+                    searchItems(type, searchTerm, 1);
+                } else {
+                    $(dropdownId).hide();
+                }
+            });
 
+            $(document).on('click', listId + ' .custom-dropdown-item', function () {
+                var itemId = $(this).data('id');
+                var itemName = $(this).text();
 
+                $(inputId).val(itemName);
+                $(inputId).next("input[type='hidden']").val(itemId);
 
+                $(dropdownId).hide();
+            });
 
+            // Hide dropdown when clicking outside
+            $(document).click(function (e) {
+                if (!$(e.target).closest(inputId).length && !$(e.target).closest(dropdownId).length) {
+                    $(dropdownId).hide();
+                }
+            });
+        }
 
-        // Handle selecting an item from the dropdown
-        $(document).on('click', '.custom-dropdown-item', function () {
-            var itemId = $(this).data('id');
-            var itemName = $(this).text();
-            var inputId = $(this).closest('.custom-select-container').find('input').first();
-            var hiddenInputId = $(this).closest('.custom-select-container').find('input[type="hidden"]');
-
-            inputId.val(itemName);
-            hiddenInputId.val(itemId);
-
-            $(this).closest('.custom-dropdown').hide();
-        });
+        setupLiveSearch("#courseSearch", "#courseDropdown", "#courseList", "course");
+        setupLiveSearch("#majorSearch", "#majorDropdown", "#majorList", "major");
+        setupLiveSearch("#facultySearch", "#facultyDropdown", "#facultyList", "faculty");
     });
 
 
