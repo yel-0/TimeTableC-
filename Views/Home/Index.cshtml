@@ -149,7 +149,13 @@
 
         <div class="col-md-2">
             <label for="section" class="form-label">Section</label>
-            <input type="text" required name="section" value="@Context.Request.Query["section"]" class="form-control" />
+            <select id="section" required name="section" class="form-select border-primary">
+                <option value="">Select a Section</option>
+                @for (char sec = 'A'; sec <= 'J'; sec++) // Renamed 'section' to 'sec'
+                {
+                    <option value="@sec">@sec</option>
+                }
+            </select>
         </div>
 
         <div class="col-md-6 mb-3">
@@ -158,10 +164,11 @@
                 <option value="">Select a Semester</option>
                 @for (int i = 1; i <= 15; i++)
                 {
-                    <option value="@i">@i Semester</option>
+                    <option value="@i"> Semester @i </option>
                 }
             </select>
         </div>
+
         <script>
             // Function to get URL parameter by name
             function getUrlParameter(name) {
@@ -169,15 +176,19 @@
                 return urlParams.get(name);
             }
 
-            // Get the "semester" parameter from the URL
+            // Get the "semester" parameter from the URL and set selected value
             const semesterValue = getUrlParameter("semester");
-
-            // If the "semester" parameter exists, set it as the selected value
             if (semesterValue) {
-                const semesterSelect = document.getElementById("semester");
-                semesterSelect.value = semesterValue;
+                document.getElementById("semester").value = semesterValue;
+            }
+
+            // Get the "section" parameter from the URL and set selected value
+            const sectionValue = getUrlParameter("section");
+            if (sectionValue) {
+                document.getElementById("section").value = sectionValue;
             }
         </script>
+
 
         <div class="col-md-2">
             <label for="year" class="form-label">Year</label>

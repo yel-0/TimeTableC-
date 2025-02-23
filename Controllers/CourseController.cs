@@ -62,17 +62,43 @@ namespace TimeTable.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(Course model)
         {
+            // Check if CourseCode already exists
+            if (_context.Courses.Any(c => c.CourseCode == model.CourseCode))
+            {
+                // Add a validation error to the model state
+                ModelState.AddModelError("CourseCode", "Course Code must be unique.");
+            }
+
+            // Check if ShortTerm already exists
+            if (!string.IsNullOrEmpty(model.ShortTerm) && _context.Courses.Any(c => c.ShortTerm == model.ShortTerm))
+            {
+                // Add a validation error to the model state
+                ModelState.AddModelError("ShortTerm", "Short Term must be unique.");
+            }
+
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            // Create a new Course entity
             var course = new Course
             {
                 CourseCode = model.CourseCode,
-                Name = model.Name
+                Name = model.Name,
+                ShortTerm = model.ShortTerm
             };
 
+            // Add the new course to the context
             _context.Courses.Add(course);
+
+            // Save the changes to the database
             await _context.SaveChangesAsync();
 
+            // Redirect to the index or another action after successful creation
             return RedirectToAction("Index");
         }
+
 
         [HttpGet]
         public async Task<IActionResult> Edit(int id)
@@ -100,11 +126,28 @@ namespace TimeTable.Controllers
         public async Task<IActionResult> Edit(int id, CourseEditViewModel viewModel)
         {
             var course = await _context.Courses.FindAsync(id);
-            //return BadRequest(viewModel);
+
             if (course == null)
             {
                 return NotFound();
             }
+
+            // Check if the CourseCode is unique (excluding the current course)
+            if (_context.Courses.Any(c => c.CourseCode == viewModel.CourseCode && c.Id != id))
+            {
+                // Return BadRequest with the validation message for CourseCode
+                return BadRequest(new { Field = "CourseCode", Message = "Course Code must be unique." });
+            }
+
+            // Check if the ShortTerm is unique (excluding the current course)
+            if (!string.IsNullOrEmpty(viewModel.ShortTerm) &&
+                _context.Courses.Any(c => c.ShortTerm == viewModel.ShortTerm && c.Id != id))
+            {
+                // Return BadRequest with the validation message for ShortTerm
+                return BadRequest(new { Field = "ShortTerm", Message = "Short Term must be unique." });
+            }
+
+
 
             try
             {
@@ -123,6 +166,7 @@ namespace TimeTable.Controllers
                 return View(viewModel);
             }
         }
+
 
         [HttpPost, ActionName("Delete")]
         public IActionResult Delete(int id)
