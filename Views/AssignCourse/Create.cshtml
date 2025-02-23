@@ -11,7 +11,7 @@
     <div class=" mb-3">
         <label class="form-label">Course</label>
         <div class="custom-select-container">
-            <input type="text" id="courseSearch" name="CourseName" class="form-control border-primary" placeholder="Search Course" autocomplete="off" />
+            <input type="text" id="courseSearch" name="CourseName" class="form-control border-primary" required placeholder="Search Course" autocomplete="off" />
             <input type="hidden" id="courseId" name="CourseId" />
             <div id="courseDropdown" class="custom-dropdown shadow">
                 <ul id="courseList"></ul>
@@ -24,7 +24,7 @@
     <div class=" mb-3">
         <label class="form-label">Major</label>
         <div class="custom-select-container">
-            <input type="text" id="majorSearch" name="MajorName" class="form-control border-primary" placeholder="Search Major" autocomplete="off" />
+            <input type="text" id="majorSearch" name="MajorName" class="form-control border-primary" required placeholder="Search Major" autocomplete="off" />
             <input type="hidden" id="majorId" name="MajorId" />
             <div id="majorDropdown" class="custom-dropdown shadow">
                 <ul id="majorList"></ul>
@@ -37,7 +37,7 @@
     <div class=" mb-3">
         <label class="form-label">Faculty</label>
         <div class="custom-select-container">
-            <input type="text" id="facultySearch" name="FacultyName" class="form-control border-primary" placeholder="Search Faculty" autocomplete="off" />
+            <input type="text" id="facultySearch" name="FacultyName" class="form-control border-primary" required placeholder="Search Faculty" autocomplete="off" />
             <input type="hidden" id="facultyId" name="FacultyId" />
             <div id="facultyDropdown" class="custom-dropdown shadow">
                 <ul id="facultyList"></ul>
@@ -46,20 +46,43 @@
     </div>
 
 
-    <div class="mb-3">
+    <div class="mb-4">
         <label for="section" class="form-label">Section</label>
-        <input type="text" name="Section" class="form-control" value="@Model.Section" />
+        <select id="section" required name="section" class="form-select border-primary">
+            <option value="">Select a Section</option>
+            @for (char sec = 'A'; sec <= 'J'; sec++) // Renamed 'section' to 'sec'
+            {
+                <option value="@sec">@sec</option>
+            }
+        </select>
     </div>
 
-    <div class="mb-3">
+    <div class=" mb-3">
         <label for="semester" class="form-label">Semester</label>
-        <input type="text" name="Semester" class="form-control" value="@Model.Semester" />
+        <select id="semester" required name="semester" class="form-select border-primary">
+            <option value="">Select a Semester</option>
+            @for (int i = 1; i <= 15; i++)
+            {
+                <option value="@i"> Semester @i </option>
+            }
+        </select>
     </div>
 
-    <div class="mb-3">
+    <div class="col-md-2">
         <label for="year" class="form-label">Year</label>
-        <input type="number" name="Year" class="form-control" value="@Model.Year" />
+        <input type="number" required name="year" id="year" class="form-control" />
     </div>
+
+    <script>
+        // Function to get URL parameter by name
+       
+
+        // Get the "year" parameter from the URL or use the current year as default
+        const yearValue =  new Date().getFullYear();
+
+        // Set the value of the year input
+        document.getElementById("year").value = yearValue;
+    </script>
 
     <button type="submit" class="btn btn-primary w-100">Assign Course</button>
 </form>

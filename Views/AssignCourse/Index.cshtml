@@ -8,56 +8,123 @@
 
 <form asp-action="Index" method="get" class="mb-3">
     <div class="row">
+        <!-- Faculty Search Input -->
         <div class="mb-4">
-            <label for="facultySearch" class="form-label">Faculty</label>
+            <label class="form-label">Faculty</label>
             <div class="custom-select-container">
-                <input type="text" id="facultySearch" class="form-control" placeholder="Search Faculty..." />
-                <input type="hidden" name="facultyId" id="facultyId" value="@Model.FacultyId" />
-                <ul id="facultyDropdown" class="custom-dropdown"></ul>
+                <input type="text" id="facultySearch" name="FacultyName" value="@Context.Request.Query["FacultyName"]"
+                       class="form-control border-primary" placeholder="Search Faculty" autocomplete="off" />
+                <input type="hidden" id="facultyId" name="FacultyId" value="@Context.Request.Query["FacultyId"]" />
+                <div id="facultyDropdown" class="custom-dropdown shadow">
+                    <ul id="facultyList"></ul>
+                </div>
             </div>
         </div>
 
         <!-- Major Search Input -->
-        <div class=" mb-3">
+        <div class="mb-3">
             <label class="form-label">Major</label>
             <div class="custom-select-container">
-                <input type="text" id="majorSearch" name="MajorName" class="form-control border-primary" placeholder="Search Major" autocomplete="off" />
-                <input type="hidden" value="@Model.MajorId" id="majorId" name="MajorId" />
+                <input type="text" id="majorSearch" name="MajorName" value="@Context.Request.Query["MajorName"]"
+                       class="form-control border-primary" placeholder="Search Major" autocomplete="off" />
+                <input type="hidden" id="majorId" name="MajorId" value="@Context.Request.Query["MajorId"]" />
                 <div id="majorDropdown" class="custom-dropdown shadow">
                     <ul id="majorList"></ul>
                 </div>
             </div>
         </div>
 
-        <div class="">
-            <label for="courseSearch" class="form-label">Course</label>
+        <!-- Course Search Input -->
+        <div class="mb-4">
+            <label class="form-label">Course</label>
             <div class="custom-select-container">
-                <input type="text" id="courseSearch" class="form-control" placeholder="Search Course..." />
-                <input type="hidden" name="courseId" id="courseId" value="@Model.CourseId" />
-                <ul id="courseDropdown" class="custom-dropdown"></ul>
+                <input type="text" id="courseSearch" name="CourseName" value="@Context.Request.Query["CourseName"]"
+                       class="form-control border-primary" placeholder="Search Course" autocomplete="off" />
+                <input type="hidden" id="courseId" name="CourseId" value="@Context.Request.Query["CourseId"]" />
+                <div id="courseDropdown" class="custom-dropdown shadow">
+                    <ul id="courseList"></ul>
+                </div>
             </div>
         </div>
 
+        <script>
+            document.addEventListener("DOMContentLoaded", function () {
+                function clearHiddenInput(inputField, hiddenField) {
+                    inputField.addEventListener("input", function () {
+                        if (inputField.value.trim().length === 0) {
+                            hiddenField.value = "";
+                        }
+                    });
+                }
+
+                const facultySearch = document.getElementById("facultySearch");
+                const facultyId = document.getElementById("facultyId");
+                const majorSearch = document.getElementById("majorSearch");
+                const majorId = document.getElementById("majorId");
+                const courseSearch = document.getElementById("courseSearch");
+                const courseId = document.getElementById("courseId");
+
+                clearHiddenInput(facultySearch, facultyId);
+                clearHiddenInput(majorSearch, majorId);
+                clearHiddenInput(courseSearch, courseId);
+            });
+        </script>
+
+        <!-- Section Dropdown -->
         <div class="col-md-2">
-            <label for="section" class="form-label">Section</label>
-            <input type="text" name="section" class="form-control" />
+            <label class="form-label">Section</label>
+            <select id="section" name="section" class="form-select border-primary">
+                <option value="">Select a Section</option>
+                @for (char sec = 'A'; sec <= 'J'; sec++)
+                {
+                    <option value="@sec">@sec</option>
+                }
+            </select>
         </div>
 
-        <div class="col-md-2">
-            <label for="semester" class="form-label">Semester</label>
-            <input type="number" id="semester" name="semester" />
+        <!-- Semester Dropdown -->
+        <div class="col-md-6 mb-3">
+            <label class="form-label">Semester</label>
+            <select id="semester" name="semester" class="form-select border-primary">
+                <option value="">Select a Semester</option>
+                @for (int i = 1; i <= 15; i++)
+                {
+                    <option value="@i">Semester @i</option>
+                }
+            </select>
         </div>
 
+        <script>
+            function getUrlParameter(name) {
+                const urlParams = new URLSearchParams(window.location.search);
+                return urlParams.get(name);
+            }
+
+            const semesterValue = getUrlParameter("semester");
+            if (semesterValue) document.getElementById("semester").value = semesterValue;
+
+            const sectionValue = getUrlParameter("section");
+            if (sectionValue) document.getElementById("section").value = sectionValue;
+        </script>
+
+        <!-- Year Input -->
         <div class="col-md-2">
-            <label for="year" class="form-label">Year</label>
-            <input type="number" name="year" class="form-control" />
+            <label class="form-label">Year</label>
+            <input type="number" required name="year" id="year" class="form-control" />
         </div>
 
+        <script>
+            const yearValue = getUrlParameter("year") || new Date().getFullYear();
+            document.getElementById("year").value = yearValue;
+        </script>
+
+        <!-- Submit Button -->
         <div class="col-md-2 align-self-end">
             <button type="submit" class="btn btn-primary w-100">Filter</button>
         </div>
     </div>
 </form>
+
 
 <table class="table table-bordered">
     <thead>
@@ -226,7 +293,9 @@
         list-style: none;
         padding: 0;
         margin: 0;
+        z-index: 1000; /* Add this line to bring the dropdown above other elements */
     }
+
 
     .custom-dropdown-item {
         padding: 8px;

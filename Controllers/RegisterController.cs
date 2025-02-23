@@ -21,6 +21,7 @@ namespace TimeTable.Controllers
 
         // GET: Register
         //[AuthorizeRole(0)]
+        [AuthorizeRole(0)]
 
         public IActionResult Index()
         {

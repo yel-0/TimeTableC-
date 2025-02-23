@@ -108,15 +108,7 @@
 </style>
 <form asp-action="Index" method="get" class="mb-3">
     <div class="row">
-        @* <div class="mb-4"> *@
-        @*     <label for="facultySearch" class="form-label">Faculty</label> *@
-        @*     <div class="custom-select-container"> *@
-        @*         <input type="text" id="facultySearch" name="facultyName" class="form-control" *@
-        @*                value="@Context.Request.Query["facultyName"]" placeholder="Search Faculty..." /> *@
-        @*         <input type="hidden" name="facultyId" id="facultyId" value="@Context.Request.Query["facultyId"]" /> *@
-        @*         <ul id="facultyDropdown" class="custom-dropdown"></ul> *@
-        @*     </div> *@
-        @* </div> *@
+    
 
         <!-- Major Search Input -->
         <div class="mb-3">
@@ -141,12 +133,10 @@
                     });
                 }
 
-                const facultySearch = document.getElementById("facultySearch");
-                const facultyId = document.getElementById("facultyId");
+                
                 const majorSearch = document.getElementById("majorSearch");
                 const majorId = document.getElementById("majorId");
 
-                clearHiddenInput(facultySearch, facultyId);
                 clearHiddenInput(majorSearch, majorId);
             });
         </script>
@@ -486,6 +476,21 @@
                             <input type="hidden" id="classroomId" name="ClassroomId" />
                             <div id="classroomDropdown" class="custom-dropdown shadow">
                                 <ul id="classroomList"></ul>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Boolean Radio Button -->
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Allow this teacher to teach at overlapping times?</label>
+
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" id="isActiveTrue" name="IsActive" value="true" />
+                                <label class="form-check-label" for="isActiveTrue">Yes</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" id="isActiveFalse" name="IsActive" value="false" checked />
+                                <label class="form-check-label" for="isActiveFalse">No</label>
                             </div>
                         </div>
                     </div>

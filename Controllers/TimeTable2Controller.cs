@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using TimeTable.Data;
+using TimeTable.Filters;
 using TimeTable.Models;
 using TimeTable.ViewModels;
 
@@ -14,6 +15,7 @@ namespace TimeTable.Controllers
         {
             _context = context;
         }
+        [AuthorizeRole(0)]
 
         public async Task<IActionResult> Index(int? facultyId, int? majorId, string section, string semester, int? year, int page = 1, int limit = 10)
         {
@@ -149,17 +151,39 @@ namespace TimeTable.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("ClassroomId,AssignCourseId,DayOfWeek,StartTime,EndTime")] Timetable2 timetable2)
+        public async Task<IActionResult> Create([Bind("ClassroomId,AssignCourseId,DayOfWeek,StartTime,EndTime")] Timetable2 timetable2, bool IsActive)
         {
+            // Get the FacultyId based on AssignCourseId
+            var assignCourse = await _context.AssignCourses.FindAsync(timetable2.AssignCourseId);
+            if (assignCourse == null)
+            {
+                return BadRequest("Invalid course assignment.");
+            }
 
+            int facultyId = assignCourse.FacultyId;
 
-            //if (ModelState.IsValid)
-            
-                _context.Add(timetable2);
-                await _context.SaveChangesAsync();
+            // Check for scheduling conflicts if IsActive is false
+            if (!IsActive)
+            {
+                bool isConflict = await _context.Timetables2.AnyAsync(t =>
+                    t.AssignCourse.FacultyId == facultyId && // Ensure the same faculty
+                    t.DayOfWeek == timetable2.DayOfWeek && // Check the same day
+                    ((t.StartTime <= timetable2.StartTime && t.EndTime > timetable2.StartTime) || // Overlapping start time
+                     (t.StartTime < timetable2.EndTime && t.EndTime >= timetable2.EndTime) || // Overlapping end time
+                     (t.StartTime >= timetable2.StartTime && t.EndTime <= timetable2.EndTime)) // Full overlap
+                );
+
+                if (isConflict)
+                {
+                    return BadRequest("The teacher is already scheduled to teach during this time on the same day.");
+                }
+            }
+
+            _context.Add(timetable2);
+            await _context.SaveChangesAsync();
             return Redirect(Request.Headers["Referer"].ToString());
-            //return View(timetable2);
         }
+
 
 
         [HttpPost, ActionName("Delete")]

@@ -3,6 +3,8 @@ using Microsoft.EntityFrameworkCore;
 using TimeTable.Data;
 using TimeTable.Models;
 using TimeTable.ViewModels;
+using TimeTable.Filters;
+
 
 namespace TimeTable.Controllers
 {
@@ -15,6 +17,8 @@ namespace TimeTable.Controllers
         {
             _context = context;
         }
+
+        [AuthorizeRole(0)]
         public async Task<IActionResult> Index(int? facultyId, int? courseId, int? majorId, string section, string semester, int? year, int page = 1, int limit = 10)
         {
             // Default page and limit validation
@@ -99,14 +103,26 @@ namespace TimeTable.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("CourseId,Year,Semester,Section,FacultyId, MajorId")] AssignCourse assignCourse)
+        public async Task<IActionResult> Create([Bind("CourseId,Year,Semester,Section,FacultyId,MajorId")] AssignCourse assignCourse)
         {
+            // Check if the same faculty is already assigned in the same year, semester, and section for the same course
+            bool isDuplicate = await _context.AssignCourses.AnyAsync(ac =>
+                ac.FacultyId == assignCourse.FacultyId &&
+                ac.Year == assignCourse.Year &&
+                ac.Semester == assignCourse.Semester &&
+                ac.Section == assignCourse.Section &&
+                ac.CourseId == assignCourse.CourseId); // Only restrict if CourseId is the same
+
+            if (isDuplicate)
+            {
+                return BadRequest("This faculty is already assigned to the same course in the same year, semester, and section.");
+            }
 
             _context.Add(assignCourse);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
-
         }
+
 
         // GET: Edit
         public async Task<IActionResult> Edit(int id)
