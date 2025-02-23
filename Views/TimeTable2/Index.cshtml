@@ -212,17 +212,7 @@
 <div class="container mt-4">
     <h2 class="text-center mb-3">Class Timetable</h2>
 
-    @if (Model.TimetableEntries.Count == 0)
-    {
-        <div class="text-center">
-            <div class="card shadow-lg p-4">
-                <h3 class="text-danger">No Timetable Available</h3>
-                <p class="text-muted">There are no classes scheduled at the moment.</p>
-            </div>
-        </div>
-    }
-    else
-    {
+  
         <div class="table-responsive">
             <table class="table table-bordered text-center">
                 <thead class="bg-primary text-white" id="timetable-header">
@@ -233,7 +223,7 @@
                 </tbody>
             </table>
         </div>
-    }
+    
 </div>
 
 
@@ -695,16 +685,18 @@
                                         // Create and style a new div
                                         let newDiv = document.createElement('div');
                                         newDiv.classList.add('timetable-entry'); // Add class for easy removal
-                                        newDiv.innerText = `Course: ${timetable.assignCourse.course.name}`;
+                                        newDiv.innerText = `Course: ${timetable.assignCourse.course.shortTerm}`;
                                         newDiv.style.backgroundColor = "red";
                                         newDiv.style.color = "white";
                                         newDiv.style.width = "100%";
                                         newDiv.style.textAlign = "center";
                                         newDiv.style.padding = "5px";
                                         newDiv.style.borderRadius = "4px";
-                                        newDiv.style.cursor = "pointer"; // Make it clickable
+                                            newDiv.style.cursor = "pointer"; // Make it clickable
+    newDiv.style.marginTop = "3px";
+    newDiv.style.marginBottom = "3px";
 
-                                        // Store data attributes for modal
+                                            // Store data attributes for modal
                                         newDiv.dataset.id = timetable.id;
                                         newDiv.dataset.day = timetable.dayOfWeek;
                                         newDiv.dataset.startTime = timetable.startTime;

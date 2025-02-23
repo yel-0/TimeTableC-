@@ -212,7 +212,8 @@ namespace TimeTable.Controllers
                         Course = new
                         {
                             t.AssignCourse.Course.Id,
-                            t.AssignCourse.Course.Name
+                            t.AssignCourse.Course.Name,
+                            t.AssignCourse.Course.ShortTerm
                         }
                     }
                 })

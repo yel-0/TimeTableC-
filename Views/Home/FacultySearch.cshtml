@@ -107,24 +107,20 @@
     }
 
 </style>
-<a href="/Home/FacultySearch">Go to Faculty Search</a>
-
-<form  asp-action="Index" method="get" class="mb-3">
+<form asp-action="FacultySearch" method="get" class="mb-3">
     <div class="row">
-       
-
-        <!-- Major Search Input -->
-        <div class="mb-3">
-            <label class="form-label">Major</label>
+        <div class="mb-4">
+            <label for="facultySearch" class="form-label">Faculty</label>
             <div class="custom-select-container">
-                <input type="text" id="majorSearch" name="MajorName" required value="@Context.Request.Query["MajorName"]"
-                       class="form-control border-primary" placeholder="Search Major" autocomplete="off" />
-                <input type="hidden" id="majorId" name="MajorId" value="@Context.Request.Query["MajorId"]" />
-                <div id="majorDropdown" class="custom-dropdown shadow">
-                    <ul id="majorList"></ul>
-                </div>
+                <input type="text" id="facultySearch" name="facultyName" class="form-control"
+                       value="@Context.Request.Query["facultyName"]" placeholder="Search Faculty..." />
+                <input type="hidden" name="facultyId" id="facultyId" value="@Context.Request.Query["facultyId"]" />
+                <ul id="facultyDropdown" class="custom-dropdown"></ul>
             </div>
         </div>
+
+
+       
 
         <script>
             document.addEventListener("DOMContentLoaded", function () {
@@ -138,46 +134,15 @@
 
                 const facultySearch = document.getElementById("facultySearch");
                 const facultyId = document.getElementById("facultyId");
-                const majorSearch = document.getElementById("majorSearch");
-                const majorId = document.getElementById("majorId");
+              
 
                 clearHiddenInput(facultySearch, facultyId);
-                clearHiddenInput(majorSearch, majorId);
             });
         </script>
 
 
-        <div class="col-md-2">
-            <label for="section" class="form-label">Section</label>
-            <input type="text" required name="section" value="@Context.Request.Query["section"]" class="form-control" />
-        </div>
-
-        <div class="col-md-6 mb-3">
-            <label for="semester" class="form-label">Semester</label>
-            <select id="semester" required name="semester" class="form-select border-primary">
-                <option value="">Select a Semester</option>
-                @for (int i = 1; i <= 15; i++)
-                {
-                    <option value="@i">@i Semester</option>
-                }
-            </select>
-        </div>
-        <script>
-            // Function to get URL parameter by name
-            function getUrlParameter(name) {
-                const urlParams = new URLSearchParams(window.location.search);
-                return urlParams.get(name);
-            }
-
-            // Get the "semester" parameter from the URL
-            const semesterValue = getUrlParameter("semester");
-
-            // If the "semester" parameter exists, set it as the selected value
-            if (semesterValue) {
-                const semesterSelect = document.getElementById("semester");
-                semesterSelect.value = semesterValue;
-            }
-        </script>
+        
+      
 
         <div class="col-md-2">
             <label for="year" class="form-label">Year</label>
@@ -221,16 +186,14 @@
         <div class="table-responsive">
             <table class="table table-bordered text-center">
                 <thead class="bg-primary text-white" id="timetable-header">
-                    <!-- Timeslot headers will be added dynamically with JS -->
                 </thead>
                 <tbody id="timetable-body">
-                    <!-- Rows will be added dynamically with JS -->
                 </tbody>
             </table>
         </div>
     }
-</div>
 
+</div>
 
 
 
@@ -240,16 +203,12 @@
     const timetableBody = document.getElementById("timetable-body");
     const timetableHeader = document.getElementById("timetable-header");
 
-
-
-    // Create the timeslot headers dynamically
     const timeslots = ["Day/Time", "9:00 - 10:00", "10:00 - 11:00", "11:00 - 12:00", "12:00 - 1:00", "1:00 - 2:00", "2:00 - 3:00", "3:00 - 4:00"];
     let headerRow = "<tr>";
 
     timeslots.forEach((timeslot, index) => {
-        // Apply bg-warning class only to the 12:00 - 1:00 slot
-        if (index === 4) { // 12:00 - 1:00 at index 4
-            headerRow += `<th class="bg-warning  text-dark fw-bold lunch" style="width: 200px;" >${timeslot}</th>`;
+        if (index === 4) {
+            headerRow += `<th class="bg-warning text-dark fw-bold lunch" style="width: 200px;" >${timeslot}</th>`;
         } else {
             headerRow += `<th>${timeslot}</th>`;
         }
@@ -258,7 +217,6 @@
     headerRow += "</tr>";
     timetableHeader.innerHTML = headerRow;
 
-    // Create the timetable structure to store courses by day and timeslot
     const timetableStructure = {
         "Monday": Array(7).fill(null),
         "Tuesday": Array(7).fill(null),
@@ -267,7 +225,6 @@
         "Friday": Array(7).fill(null)
     };
 
-    // Function to map the start and end times to the correct timeslot index
     function getTimeslotIndex(startTime, endTime) {
         const timeSlots = [
             { start: "09:00", end: "10:00" },
@@ -284,10 +241,9 @@
                 return i;
             }
         }
-        return -1; // No matching timeslot found
+        return -1;
     }
 
-    // Populate the timetable structure with courses
     timetableEntries.forEach(timetable => {
         const dayIndex = days.indexOf(timetable.dayOfWeek);
         const timeslotIndex = getTimeslotIndex(timetable.startTime.slice(0, 5), timetable.endTime.slice(0, 5));
@@ -297,83 +253,76 @@
         }
     });
 
-
-
-    // Create timetable rows dynamically
     days.forEach((day, rowIndex) => {
         let row = `<tr><td class="fw-bold">${day}</td>`;
 
         for (let i = 0; i < 7; i++) {
             const timetable = timetableStructure[day][i];
             if (timetable) {
-                row += `<td >
+                row += `<td>
                             <div class="course-info">
                                 <span class="course-name">${timetable.assignCourse.course.shortTerm}</span><br>
                                 <span class="classroom-name">(${timetable.classroom.name})</span>
-                            </div>
-                             
 
+                            </div>
+    <button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#courseModal"
+                                    onclick="showCourseDetails('${timetable.assignCourse.course.shortTerm}', '${timetable.classroom.name}', '${timetable.classroom.location}', '${timetable.assignCourse.semester}', '${timetable.assignCourse.section}', '${timetable.assignCourse.major.name}')">
+                                    Details
+                                </button>
 
                         </td>`;
             } else if (i === 3) {
                 row += `<td class="bg-warning text-dark fw-bold lunch"><span class="">Lunch</span></td>`;
             } else {
-                // Insert "Free" in the empty cells with green text and add radio button
-                    row += `<td style="background-color: green; color: white; font-weight: bold; text-align: center; padding: 8px;">
-        LMS
-    </td>
-    `;
+                row += `<td style="background-color: green; color: white; font-weight: bold; text-align: center; padding: 8px;">
+                        LMS
+                    </td>`;
             }
         }
 
         row += `</tr>`;
         timetableBody.innerHTML += row;
-
-
     });
-
-
-        
+           function showCourseDetails(courseShortTerm, classroom, location, semester, section, major) {
+        document.getElementById("modalCourseName").textContent = courseShortTerm;
+        document.getElementById("modalClassroomName").textContent = classroom;
+        document.getElementById("modalClassroomLocation").textContent = location;
+        document.getElementById("modalSemester").textContent = semester;
+        document.getElementById("modalSection").textContent = section;
+        document.getElementById("modalMajor").textContent = major;
+    }
 
 
 </script>
 
-
-
-
-
-
-
-
-
-
+<!-- Bootstrap Modal -->
+<!-- Bootstrap Modal -->
+<div class="modal fade" id="courseModal" tabindex="-1" aria-labelledby="courseModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="courseModalLabel">Course Details</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p><strong>Course Name:</strong> <span id="modalCourseName"></span></p>
+                <p><strong>Classroom:</strong> <span id="modalClassroomName"></span></p>
+                <p><strong>Location:</strong> <span id="modalClassroomLocation"></span></p>
+                <p><strong>Semester:</strong> <span id="modalSemester"></span></p>
+                <p><strong>Section:</strong> <span id="modalSection"></span></p>
+                <p><strong>Major:</strong> <span id="modalMajor"></span></p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
 
 
 
 <!-- Bootstrap JS (Needed for Modal) -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-
-
-<div class="course-list">
-    @foreach (var assign in Model.AssignCourses)
-    {
-        <div class="course-item">
-         
-            <span class="course-details">
-                @assign.Course?.CourseCode &nbsp;&nbsp;&nbsp;&nbsp;
-                @assign.Course?.Name
-            </span>
-            <span class="faculty-name">— @assign.Faculty?.Name</span>
-        </div>
-    }
-</div>
-
-
-
-
-
-
-
 
 <script>
     $(document).ready(function () {
@@ -404,28 +353,19 @@
             });
         }
 
-     
 
-        // Live search for Course
-         $("#classroomSearch").on("input", function () {
+
+            // Live search for Faculties
+    $("#facultySearch").on("input", function () {
         var searchTerm = $(this).val();
+        console.log(searchTerm);
         if (searchTerm.length >= 2) {
-            searchItems('classroom', searchTerm, 1);
+            searchItems('faculty', searchTerm, 1);
         } else {
-            $("#classroomDropdown").hide();
+            $("#facultyDropdown").hide();
         }
     });
 
-
-        // Live search for Major
-        $("#majorSearch").on("input", function () {
-            var searchTerm = $(this).val();
-            if (searchTerm.length >= 2) {
-                searchItems('major', searchTerm, 1);
-            } else {
-                $("#majorDropdown").hide();
-            }
-        });
 
         // Handle selecting an item from the dropdown
         $(document).on('click', '.custom-dropdown-item', function () {
@@ -443,17 +383,3 @@
 
     });
 </script>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
