@@ -1,6 +1,12 @@
 ﻿<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
 <style>
+
+    td {
+        width: 200px;
+        word-wrap: break-word;
+    }
+
     /* Custom CSS to increase row height */
     .table-bordered td {
         height: 100px; /* Adjust the height as needed */
@@ -92,9 +98,11 @@
 		display: flex;
 		align-items: center;
 		gap: 5px;
-		border: 2px solid #007bff;
+		/* border: 2px solid #007bff; */
 		padding: 5px;
 		border-radius: 5px;
+        background-color:green;
+		color: white;
     }
 
 </style>
@@ -204,8 +212,17 @@
 <div class="container mt-4">
     <h2 class="text-center mb-3">Class Timetable</h2>
 
-    
-    
+    @if (Model.TimetableEntries.Count == 0)
+    {
+        <div class="text-center">
+            <div class="card shadow-lg p-4">
+                <h3 class="text-danger">No Timetable Available</h3>
+                <p class="text-muted">There are no classes scheduled at the moment.</p>
+            </div>
+        </div>
+    }
+    else
+    {
         <div class="table-responsive">
             <table class="table table-bordered text-center">
                 <thead class="bg-primary text-white" id="timetable-header">
@@ -216,8 +233,9 @@
                 </tbody>
             </table>
         </div>
-    
+    }
 </div>
+
 
 
 
@@ -293,9 +311,9 @@
         for (let i = 0; i < 7; i++) {
             const timetable = timetableStructure[day][i];
             if (timetable) {
-                row += `<td>
+                row += `<td >
                             <div class="course-info">
-                                <span class="course-name">${timetable.assignCourse.course.name}</span><br>
+                                <span class="course-name">${timetable.assignCourse.course.shortTerm}</span><br>
                                 <span class="classroom-name">(${timetable.classroom.name})</span>
                             </div>
                               <a href="#" class="btn btn-danger"
@@ -314,8 +332,8 @@
             } else {
                 // Insert "Free" in the empty cells with green text and add radio button
                 row += `<td>
-                             <div class="radio-button-container">
-       <label for="scheduleRadio${rowIndex}-${i}" class="radio-button">
+                             <div class="radio-button-container ">
+       <label for="scheduleRadio${rowIndex}-${i}" class="radio-button ">
           <span class="text-success fw-bold">LMS</span><br>
           <div class="radio-container">
           

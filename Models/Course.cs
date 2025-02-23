@@ -17,7 +17,8 @@ namespace TimeTable.Models
         [StringLength(100)]
         public string Name { get; set; }
 
-
+        [StringLength(50)] 
+        public string? ShortTerm { get; set; } 
 
     }
 

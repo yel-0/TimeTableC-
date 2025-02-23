@@ -46,7 +46,7 @@ namespace TimeTable.Controllers
                 Limit = limit,
                 TotalCount = totalCourses,
                 CourseCodeFilter = courseCode,
-                NameFilter = name
+                NameFilter = name,
             };
 
             return View(viewModel);
@@ -88,7 +88,8 @@ namespace TimeTable.Controllers
             {
                 Id = course.Id,
                 Name = course.Name,
-                CourseCode = course.CourseCode
+                CourseCode = course.CourseCode,
+                ShortTerm =course.ShortTerm 
             };
 
             return View(viewModel);
@@ -99,7 +100,7 @@ namespace TimeTable.Controllers
         public async Task<IActionResult> Edit(int id, CourseEditViewModel viewModel)
         {
             var course = await _context.Courses.FindAsync(id);
-
+            //return BadRequest(viewModel);
             if (course == null)
             {
                 return NotFound();
@@ -109,6 +110,7 @@ namespace TimeTable.Controllers
             {
                 course.Name = viewModel.Name;
                 course.CourseCode = viewModel.CourseCode;
+                course.ShortTerm = viewModel.ShortTerm;
 
                 _context.Courses.Update(course);
                 await _context.SaveChangesAsync();

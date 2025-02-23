@@ -88,7 +88,7 @@
         <tr>
             <th>Course Code</th>
             <th>Course Name</th>
-            @* <th>Major</th> *@
+            <th>Short Term</th>
             <th>Actions</th>
         </tr>
     </thead>
@@ -98,7 +98,8 @@
             <tr>
                 <td>@course.CourseCode</td>
                 <td>@course.Name</td>
-                @* <td>@course.Major.Name</td> *@
+                <td>@(string.IsNullOrEmpty(course.ShortTerm) ? "-" : course.ShortTerm)</td>
+
                 <td>
                     <a href="@Url.Action("Edit", "Course", new { id = course.Id })" class="btn btn-warning btn-sm">
                         Edit

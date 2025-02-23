@@ -11,6 +11,9 @@
         // Course Code
         public string CourseCode { get; set; }
 
+        public string ShortTerm { get; set; }
+
+
         // Major ID (this will be used to populate the Major dropdown)
         public int MajorId { get; set; }
 

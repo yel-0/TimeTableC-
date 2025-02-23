@@ -79,25 +79,12 @@
             @Html.TextBoxFor(model => model.CourseCode, new { @class = "form-control border-primary" })
             @Html.ValidationMessageFor(model => model.CourseCode, "", new { @class = "text-danger" })
         </div>
+        <div class="form-group mb-3">
+            @Html.LabelFor(model => model.ShortTerm, "Short Term (Optional)", new { @class = "form-label" })
+            @Html.TextBoxFor(model => model.ShortTerm, new { @class = "form-control border-secondary" })
+        </div>
 
-        <!-- Major Search Input -->
-        @* <div class="form-group mb-3"> *@
-        @*     <label class="form-label">Major</label> *@
-        @*     <div class="custom-select-container"> *@
-        @*         <input type="text" id="majorSearch" name="MajorName" *@
-        @*                class="form-control border-primary" *@
-        @*                placeholder="Search Major" *@
-        @*                autocomplete="off" *@
-        @*                required *@
-        @*                value="@Model.MajorName" /> *@
-        @*         <input type="hidden" id="majorId" name="MajorId" value="@Model.MajorId" /> *@
-        @*         <div id="majorDropdown" class="custom-dropdown"> *@
-        @*             <ul id="majorList"></ul> *@
-        @*         </div> *@
-        @*     </div> *@
-        @*     @Html.ValidationMessageFor(model => model.MajorName, "", new { @class = "text-danger" }) *@
-        @* </div> *@
-
+     
         <!-- Submit Button -->
         <div class="text-center mt-4">
             <button type="submit" class="btn btn-primary w-100">Save Changes</button>
@@ -109,6 +96,23 @@
 
 
 
+<!-- Major Search Input -->
+@* <div class="form-group mb-3"> *@
+@*     <label class="form-label">Major</label> *@
+@*     <div class="custom-select-container"> *@
+@*         <input type="text" id="majorSearch" name="MajorName" *@
+@*                class="form-control border-primary" *@
+@*                placeholder="Search Major" *@
+@*                autocomplete="off" *@
+@*                required *@
+@*                value="@Model.MajorName" /> *@
+@*         <input type="hidden" id="majorId" name="MajorId" value="@Model.MajorId" /> *@
+@*         <div id="majorDropdown" class="custom-dropdown"> *@
+@*             <ul id="majorList"></ul> *@
+@*         </div> *@
+@*     </div> *@
+@*     @Html.ValidationMessageFor(model => model.MajorName, "", new { @class = "text-danger" }) *@
+@* </div> *@
 
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
