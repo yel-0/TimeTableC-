@@ -190,6 +190,8 @@ namespace TimeTable.Controllers
             var timetables = await _context.Timetables2
                 .Include(t => t.AssignCourse)
                     .ThenInclude(ac => ac.Major)  // Include Major details
+                .Include(t => t.AssignCourse)
+                    .ThenInclude(ac => ac.Course)  // Include Course details
                 .Where(t => t.AssignCourse.FacultyId == facultyId)
                 .Select(t => new
                 {
@@ -206,6 +208,11 @@ namespace TimeTable.Controllers
                         {
                             t.AssignCourse.Major.Id,
                             t.AssignCourse.Major.Name
+                        },
+                        Course = new
+                        {
+                            t.AssignCourse.Course.Id,
+                            t.AssignCourse.Course.Name
                         }
                     }
                 })

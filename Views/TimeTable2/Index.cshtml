@@ -590,6 +590,30 @@
 
     });
 </script>
+<!-- Bootstrap Modal -->
+<div class="modal fade" id="timetableModal" tabindex="-1" aria-labelledby="timetableModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="timetableModalLabel">Timetable Details</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p class=""><strong>ID:</strong> <span id="modalId"></span></p>
+                <p><strong>Day:</strong> <span id="modalDay"></span></p>
+                <p><strong>Start Time:</strong> <span id="modalStartTime"></span></p>
+                <p><strong>End Time:</strong> <span id="modalEndTime"></span></p>
+                <p><strong>Semester:</strong> <span id="modalSemester"></span></p>
+                <p><strong>Section:</strong> <span id="modalSection"></span></p>
+                <p><strong>Course:</strong> <span id="modalCourse"></span></p>
+                <p><strong>Major:</strong> <span id="modalMajor"></span></p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
 
 <script>
     $(document).ready(function () {
@@ -624,13 +648,13 @@
                             { start: "15:00", end: "16:00" }
                         ];
 
-                        // **Remove only previously appended divs with a specific class**
+                        // Remove previously added entries
                         for (let i = 0; i < tableRows.length; i++) {
                             let cells = tableRows[i].getElementsByTagName('td');
                             for (let c = 1; c < cells.length; c++) { // Skip first column (Day)
                                 let existingDiv = cells[c].querySelector('.timetable-entry');
                                 if (existingDiv) {
-                                    existingDiv.remove(); // Remove only the divs added by script
+                                    existingDiv.remove();
                                 }
                             }
                         }
@@ -653,13 +677,37 @@
                                         // Create and style a new div
                                         let newDiv = document.createElement('div');
                                         newDiv.classList.add('timetable-entry'); // Add class for easy removal
-                                        newDiv.innerText = timetable.id;
+                                        newDiv.innerText = `Course: ${timetable.assignCourse.course.name}`;
                                         newDiv.style.backgroundColor = "red";
                                         newDiv.style.color = "white";
                                         newDiv.style.width = "100%";
                                         newDiv.style.textAlign = "center";
                                         newDiv.style.padding = "5px";
                                         newDiv.style.borderRadius = "4px";
+                                        newDiv.style.cursor = "pointer"; // Make it clickable
+
+                                        // Store data attributes for modal
+                                        newDiv.dataset.id = timetable.id;
+                                        newDiv.dataset.day = timetable.dayOfWeek;
+                                        newDiv.dataset.startTime = timetable.startTime;
+                                        newDiv.dataset.endTime = timetable.endTime;
+                                        newDiv.dataset.semester = timetable.assignCourse.semester;
+                                        newDiv.dataset.section = timetable.assignCourse.section;
+                                        newDiv.dataset.course = timetable.assignCourse.course.name;
+                                        newDiv.dataset.major = timetable.assignCourse.major.name;
+
+                                        // Click event to open modal
+                                        newDiv.addEventListener("click", function () {
+                                            $("#modalId").text(this.dataset.id);
+                                            $("#modalDay").text(this.dataset.day);
+                                            $("#modalStartTime").text(this.dataset.startTime);
+                                            $("#modalEndTime").text(this.dataset.endTime);
+                                            $("#modalSemester").text(this.dataset.semester);
+                                            $("#modalSection").text(this.dataset.section);
+                                            $("#modalCourse").text(this.dataset.course);
+                                            $("#modalMajor").text(this.dataset.major);
+                                            $("#timetableModal").modal("show");
+                                        });
 
                                         // Append the new div to the cell
                                         cell.appendChild(newDiv);
@@ -676,6 +724,7 @@
         });
     });
 </script>
+
 
 
 
