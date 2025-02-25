@@ -81,14 +81,27 @@ namespace TimeTable.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(Faculty faculty)
         {
+            // Check if the Name or Email already exists in the database
+            var existingFaculty = await _context.Faculties
+                .FirstOrDefaultAsync(f => f.Name == faculty.Name || f.Email == faculty.Email);
+
+            if (existingFaculty != null)
+            {
+                // Return BadRequest if a duplicate is found
+                return BadRequest("A Faculty with the same Name or Email already exists.");
+            }
+
             if (ModelState.IsValid)
             {
                 _context.Add(faculty);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
+
             return View(faculty);
         }
+
+
 
         // GET: Faculty/Edit/5
         public async Task<IActionResult> Edit(int id)
@@ -109,6 +122,16 @@ namespace TimeTable.Controllers
             if (id != faculty.Id)
             {
                 return NotFound();
+            }
+
+            // Check if the Name or Email already exists in the database (excluding the current Faculty)
+            var existingFaculty = await _context.Faculties
+                .FirstOrDefaultAsync(f => (f.Name == faculty.Name || f.Email == faculty.Email) && f.Id != faculty.Id);
+
+            if (existingFaculty != null)
+            {
+                // Return BadRequest if a duplicate is found
+                return BadRequest("A Faculty with the same Name or Email already exists.");
             }
 
             if (ModelState.IsValid)

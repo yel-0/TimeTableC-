@@ -26,13 +26,13 @@ namespace TimeTable.Controllers
 
             if (!majorId.HasValue || string.IsNullOrWhiteSpace(section) || string.IsNullOrWhiteSpace(semester))
             {
-                var emptyViewModel = new ViewModels.TimeTableAssignCourseIndexViewModel
+                var emptyViewModel = new TimeTableAssignCourseIndexViewModel
                 {
                     AssignCourses = new List<AssignCourse>(),
                     TotalAssignCount = 0,
                     TimetableEntries = new List<Timetable2>(),
                     TotalTimetableCount = 0,
-                    CourseOccurrences = new Dictionary<int, ViewModels.CourseOccurrenceInfo>(), // Empty dictionary
+                    CourseOccurrences = new Dictionary<int, CourseOccurrenceInfo>(),
                     Page = page,
                     Limit = limit,
                     FacultyId = facultyId,
@@ -45,6 +45,7 @@ namespace TimeTable.Controllers
                 return View(emptyViewModel);
             }
 
+            // Fetch assigned courses based on filters
             var assignQuery = _context.AssignCourses
                 .Include(a => a.Faculty)
                 .Include(a => a.Course)
@@ -61,6 +62,7 @@ namespace TimeTable.Controllers
             var totalAssignCount = await assignQuery.CountAsync();
             var assignCourses = await assignQuery.Skip((page - 1) * limit).Take(limit).ToListAsync();
 
+            // Fetch timetable entries based on filters
             var timetableQuery = _context.Timetables2
                 .Include(t => t.AssignCourse)
                 .ThenInclude(ac => ac.Course)
@@ -78,34 +80,34 @@ namespace TimeTable.Controllers
             var timetableEntries = await timetableQuery.ToListAsync();
             var totalTimetableCount = await timetableQuery.CountAsync();
 
-            // Grouping Timetable2 by AssignCourseId, including course name and code, and counting occurrences
+            // Count occurrences of each Course in the timetable
             var courseOccurrences = await timetableQuery
-                .GroupBy(t => t.AssignCourseId)
+                .GroupBy(t => t.AssignCourse.CourseId)
                 .Select(g => new
                 {
-                    AssignCourseId = g.Key,
+                    CourseId = g.Key,
                     Count = g.Count(),
-                    CourseName = g.FirstOrDefault().AssignCourse.Course.Name, // Course Name
-                    CourseCode = g.FirstOrDefault().AssignCourse.Course.CourseCode // Course Code
+                    CourseName = g.FirstOrDefault().AssignCourse.Course.Name,
+                    CourseCode = g.FirstOrDefault().AssignCourse.Course.CourseCode
                 })
                 .ToListAsync();
 
-            // Convert the list to a dictionary of CourseOccurrenceInfo
+            // Convert to dictionary
             var courseOccurrencesDictionary = courseOccurrences
-                .ToDictionary(g => g.AssignCourseId, g => new ViewModels.CourseOccurrenceInfo
+                .ToDictionary(g => g.CourseId, g => new CourseOccurrenceInfo
                 {
                     Count = g.Count,
                     CourseName = g.CourseName,
                     CourseCode = g.CourseCode
                 });
 
-            var viewModel = new ViewModels.TimeTableAssignCourseIndexViewModel
+            var viewModel = new TimeTableAssignCourseIndexViewModel
             {
                 AssignCourses = assignCourses,
                 TotalAssignCount = totalAssignCount,
                 TimetableEntries = timetableEntries,
                 TotalTimetableCount = totalTimetableCount,
-                CourseOccurrences = courseOccurrencesDictionary, // Updated dictionary
+                CourseOccurrences = courseOccurrencesDictionary,
                 Page = page,
                 Limit = limit,
                 FacultyId = facultyId,
