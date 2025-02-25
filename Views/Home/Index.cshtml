@@ -111,40 +111,39 @@
 
 <form  asp-action="Index" method="get" class="mb-3">
     <div class="row">
-       
+
 
         <!-- Major Search Input -->
         <div class="mb-3">
             <label class="form-label">Major</label>
-            <div class="custom-select-container">
-                <input type="text" id="majorSearch" name="MajorName" required value="@Context.Request.Query["MajorName"]"
-                       class="form-control border-primary" placeholder="Search Major" autocomplete="off" />
-                <input type="hidden" id="majorId" name="MajorId" value="@Context.Request.Query["MajorId"]" />
-                <div id="majorDropdown" class="custom-dropdown shadow">
-                    <ul id="majorList"></ul>
-                </div>
-            </div>
+            <select id="majorSelect" name="MajorId" class="form-control border-primary" required>
+                <option value="">-- Select Major --</option>
+                @foreach (var major in ViewBag.Majors)
+                {
+                    <option value="@major.Id">
+                        @major.Name
+                    </option>
+                }
+            </select>
         </div>
 
         <script>
             document.addEventListener("DOMContentLoaded", function () {
-                function clearHiddenInput(inputField, hiddenField) {
-                    inputField.addEventListener("input", function () {
-                        if (inputField.value.trim().length === 0) {
-                            hiddenField.value = "";
-                        }
-                    });
+                // Function to get URL parameter value
+                function getUrlParameter(name) {
+                    const urlParams = new URLSearchParams(window.location.search);
+                    return urlParams.get(name);
                 }
 
-                const facultySearch = document.getElementById("facultySearch");
-                const facultyId = document.getElementById("facultyId");
-                const majorSearch = document.getElementById("majorSearch");
-                const majorId = document.getElementById("majorId");
-
-                clearHiddenInput(facultySearch, facultyId);
-                clearHiddenInput(majorSearch, majorId);
+                // Get the "MajorId" parameter from the URL and set selected value
+                const majorIdValue = getUrlParameter("MajorId");
+                if (majorIdValue) {
+                    document.getElementById("majorSelect").value = majorIdValue;
+                }
             });
         </script>
+
+      
 
 
         <div class="col-md-2">

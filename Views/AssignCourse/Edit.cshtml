@@ -115,16 +115,37 @@
             </div>
 
             <!-- Major Field -->
-            <div class="col-md-6 mb-3">
+            <div class="mb-3">
                 <label class="form-label">Major</label>
-                <div class="input-group">
-                    <input type="text" id="majorSearch" name="MajorName" class="form-control" value="@Model.MajorName" placeholder="Search Major" autocomplete="off" />
-                    <input type="hidden" id="majorId" name="MajorId" value="@Model.MajorId" />
-                </div>
-                <div id="majorDropdown" class="dropdown-menu w-100">
-                    <ul id="majorList" class="list-group"></ul>
-                </div>
+                <select id="majorSelect" name="MajorId" class="form-control border-primary" required>
+                    <option value="">-- Select Major --</option>
+                    @foreach (var major in ViewBag.Majors)
+                    {
+                        <option value="@major.Id">
+                            @major.Name
+                        </option>
+                    }
+                </select>
             </div>
+
+            <script>
+                window.addEventListener('load', function() {
+                    // Get the major ID from the model
+                    var selectedMajorId = '@Model.MajorId';
+
+                    // Set the selected option based on MajorId
+                    var majorSelect = document.getElementById('majorSelect');
+                    var options = majorSelect.options;
+
+                    for (var i = 0; i < options.length; i++) {
+                        if (options[i].value == selectedMajorId) {
+                            options[i].selected = true;
+                            break;
+                        }
+                    }
+                });
+            </script>
+
         </div>
 
         <div class="row">

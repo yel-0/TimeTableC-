@@ -24,6 +24,7 @@ namespace TimeTable.Controllers
             // Default page and limit validation
             if (page < 1) page = 1;
             if (limit < 1) limit = 10;
+            ViewBag.Majors = await _context.Majors.ToListAsync();
 
             // Start building the query for the AssignCourses table with eager loading
             var query = _context.AssignCourses
@@ -94,9 +95,11 @@ namespace TimeTable.Controllers
 
 
 
-        public IActionResult Create()
+        public async Task<IActionResult> Create()
         {
-            var model = new AssignCourse(); 
+            var model = new AssignCourse();
+            ViewBag.Majors = await _context.Majors.ToListAsync();  // This is an async call
+
             return View(model);
         }
 
@@ -127,6 +130,9 @@ namespace TimeTable.Controllers
         // GET: Edit
         public async Task<IActionResult> Edit(int id)
         {
+
+            ViewBag.Majors = await _context.Majors.ToListAsync();  // This is an async call
+
             // Fetch the timetable record with related entities (Course, Faculty, and Major)
             var timetable = await _context.AssignCourses
                 .Include(t => t.Course)

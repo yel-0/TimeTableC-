@@ -30,6 +30,9 @@ namespace TimeTable.Controllers
             if (page < 1) page = 1;
             if (limit < 1) limit = 10;
 
+            ViewBag.Majors = await _context.Majors.ToListAsync();
+
+
             if (!majorId.HasValue || string.IsNullOrWhiteSpace(section) || string.IsNullOrWhiteSpace(semester))
             {
                 var emptyViewModel = new ViewModels.TimeTableAssignCourseIndexViewModel

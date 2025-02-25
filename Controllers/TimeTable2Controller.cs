@@ -19,9 +19,10 @@ namespace TimeTable.Controllers
 
         public async Task<IActionResult> Index(int? facultyId, int? majorId, string section, string semester, int? year, int page = 1, int limit = 10)
         {
-            // Default page and limit validation
             if (page < 1) page = 1;
             if (limit < 1) limit = 10;
+
+            ViewBag.Majors = await _context.Majors.ToListAsync();
 
             if (!majorId.HasValue || string.IsNullOrWhiteSpace(section) || string.IsNullOrWhiteSpace(semester))
             {
@@ -31,6 +32,7 @@ namespace TimeTable.Controllers
                     TotalAssignCount = 0,
                     TimetableEntries = new List<Timetable2>(),
                     TotalTimetableCount = 0,
+                    CourseOccurrences = new Dictionary<int, ViewModels.CourseOccurrenceInfo>(), // Empty dictionary
                     Page = page,
                     Limit = limit,
                     FacultyId = facultyId,
@@ -43,98 +45,67 @@ namespace TimeTable.Controllers
                 return View(emptyViewModel);
             }
 
-            // Start building the query for the AssignCourses table with eager loading
             var assignQuery = _context.AssignCourses
                 .Include(a => a.Faculty)
-                .Include(a => a.Course) // Include Course in AssignCourse
-                .Include(a => a.Major)  // Include Major
-                .OrderByDescending(a => a.Id) // Order by latest records first
+                .Include(a => a.Course)
+                .Include(a => a.Major)
+                .OrderByDescending(a => a.Id)
                 .AsQueryable();
 
-            // Apply filters based on provided parameters for AssignCourses
-            if (facultyId.HasValue)
-            {
-                assignQuery = assignQuery.Where(a => a.FacultyId == facultyId.Value);
-            }
+            if (facultyId.HasValue) assignQuery = assignQuery.Where(a => a.FacultyId == facultyId.Value);
+            if (majorId.HasValue) assignQuery = assignQuery.Where(a => a.MajorId == majorId.Value);
+            if (!string.IsNullOrWhiteSpace(section)) assignQuery = assignQuery.Where(a => a.Section.Contains(section));
+            if (!string.IsNullOrWhiteSpace(semester)) assignQuery = assignQuery.Where(a => a.Semester == semester);
+            if (year.HasValue) assignQuery = assignQuery.Where(a => a.Year == year.Value);
 
-            if (majorId.HasValue)
-            {
-                assignQuery = assignQuery.Where(a => a.MajorId == majorId.Value);
-            }
-
-            if (!string.IsNullOrWhiteSpace(section))
-            {
-                assignQuery = assignQuery.Where(a => a.Section.Contains(section));
-            }
-
-            if (!string.IsNullOrWhiteSpace(semester))
-            {
-                assignQuery = assignQuery.Where(a => a.Semester == semester);
-            }
-
-            if (year.HasValue)
-            {
-                assignQuery = assignQuery.Where(a => a.Year == year.Value);
-            }
-
-            // Get the total count of records for pagination before applying Skip/Take for AssignCourses
             var totalAssignCount = await assignQuery.CountAsync();
+            var assignCourses = await assignQuery.Skip((page - 1) * limit).Take(limit).ToListAsync();
 
-            // Apply pagination after filters are applied for AssignCourses
-            var assignCourses = await assignQuery
-                .Skip((page - 1) * limit)
-                .Take(limit)
-                .ToListAsync();
-
-            // Start building the query for the Timetable2 table with eager loading
             var timetableQuery = _context.Timetables2
                 .Include(t => t.AssignCourse)
                 .ThenInclude(ac => ac.Course)
                 .Include(t => t.AssignCourse.Faculty)
-                 .Include(t => t.Classroom)
-                // Include Faculty through AssignCourse
-                .OrderBy(t => t.DayOfWeek) // Adjust ordering if necessary
+                .Include(t => t.Classroom)
+                .OrderBy(t => t.DayOfWeek)
                 .AsQueryable();
 
-            // Apply filters based on provided parameters for Timetable2, using related AssignCourse properties
-            if (facultyId.HasValue)
-            {
-                timetableQuery = timetableQuery.Where(t => t.AssignCourse.FacultyId == facultyId.Value);
-            }
+            if (facultyId.HasValue) timetableQuery = timetableQuery.Where(t => t.AssignCourse.FacultyId == facultyId.Value);
+            if (majorId.HasValue) timetableQuery = timetableQuery.Where(t => t.AssignCourse.MajorId == majorId.Value);
+            if (!string.IsNullOrWhiteSpace(section)) timetableQuery = timetableQuery.Where(t => t.AssignCourse.Section.Contains(section));
+            if (!string.IsNullOrWhiteSpace(semester)) timetableQuery = timetableQuery.Where(t => t.AssignCourse.Semester == semester);
+            if (year.HasValue) timetableQuery = timetableQuery.Where(t => t.AssignCourse.Year == year.Value);
 
-            if (majorId.HasValue)
-            {
-                timetableQuery = timetableQuery.Where(t => t.AssignCourse.MajorId == majorId.Value);
-            }
-
-            if (!string.IsNullOrWhiteSpace(section))
-            {
-                timetableQuery = timetableQuery.Where(t => t.AssignCourse.Section.Contains(section));
-            }
-
-            if (!string.IsNullOrWhiteSpace(semester))
-            {
-                timetableQuery = timetableQuery.Where(t => t.AssignCourse.Semester == semester);
-            }
-
-            if (year.HasValue)
-            {
-                timetableQuery = timetableQuery.Where(t => t.AssignCourse.Year == year.Value);
-            }
-
-            // Get the total count of records for pagination before applying Skip/Take for Timetable2
             var timetableEntries = await timetableQuery.ToListAsync();
-
-            // Get the total count of records for pagination if needed
             var totalTimetableCount = await timetableQuery.CountAsync();
 
-            // Create a ViewModel to send data to the view
+            // Grouping Timetable2 by AssignCourseId, including course name and code, and counting occurrences
+            var courseOccurrences = await timetableQuery
+                .GroupBy(t => t.AssignCourseId)
+                .Select(g => new
+                {
+                    AssignCourseId = g.Key,
+                    Count = g.Count(),
+                    CourseName = g.FirstOrDefault().AssignCourse.Course.Name, // Course Name
+                    CourseCode = g.FirstOrDefault().AssignCourse.Course.CourseCode // Course Code
+                })
+                .ToListAsync();
+
+            // Convert the list to a dictionary of CourseOccurrenceInfo
+            var courseOccurrencesDictionary = courseOccurrences
+                .ToDictionary(g => g.AssignCourseId, g => new ViewModels.CourseOccurrenceInfo
+                {
+                    Count = g.Count,
+                    CourseName = g.CourseName,
+                    CourseCode = g.CourseCode
+                });
+
             var viewModel = new ViewModels.TimeTableAssignCourseIndexViewModel
             {
                 AssignCourses = assignCourses,
                 TotalAssignCount = totalAssignCount,
                 TimetableEntries = timetableEntries,
                 TotalTimetableCount = totalTimetableCount,
+                CourseOccurrences = courseOccurrencesDictionary, // Updated dictionary
                 Page = page,
                 Limit = limit,
                 FacultyId = facultyId,
@@ -144,9 +115,9 @@ namespace TimeTable.Controllers
                 Year = year
             };
 
-            // Return the View with the ViewModel
             return View(viewModel);
         }
+
 
 
         [HttpPost]
@@ -237,7 +208,9 @@ namespace TimeTable.Controllers
                         {
                             t.AssignCourse.Course.Id,
                             t.AssignCourse.Course.Name,
-                            t.AssignCourse.Course.ShortTerm
+                            t.AssignCourse.Course.ShortTerm,
+                            t.AssignCourse.Course.CourseCode
+
                         }
                     }
                 })

@@ -1,6 +1,13 @@
 ﻿<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
 
+@{
+    var totalAssignCount = Model.TotalAssignCount;
+    var totalTimetableCount = Model.TotalTimetableCount;
+    var courseOccurrences = Model.CourseOccurrences;
+}
+
+
 <style>
 
     td {
@@ -115,42 +122,49 @@
         gap:5px;
     }
 
+    .table-container-for{
+        display: flex;
+        flex-direction: row;
+        justify-content: space-around;
+        align-items: center;
+    }
+
 
 </style>
 <form asp-action="Index" method="get" class="mb-3">
     <div class="row">
-    
+
 
         <!-- Major Search Input -->
         <div class="mb-3">
             <label class="form-label">Major</label>
-            <div class="custom-select-container">
-                <input type="text" id="majorSearch" name="MajorName" required value="@Context.Request.Query["MajorName"]"
-                       class="form-control border-primary" placeholder="Search Major" autocomplete="off" />
-                <input type="hidden" id="majorId" name="MajorId" value="@Context.Request.Query["MajorId"]" />
-                <div id="majorDropdown" class="custom-dropdown shadow">
-                    <ul id="majorList"></ul>
-                </div>
-            </div>
+            <select id="majorSelect" name="MajorId" class="form-control border-primary" required>
+                <option value="">-- Select Major --</option>
+                @foreach (var major in ViewBag.Majors)
+                {
+                    <option value="@major.Id">
+                        @major.Name
+                    </option>
+                }
+            </select>
         </div>
 
         <script>
             document.addEventListener("DOMContentLoaded", function () {
-                function clearHiddenInput(inputField, hiddenField) {
-                    inputField.addEventListener("input", function () {
-                        if (inputField.value.trim().length === 0) {
-                            hiddenField.value = "";
-                        }
-                    });
+                // Function to get URL parameter value
+                function getUrlParameter(name) {
+                    const urlParams = new URLSearchParams(window.location.search);
+                    return urlParams.get(name);
                 }
 
-                
-                const majorSearch = document.getElementById("majorSearch");
-                const majorId = document.getElementById("majorId");
-
-                clearHiddenInput(majorSearch, majorId);
+                // Get the "MajorId" parameter from the URL and set selected value
+                const majorIdValue = getUrlParameter("MajorId");
+                if (majorIdValue) {
+                    document.getElementById("majorSelect").value = majorIdValue;
+                }
             });
         </script>
+
 
 
         <div class="col-md-2">
@@ -530,20 +544,47 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
 
-<div class="course-list">
-    @foreach (var assign in Model.AssignCourses)
-    {
-        <div class="course-item">
-            <input type="radio" name="selectedCourse" value="@assign.Id" class="course-radio"
-                   data-faculty-id="@assign.Faculty?.Id">
-            <span class="course-details">
-                @assign.Course?.CourseCode &nbsp;&nbsp;&nbsp;&nbsp;
-                @assign.Course?.Name
-            </span>
-            <span class="faculty-name">— @assign.Faculty?.Name</span>
-        </div>
-    }
+<div class="table-container-for">
+    <!-- First Table (Course List) -->
+    <div class="course-list">
+        @foreach (var assign in Model.AssignCourses)
+        {
+            <div class="course-item">
+                <input type="radio" name="selectedCourse" value="@assign.Id" class="course-radio"
+                       data-faculty-id="@assign.Faculty?.Id">
+                <span class="course-details">
+                    @assign.Course?.CourseCode &nbsp;&nbsp;&nbsp;&nbsp;
+                    @assign.Course?.Name
+                </span>
+                <span class="faculty-name">— @assign.Faculty?.Name</span>
+            </div>
+        }
+    </div>
+
+    <!-- Second Table (Course Occurrences) -->
+    <div class="course-occurrences" style="width: 48%; display: flex; flex-direction: column; align-items: center;">
+        <table class="table table-striped" style="width: 100%;">
+            <thead>
+                <tr>
+                    <th>Course Name</th>
+                    <th>Course Code</th>
+                    <th>Count</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model.CourseOccurrences)
+                {
+                    <tr>
+                        <td>@item.Value.CourseName</td>
+                        <td>@item.Value.CourseCode</td>
+                        <td>@item.Value.Count</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
 </div>
+
 
 
 
@@ -637,7 +678,7 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <p class=""><strong>ID:</strong> <span id="modalId"></span></p>
+                <p><strong>Course Code:</strong> <span id="modalCourseCode"></span></p>
                 <p><strong>Day:</strong> <span id="modalDay"></span></p>
                 <p><strong>Start Time:</strong> <span id="modalStartTime"></span></p>
                 <p><strong>End Time:</strong> <span id="modalEndTime"></span></p>
@@ -654,7 +695,7 @@
 </div>
 
 <script>
-       $(document).ready(function () {
+    $(document).ready(function () {
         let responseData = [];
 
         $('input[name="selectedCourse"]').change(function () {
@@ -663,7 +704,6 @@
             if (selectedCourse.length > 0) {
                 const facultyId = selectedCourse.attr('data-faculty-id');
 
-                console.log("Fetching data for Faculty ID: " + facultyId);
 
                 $.ajax({
                     url: '/Timetable2/ByFaculty',
@@ -686,7 +726,6 @@
                             { start: "14:00", end: "15:00" },
                             { start: "15:00", end: "16:00" }
                         ];
-
                         // Iterate through table rows
                         tableBody.find('tr').each(function () {
                             let firstCellText = $(this).find('td:first').text(); // Day
@@ -744,7 +783,8 @@
                                             "data-semester": timetable.assignCourse.semester,
                                             "data-section": timetable.assignCourse.section,
                                             "data-course": timetable.assignCourse.course.name,
-                                            "data-major": timetable.assignCourse.major.name
+                                            "data-major": timetable.assignCourse.major.name,
+                                            "data-course-code": timetable.assignCourse.course.courseCode 
                                         });
 
                                         // Add only the icon inside the div
@@ -771,6 +811,7 @@
                             $("#modalSemester").text($(this).data("semester"));
                             $("#modalSection").text($(this).data("section"));
                             $("#modalCourse").text($(this).data("course"));
+                            $("#modalCourseCode").text($(this).data("course-code")); // Display course code
                             $("#modalMajor").text($(this).data("major"));
                             $("#timetableModal").modal("show");
                         });
@@ -782,8 +823,10 @@
             }
         });
     });
-
 </script>
+
+
+
 
 
 
