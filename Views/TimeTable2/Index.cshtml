@@ -1,4 +1,5 @@
 ﻿<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
 
 <style>
 
@@ -104,6 +105,16 @@
         background-color:green;
 		color: white;
     }
+
+    .course-container-current-times {
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+        align-items: center;
+        width:100%;
+        gap:5px;
+    }
+
 
 </style>
 <form asp-action="Index" method="get" class="mb-3">
@@ -302,18 +313,22 @@
             const timetable = timetableStructure[day][i];
             if (timetable) {
                 row += `<td >
-                            <div class="course-info">
-                                <span class="course-name">${timetable.assignCourse.course.shortTerm}</span><br>
+                     <div class="course-container-current-times">
+                          
+                                <span class="course-name">${timetable.assignCourse.course.shortTerm}</span>
                                 <span class="classroom-name">(${timetable.classroom.name})</span>
-                            </div>
-                              <a href="#" class="btn btn-danger"
+                           
+                   <a href="#" class="btn btn-danger"
        data-bs-toggle="modal"
        data-bs-target="#deleteModalTemplate"
        data-course-name="${timetable.assignCourse.course.name}"
        data-classroom-name="${timetable.classroom.name}"
        data-timetable-id="${timetable.id}">
-       Delete
+       <i class="fas fa-trash"></i>
     </a>
+                       
+                     </div>
+
 
 
                         </td>`;
@@ -639,14 +654,14 @@
 </div>
 
 <script>
-    $(document).ready(function () {
+       $(document).ready(function () {
         let responseData = [];
 
         $('input[name="selectedCourse"]').change(function () {
-            const selectedCourse = document.querySelector('input[name="selectedCourse"]:checked');
+            const selectedCourse = $('input[name="selectedCourse"]:checked');
 
-            if (selectedCourse) {
-                const facultyId = selectedCourse.getAttribute('data-faculty-id');
+            if (selectedCourse.length > 0) {
+                const facultyId = selectedCourse.attr('data-faculty-id');
 
                 console.log("Fetching data for Faculty ID: " + facultyId);
 
@@ -657,9 +672,10 @@
                     dataType: 'json',
                     success: function (response) {
                         responseData = response;
+                        let tableBody = $('#timetable-body');
 
-                        let tableBody = document.getElementById('timetable-body');
-                        let tableRows = tableBody.getElementsByTagName('tr');
+                        // Remove previously appended timetable entries
+                        $(".timetable-entry").remove();
 
                         const timeSlots = [
                             { start: "09:00", end: "10:00" },
@@ -671,75 +687,93 @@
                             { start: "15:00", end: "16:00" }
                         ];
 
-                        // Remove previously added entries
-                        for (let i = 0; i < tableRows.length; i++) {
-                            let cells = tableRows[i].getElementsByTagName('td');
-                            for (let c = 1; c < cells.length; c++) { // Skip first column (Day)
-                                let existingDiv = cells[c].querySelector('.timetable-entry');
-                                if (existingDiv) {
-                                    existingDiv.remove();
-                                }
-                            }
-                        }
+                        // Iterate through table rows
+                        tableBody.find('tr').each(function () {
+                            let firstCellText = $(this).find('td:first').text(); // Day
 
-                        // Populate timetable
-                        for (let i = 0; i < tableRows.length; i++) {
-                            let firstCellText = tableRows[i].getElementsByTagName('td')[0].innerText; // Day
-
-                            for (let j = 0; j < responseData.length; j++) {
-                                let timetable = responseData[j];
-
+                            responseData.forEach(timetable => {
                                 if (timetable.dayOfWeek === firstCellText) {
                                     let timeSlotIndex = timeSlots.findIndex(slot =>
                                         slot.start === timetable.startTime && slot.end === timetable.endTime
                                     );
 
                                     if (timeSlotIndex !== -1) {
-                                        let cell = tableRows[i].getElementsByTagName('td')[timeSlotIndex + 1];
+                                        let cell = $(this).find(`td:eq(${timeSlotIndex + 1})`);
 
-                                        // Create and style a new div
-                                        let newDiv = document.createElement('div');
-                                        newDiv.classList.add('timetable-entry'); // Add class for easy removal
-                                        newDiv.innerText = `Course: ${timetable.assignCourse.course.shortTerm}`;
-                                        newDiv.style.backgroundColor = "red";
-                                        newDiv.style.color = "white";
-                                        newDiv.style.width = "100%";
-                                        newDiv.style.textAlign = "center";
-                                        newDiv.style.padding = "5px";
-                                        newDiv.style.borderRadius = "4px";
-                                            newDiv.style.cursor = "pointer"; // Make it clickable
-    newDiv.style.marginTop = "3px";
-    newDiv.style.marginBottom = "3px";
+                                        // Ensure the parent div inside the td exists
+                                        if (cell.find(".timetable-container").length === 0) {
+                                            let containerDiv = $('<div>', {
+                                                class: 'timetable-container',
+                                                css: {
+                                                    display: "flex",
+                                                    flexDirection: "row",
+                                                    justifyContent: "center",
+                                                    alignItems: "center",
+                                                    width: "100%",
+                                                    height: "100%",
+                                                    gap:"3px"
+                                                }
+                                            });
+                                            cell.append(containerDiv);
+                                        }
 
-                                            // Store data attributes for modal
-                                        newDiv.dataset.id = timetable.id;
-                                        newDiv.dataset.day = timetable.dayOfWeek;
-                                        newDiv.dataset.startTime = timetable.startTime;
-                                        newDiv.dataset.endTime = timetable.endTime;
-                                        newDiv.dataset.semester = timetable.assignCourse.semester;
-                                        newDiv.dataset.section = timetable.assignCourse.section;
-                                        newDiv.dataset.course = timetable.assignCourse.course.name;
-                                        newDiv.dataset.major = timetable.assignCourse.major.name;
+                                        let containerDiv = cell.find(".timetable-container");
 
-                                        // Click event to open modal
-                                        newDiv.addEventListener("click", function () {
-                                            $("#modalId").text(this.dataset.id);
-                                            $("#modalDay").text(this.dataset.day);
-                                            $("#modalStartTime").text(this.dataset.startTime);
-                                            $("#modalEndTime").text(this.dataset.endTime);
-                                            $("#modalSemester").text(this.dataset.semester);
-                                            $("#modalSection").text(this.dataset.section);
-                                            $("#modalCourse").text(this.dataset.course);
-                                            $("#modalMajor").text(this.dataset.major);
-                                            $("#timetableModal").modal("show");
+                                        // Create a new timetable entry with requested styles
+                                        let newDiv = $('<div>', {
+                                            class: 'timetable-entry',
+                                            css: {
+                                                backgroundColor: "yellow",
+                                                color: "green",
+                                                width: "50px",
+                                                textAlign: "center",
+                                                padding: "5px",
+                                                borderRadius: "4px",
+                                                cursor: "pointer",
+                                                marginTop: "3px",
+                                                marginBottom: "3px",
+                                                display: "flex",
+                                                flexDirection: "row",
+                                                alignItems: "center",
+                                                justifyContent: "center"
+                                            },
+                                            "data-id": timetable.id,
+                                            "data-day": timetable.dayOfWeek,
+                                            "data-start-time": timetable.startTime,
+                                            "data-end-time": timetable.endTime,
+                                            "data-semester": timetable.assignCourse.semester,
+                                            "data-section": timetable.assignCourse.section,
+                                            "data-course": timetable.assignCourse.course.name,
+                                            "data-major": timetable.assignCourse.major.name
                                         });
 
-                                        // Append the new div to the cell
-                                        cell.appendChild(newDiv);
+                                        // Add only the icon inside the div
+                                        let icon = $('<i>', {
+                                            class: 'fas fa-book', // Font Awesome book icon
+                                            css: { fontSize: "18px" }
+                                        });
+
+                                        newDiv.append(icon);
+
+                                        // Append new div to the parent container
+                                        containerDiv.append(newDiv);
                                     }
                                 }
-                            }
-                        }
+                            });
+                        });
+
+                        // Attach click event to timetable entries
+                        $(".timetable-entry").off("click").on("click", function () {
+                            $("#modalId").text($(this).data("id"));
+                            $("#modalDay").text($(this).data("day"));
+                            $("#modalStartTime").text($(this).data("start-time"));
+                            $("#modalEndTime").text($(this).data("end-time"));
+                            $("#modalSemester").text($(this).data("semester"));
+                            $("#modalSection").text($(this).data("section"));
+                            $("#modalCourse").text($(this).data("course"));
+                            $("#modalMajor").text($(this).data("major"));
+                            $("#timetableModal").modal("show");
+                        });
                     },
                     error: function () {
                         console.log("Error fetching data.");
@@ -748,7 +782,10 @@
             }
         });
     });
+
 </script>
+
+
 
 
 
