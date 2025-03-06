@@ -10,10 +10,10 @@
     <div class="row">
         <!-- Faculty Search Input -->
         <div class="mb-4">
-            <label class="form-label">Faculty</label>
+            <label class="form-label">Teacher</label>
             <div class="custom-select-container">
                 <input type="text" id="facultySearch" name="FacultyName" value="@Context.Request.Query["FacultyName"]"
-                       class="form-control border-primary" placeholder="Search Faculty" autocomplete="off" />
+                       class="form-control border-primary" placeholder="Search teacher" autocomplete="off" />
                 <input type="hidden" id="facultyId" name="FacultyId" value="@Context.Request.Query["FacultyId"]" />
                 <div id="facultyDropdown" class="custom-dropdown shadow">
                     <ul id="facultyList"></ul>
@@ -24,7 +24,7 @@
         <!-- Major Search Input -->
         <div class="mb-3">
             <label class="form-label">Major</label>
-            <select id="majorSelect" name="MajorId" class="form-control border-primary" required>
+            <select id="majorSelect" name="MajorId" class="form-control border-primary" >
                 <option value="">-- Select Major --</option>
                 @foreach (var major in ViewBag.Majors)
                 {

@@ -5,11 +5,11 @@
 }
 
 <div class="container mt-4">
-    <h1 class="mb-4">Faculty List</h1>
+    <h1 class="mb-4">Teacher List</h1>
 
     <!-- Create Faculty Button -->
     <button class="btn btn-success mb-4" data-bs-toggle="modal" data-bs-target="#createFacultyModal">
-        Create Faculty
+        Create Teacher
     </button>
 
     <!-- Faculty Search Form -->
@@ -78,13 +78,13 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="createFacultyModalLabel">Create New Faculty</h5>
+                <h5 class="modal-title" id="createFacultyModalLabel">Create New Teacher</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
                 <form method="post" asp-action="Create">
                     <div class="mb-3">
-                        <label for="Name" class="form-label">Faculty Name</label>
+                        <label for="Name" class="form-label">Teacher Name</label>
                         <input type="text" class="form-control" id="Name" name="Name" required />
                     </div>
                     <div class="mb-3">
@@ -106,14 +106,14 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="editFacultyModalLabel">Edit Faculty</h5>
+                <h5 class="modal-title" id="editFacultyModalLabel">Edit Teacher</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
                 <form method="post" asp-action="Edit">
                     <input type="hidden" id="EditFacultyId" name="Id" />
                     <div class="mb-3">
-                        <label for="EditName" class="form-label">Faculty Name</label>
+                        <label for="EditName" class="form-label">Teacher Name</label>
                         <input type="text" class="form-control" id="EditName" name="Name" required />
                     </div>
                     <div class="mb-3">
@@ -135,11 +135,11 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="deleteFacultyModalLabel">Delete Faculty</h5>
+                <h5 class="modal-title" id="deleteFacultyModalLabel">Delete Teacher</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <p>Are you sure you want to delete the faculty "<span id="deleteFacultyName"></span>"?</p>
+                <p>Are you sure you want to delete the teacher "<span id="deleteFacultyName"></span>"?</p>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>

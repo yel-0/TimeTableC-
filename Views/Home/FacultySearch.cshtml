@@ -110,10 +110,10 @@
 <form asp-action="FacultySearch" method="get" class="mb-3">
     <div class="row">
         <div class="mb-4">
-            <label for="facultySearch" class="form-label">Faculty</label>
+            <label for="facultySearch" class="form-label">Teacher</label>
             <div class="custom-select-container">
                 <input type="text" id="facultySearch" name="facultyName" class="form-control"
-                       value="@Context.Request.Query["facultyName"]" placeholder="Search Faculty..." />
+                       value="@Context.Request.Query["facultyName"]" placeholder="Search teacher..." />
                 <input type="hidden" name="facultyId" id="facultyId" value="@Context.Request.Query["facultyId"]" />
                 <ul id="facultyDropdown" class="custom-dropdown"></ul>
             </div>

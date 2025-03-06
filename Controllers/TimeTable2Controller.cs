@@ -45,7 +45,7 @@ namespace TimeTable.Controllers
                 return View(emptyViewModel);
             }
 
-            // Fetch assigned courses based on filters
+           
             var assignQuery = _context.AssignCourses
                 .Include(a => a.Faculty)
                 .Include(a => a.Course)
@@ -61,6 +61,11 @@ namespace TimeTable.Controllers
 
             var totalAssignCount = await assignQuery.CountAsync();
             var assignCourses = await assignQuery.Skip((page - 1) * limit).Take(limit).ToListAsync();
+
+            assignCourses = assignCourses
+             .OrderBy(a =>
+                        int.TryParse(a.Course.CourseCode.Split('-').Last(), out int code) ? code : int.MaxValue
+                    ).ToList();
 
             // Fetch timetable entries based on filters
             var timetableQuery = _context.Timetables2
@@ -92,8 +97,12 @@ namespace TimeTable.Controllers
                 })
                 .ToListAsync();
 
+            var orderedCourseOccurrences = courseOccurrences
+    .OrderBy(c => int.TryParse(c.CourseCode.Split('-').Last(), out int code) ? code : int.MaxValue)
+    .ToList();
+
             // Convert to dictionary
-            var courseOccurrencesDictionary = courseOccurrences
+            var courseOccurrencesDictionary = orderedCourseOccurrences
                 .ToDictionary(g => g.CourseId, g => new CourseOccurrenceInfo
                 {
                     Count = g.Count,

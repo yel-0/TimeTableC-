@@ -34,6 +34,6 @@ namespace TimeTable.Models
         public virtual Course Course { get; set; }
 
         [ForeignKey("MajorId")]
-        public virtual Major Major { get; set; }  // Added Major reference
+        public virtual Major Major { get; set; }  
     }
 }

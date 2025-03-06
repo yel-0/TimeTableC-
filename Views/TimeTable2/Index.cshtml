@@ -269,7 +269,7 @@
     timeslots.forEach((timeslot, index) => {
         // Apply bg-warning class only to the 12:00 - 1:00 slot
         if (index === 4) { // 12:00 - 1:00 at index 4 
-            headerRow += `<th class="bg-warning  text-dark fw-bold lunch" style="width: 200px;" >${timeslot}</th>`;
+            headerRow += `<th class="bg-warning  text-dark fw-bold lunch" style="width:300px;" >${timeslot}</th>`;
         } else {
             headerRow += `<th>${timeslot}</th>`;
         }
@@ -318,6 +318,7 @@
     });
 
      
+                                    // <span class="classroom-name">(${timetable.classroom.name})</span>
 
     // Create timetable rows dynamically
     days.forEach((day, rowIndex) => {
@@ -328,18 +329,20 @@
             if (timetable) {
                 row += `<td >
                      <div class="course-container-current-times">
-                          
-                                <span class="course-name">${timetable.assignCourse.course.shortTerm}</span>
-                                <span class="classroom-name">(${timetable.classroom.name})</span>
-                           
-                   <a href="#" class="btn btn-danger"
+
+      <span class="course-name">${timetable.assignCourse.course.shortTerm}</span>
+
+
+
+                      <a href="#" class="btn btn-danger"
        data-bs-toggle="modal"
        data-bs-target="#deleteModalTemplate"
        data-course-name="${timetable.assignCourse.course.name}"
        data-classroom-name="${timetable.classroom.name}"
        data-timetable-id="${timetable.id}">
-       <i class="fas fa-trash"></i>
+      <i class="fas fa-trash" style="font-size: 12px;"></i>
     </a>
+
                        
                      </div>
 
@@ -349,7 +352,6 @@
             } else if (i === 3) {
                 row += `<td class="bg-warning text-dark fw-bold lunch"><span class="">Lunch</span></td>`;
             } else {
-                // Insert "Free" in the empty cells with green text and add radio button
                 row += `<td>
                              <div class="radio-button-container ">
        <label for="scheduleRadio${rowIndex}-${i}" class="radio-button ">
@@ -568,7 +570,7 @@
             <table class="table table-striped" style="width: 100%;">
                 <thead>
                     <tr>
-                        <th>Course Name</th>
+                        @* <th>Course Name</th> *@
                         <th>Course Code</th>
                         <th>Count</th>
                     </tr>
@@ -577,7 +579,7 @@
                     @foreach (var item in Model.CourseOccurrences)
                     {
                         <tr>
-                            <td>@item.Value.CourseName</td>
+                            @* <td>@item.Value.CourseName</td> *@
                             <td>@item.Value.CourseCode</td>
                             <td>@item.Value.Count</td>
                         </tr>

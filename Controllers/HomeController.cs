@@ -69,6 +69,11 @@ namespace TimeTable.Controllers
             var totalAssignCount = await assignQuery.CountAsync();
             var assignCourses = await assignQuery.Skip((page - 1) * limit).Take(limit).ToListAsync();
 
+            assignCourses = assignCourses
+            .OrderBy(a =>
+                       int.TryParse(a.Course.CourseCode.Split('-').Last(), out int code) ? code : int.MaxValue
+                   ).ToList();
+
             // Fetch timetable entries based on filters
             var timetableQuery = _context.Timetables2
                 .Include(t => t.AssignCourse)

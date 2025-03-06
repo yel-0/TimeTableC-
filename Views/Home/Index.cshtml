@@ -113,7 +113,7 @@
         align-items: center;
     }
 </style>
-<a href="/Home/FacultySearch">Go to Faculty Search</a>
+<a href="/Home/FacultySearch">Go to Teacher Search</a>
 
 <form  asp-action="Index" method="get" class="mb-3">
     <div class="row">
@@ -369,7 +369,6 @@
 <!-- Bootstrap JS (Needed for Modal) -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
-<div class="table-container-for">
     <div class="course-list">
         @foreach (var assign in Model.AssignCourses)
         {
@@ -384,34 +383,6 @@
         }
     </div>
 
-    <div class="course-occurrences" style="width: 48%; display: flex; flex-direction: column; align-items: center;">
-        @if (Model.CourseOccurrences.Count > 0)
-        {
-            <table class="table table-striped" style="width: 100%;">
-                <thead>
-                    <tr>
-                        <th>Course Name</th>
-                        <th>Course Code</th>
-                        <th>Count</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach (var item in Model.CourseOccurrences)
-                    {
-                        <tr>
-                            <td>@item.Value.CourseName</td>
-                            <td>@item.Value.CourseCode</td>
-                            <td>@item.Value.Count</td>
-                        </tr>
-                    }
-                </tbody>
-            </table>
-        }
-      
-    </div>
-
-
-</div>
 
 
 
