@@ -58,7 +58,7 @@
 
 <body>
     <div class="container my-5">
-        <form method="post" asp-action="Create" id="createCourseForm" class="p-4 border rounded shadow bg-light">
+        <form method="post" asp-action="Create" id="createCourseForm" class="p-4 border rounded shadow bg-light" onsubmit="validateForm(event)">
             <h2 class="text-primary text-center mb-4">Create Course</h2>
 
             <div class="mb-3">
@@ -82,3 +82,20 @@
         </form>
     </div>
 </body>
+
+<script>
+    function validateForm(event) {
+            event.preventDefault(); // Prevent form submission initially
+
+            let courseCodeInput = document.getElementById("CourseCode").value;
+            let pattern = /^[A-Za-z]+ - \d+$/; // Regex pattern: Text - Number
+
+            if (!pattern.test(courseCodeInput)) {
+                alert("Invalid format! The Course Code must be in 'Text - Number' format (e.g., ABC - 123).");
+                return false;
+            }
+
+            // If valid, submit the form
+            document.getElementById("createCourseForm").submit();
+        }
+</script>

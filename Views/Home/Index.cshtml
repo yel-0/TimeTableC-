@@ -325,8 +325,10 @@
                 row += `<td >
                             <div class="course-info">
                                 <span class="course-name">${timetable.assignCourse.course.shortTerm}</span><br>
-                                <span class="classroom-name">(${timetable.classroom.name})</span>
-                            </div>
+    <span class="classroom-name" style="display: inline-block; max-width: 150px; white-space: nowrap; overflow-x: auto; text-overflow: ellipsis; padding: 2px;">
+        (${timetable.classroom.name})
+    </span>
+                                </div>
                              
 
 

@@ -109,7 +109,6 @@
 		/* border: 2px solid #007bff; */
 		padding: 5px;
 		border-radius: 5px;
-        background-color:green;
 		color: white;
     }
 
@@ -362,10 +361,12 @@
                  id="scheduleRadio${rowIndex}-${i}"
                  name="schedule"
                  value="${day}-${i}"
-                  <span>Add</span>
           </div>
          
        </label>
+            <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#addCourseModal">
+        Add
+    </button>
     </div>
 
                         </td>`;
@@ -486,9 +487,7 @@
 
 
 <!-- Add Course Button (Triggers Modal) -->
-<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addCourseModal">
-    Add Course
-</button>
+
 
 <!-- Bootstrap Modal -->
 <div class="modal fade" id="addCourseModal" tabindex="-1" aria-labelledby="addCourseModalLabel" aria-hidden="true">

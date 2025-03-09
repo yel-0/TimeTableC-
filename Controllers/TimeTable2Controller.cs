@@ -17,10 +17,10 @@ namespace TimeTable.Controllers
         }
         [AuthorizeRole(0)]
 
-        public async Task<IActionResult> Index(int? facultyId, int? majorId, string section, string semester, int? year, int page = 1, int limit = 10)
+        public async Task<IActionResult> Index(int? facultyId, int? majorId, string section, string semester, int? year, int page = 1, int limit = 20)
         {
             if (page < 1) page = 1;
-            if (limit < 1) limit = 10;
+            if (limit < 1) limit = 20;
 
             ViewBag.Majors = await _context.Majors.ToListAsync();
 
