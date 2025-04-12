@@ -11,7 +11,7 @@ The **Timetable Management System** is a web application designed to help **univ
 ### 🔹 **Admin Capabilities**
 - **Manage Users**: Add, edit, and delete users with role-based permissions (Admin, User).
 - **Manage Classrooms**: Create, update, and delete classroom records.
-- **Manage Majors & Departments**: Assign courses to different departments and majors.
+- **Manage Majors**: Assign courses to different majors.
 - **Manage Courses**: Add, edit, and remove courses and link them to the relevant departments.
 - **Manage Faculties**: Assign faculty members to courses.
 - **Create and Manage Timetables**: Administrators can create and manage timetables, assigning classes to specific timeslots, classrooms, and teachers.
